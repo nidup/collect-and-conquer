@@ -12,8 +12,7 @@ export default class Play extends Phaser.State {
     private levelProgress: LevelProgress;
     private map;
     private layer;
-    private background;
-    private debug: boolean = false;
+    private debug: boolean = true;
     private seaLevel: number = 450;
     private briefingText : Phaser.BitmapText;
     private coinLeftEmitter;
@@ -26,22 +25,15 @@ export default class Play extends Phaser.State {
         }
         this.game.stage.backgroundColor = '#000000';
 
-        this.background = this.game.add.tileSprite(0, 0, 800, 600, 'background-night');
-        this.background = this.game.add.tileSprite(0, 0, 800, 600, 'background-day');
-        this.background.loadTexture('background-night');
-        this.background.fixedToCamera = true;
-
-        this.briefingText = this.game.add.bitmapText(40, 40, 'carrier-command','Night has come, Let\'s collect underpants!', 10);
-        this.briefingText.fixedToCamera = true;
-
         this.map = this.game.add.tilemap('level1');
-        this.map.addTilesetImage('tiles-1');
+        this.map.addTilesetImage('Grass', 'Grass', 20, 20, 0, 20);
+        this.map.addTilesetImage('Grass2', 'Grass2', 20, 20, 0, 20);
         this.map.setCollision(
             [
-                1, 2, 3, 4, 5, 6, 7,
-                12, 13,
-                21, 22, 23, 24, 25, 26, 27,
-                32, 33
+                1, 2, 3,// 4, 5, 6, 7,
+             //   12, 13,
+             //  21, 22, 23, 24, 25, 26, 27,
+             //   32, 33
             ]
         );
 
@@ -50,6 +42,9 @@ export default class Play extends Phaser.State {
             this.layer.debug = true;
         }
         this.layer.resizeWorld();
+
+        this.briefingText = this.game.add.bitmapText(40, 40, 'carrier-command','Night has come, Let\'s collect underpants!', 10);
+        this.briefingText.fixedToCamera = true;
 
         this.game.physics.arcade.gravity.y = 350;
 
@@ -128,7 +123,6 @@ export default class Play extends Phaser.State {
         }
         gnome.stolen();
         if (this.levelProgress.isDay()) {
-            this.background.loadTexture('background-day');
             this.hero.changeOriginPosition();
             this.briefingText.text = 'I have all of them and day is coming, let\'s go back home!';
         } else {
