@@ -9,6 +9,10 @@ export class Hero extends Phaser.Sprite {
     private jumpTimer = 0;
     private facing = 'right';
     private dancing = false;
+    private facingRight = 'right';
+    private facingLeft = 'left';
+    private facingDancing = 'dancing';
+    private facingIdle = 'idle';
 
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, keyboard: Phaser.Keyboard) {
         super(game, x, y, key, frame);
@@ -41,9 +45,9 @@ export class Hero extends Phaser.Sprite {
         this.body.velocity.x = 0;
 
         if (this.dancing) {
-            if (this.facing != 'dancing') {
+            if (this.facing != this.facingDancing) {
                 this.animations.play('dancing');
-                this.facing = 'dancing';
+                this.facing = this.facingDancing;
             }
             return;
         }
@@ -51,26 +55,26 @@ export class Hero extends Phaser.Sprite {
         if (this.cursorKeys.left.isDown) {
             this.body.velocity.x = -150;
 
-            if (this.facing != 'left') {
+            if (this.facing != this.facingLeft) {
                 this.animations.play('left');
-                this.facing = 'left';
+                this.facing = this.facingLeft;
             }
 
         } else if (this.cursorKeys.right.isDown) {
             this.body.velocity.x = 150;
 
-            if (this.facing != 'right') {
+            if (this.facing != this.facingRight) {
                 this.animations.play('right');
-                this.facing = 'right';
+                this.facing = this.facingRight;
             }
 
         } else {
-            if (this.facing == 'right' && this.facing != 'idle') {
+            if (this.facing == this.facingRight && this.facing != this.facingIdle) {
                 this.animations.play('idle-right');
-                this.facing = 'idle';
-            } else if (this.facing == 'left' && this.facing != 'idle') {
+                this.facing = this.facingIdle;
+            } else if (this.facing == this.facingLeft && this.facing != this.facingIdle) {
                 this.animations.play('idle-left');
-                this.facing = 'idle';
+                this.facing = this.facingIdle;
             }
         }
 

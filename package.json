@@ -15,11 +15,11 @@
   "license": "MIT",
   "homepage": "https://github.com/nidup/underpants-gnomes",
   "devDependencies": {
-    "webpack": "^1.12.12",
-    "webpack-dev-server": "^1.14.1",
-    "typescript": "2.0.3"
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.2",
+    "typescript": "2.2.2"
   },
   "dependencies": {
-    "ts-loader": "^0.8.2"
+    "ts-loader": "^2.0.3"
   }
 }
