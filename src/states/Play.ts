@@ -3,16 +3,18 @@ import {Hero} from "../Hero";
 import {Snake} from "../Snake";
 import {Gnome} from "../Gnome";
 import LevelProgress from "../LevelProgress";
+import {Builder} from "../vehicle/Minion";
 
 export default class Play extends Phaser.State {
 
     private hero: Hero;
     private snakes: Array<Snake>;
     private gnomes: Array<Gnome>;
+    private minions: Array<Builder>;
     private levelProgress: LevelProgress;
     private map;
     private layer;
-    private debug: boolean = true;
+    private debug: boolean = false;
     private seaLevel: number = 450;
     private briefingText : Phaser.BitmapText;
     private coinLeftEmitter;
@@ -52,15 +54,20 @@ export default class Play extends Phaser.State {
         this.game.camera.follow(this.hero);
 
         this.snakes = new Array();
+        /*
         this.snakes[0] = new Snake(this.game, 330, 370, 'snake', 0);
         this.snakes[1] = new Snake(this.game, 750, 250, 'snake', 0);
         this.snakes[2] = new Snake(this.game, 1050, 250, 'snake', 0);
+        */
 
         this.gnomes = new Array();
         this.gnomes[0] = new Gnome(this.game, 210, 200, 'gnome', 0);
         this.gnomes[1] = new Gnome(this.game, 530, 370, 'gnome', 0);
         this.gnomes[2] = new Gnome(this.game, 1550, 370, 'gnome', 0);
         this.gnomes[3] = new Gnome(this.game, 1750, 370, 'gnome', 0);
+
+        this.minions = new Array();
+        this.minions[0] = new Builder(this.game, 330, 370, 'Builder1', 0);
 
         this.levelProgress = new LevelProgress(this.gnomes, this.hero);
 
@@ -95,6 +102,12 @@ export default class Play extends Phaser.State {
             for (let i = 0; i < this.gnomes.length; i++) {
                 this.gnomes[i].dance();
             }
+        }
+
+        for (let i = 0; i < this.minions.length; i++) {
+            //this.game.physics.arcade.collide(this.minions[i], this.layer);
+            this.minions[i].update();
+            //this.game.physics.arcade.overlap(this.hero, this.minions[i], this.bite, null, this);
         }
 
         for (let i = 0; i < this.snakes.length; i++) {
@@ -134,8 +147,8 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             this.game.debug.body(this.hero);
-            for (let i = 0; i < this.snakes.length; i++) {
-                this.game.debug.body(this.snakes[i]);
+            for (let i = 0; i < this.minions.length; i++) {
+                this.game.debug.body(this.minions[i]);
             }
 
             this.game.debug.text(
