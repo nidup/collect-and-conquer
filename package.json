@@ -20,6 +20,7 @@
     "typescript": "2.2.2"
   },
   "dependencies": {
-    "ts-loader": "^2.0.3"
+    "ts-loader": "^2.0.3",
+    "easystarjs": "0.4.1"
   }
 }
