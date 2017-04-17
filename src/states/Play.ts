@@ -4,8 +4,7 @@ import {Snake} from "../Snake";
 import {Gnome} from "../Gnome";
 import LevelProgress from "../LevelProgress";
 import {Builder} from "../vehicle/Builder";
-// TODO: how to fix or not fix the following?
-import * as EasyStar from "../../node_modules/easystarjs"
+import {PathFinder} from "../ai/PathFinder";
 
 export default class Play extends Phaser.State {
 
@@ -16,8 +15,6 @@ export default class Play extends Phaser.State {
     private levelProgress: LevelProgress;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
-    private easystar;
-
     private debug: boolean = false;
     private briefingText : Phaser.BitmapText;
 
@@ -64,28 +61,7 @@ export default class Play extends Phaser.State {
         }
         this.layer.resizeWorld();
 
-
-        this.easystar = new EasyStar.js();
-
-        let mapData = this.map.layers[0].data;
-        let grid = [];
-
-        console.log(mapData.length);
-        console.log(mapData[0].length);
-
-
-        for (let i = 0; i < mapData.length; i++) {
-            grid[i] = [];
-            for (let j = 0; j < mapData[i].length; j++) {
-                grid[i][j] = this.map.layers[0].data[i][j].index;
-            }
-        }
-
-        // https://github.com/prettymuchbryce/easystarjs
-        this.easystar.setGrid(grid);
-        this.easystar.setAcceptableTiles(walkable);
-        this.easystar.enableSync();
-
+        let pathfinder = new PathFinder(this.map, walkable);
 
         let startX = 3;
         let startY = 7;
@@ -93,23 +69,8 @@ export default class Play extends Phaser.State {
         let endX = 32;
         let endY = 2;
 
-        this.map.layers[0].data[startY][startX].alpha = 0;
-        this.map.layers[0].data[endY][endX].alpha = 0;
-
-        let map = this.map;
-        let pathCallback = function(path) {
-            if (path === null) {
-                console.log("path not found");
-            } else {
-                console.log("path found");
-                for (let i = 0; i < path.length; i++) {
-                    //console.log(path[i].y + " " + path[i].x);
-                    map.layers[0].data[path[i].y][path[i].x].alpha = 0;
-                }
-            }
-        };
-        this.easystar.findPath(startX, startY, endX, endY, pathCallback);
-        this.easystar.calculate();
+        let path = pathfinder.findPath(startX, startY, endX, endY);
+        pathfinder.debugPath(path);
 
 
 
