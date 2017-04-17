@@ -28,6 +28,8 @@ export class Hero extends Phaser.Sprite {
         this.body.collideWorldBounds = true;
         this.body.setCircle(13, 2, 6);
 
+        this.body.allowGravity = false;
+
         this.animations.add('idle-left', [23], 10, true);
         this.animations.add('left', [23, 24, 25, 26], 10, true);
         this.animations.add('idle-right', [0], 10, true);

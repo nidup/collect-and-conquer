@@ -3,7 +3,7 @@ import {Hero} from "../Hero";
 import {Snake} from "../Snake";
 import {Gnome} from "../Gnome";
 import LevelProgress from "../LevelProgress";
-import {Builder} from "../vehicle/Minion";
+import {Builder} from "../vehicle/Builder";
 
 export default class Play extends Phaser.State {
 
@@ -15,7 +15,6 @@ export default class Play extends Phaser.State {
     private map;
     private layer;
     private debug: boolean = true;
-    private seaLevel: number = 450;
     private briefingText : Phaser.BitmapText;
 
     public create()
@@ -42,10 +41,14 @@ export default class Play extends Phaser.State {
 
         this.map.setCollision(
             [
-                1, 2, 3,// 4, 5, 6, 7,
-             //   12, 13,
-             //  21, 22, 23, 24, 25, 26, 27,
-             //   32, 33
+                1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 14, 15, // grass hills
+                31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 42, 44, 45, // grass brown rocks
+                // 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70
+                // 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 89, 90, 91, 92, 93, 94, 95, 96,
+                // 97, 98, 99, 100, 101, 102, 103,
+                104, 105, 106, 107, 108, 109, 110, 111, // grass brown rocks
+                112, 113, 114, 116, 118, 120, 121, 122, 125, 126, 129, 130, // grass brown rocks
+                147, 148, 149, 150, 152, 153, 154, 155, 157, 158, 160, 161 // grass water
             ]
         );
 
@@ -71,10 +74,12 @@ export default class Play extends Phaser.State {
         */
 
         this.gnomes = new Array();
+        /*
         this.gnomes[0] = new Gnome(this.game, 210, 200, 'gnome', 0);
         this.gnomes[1] = new Gnome(this.game, 530, 370, 'gnome', 0);
         this.gnomes[2] = new Gnome(this.game, 1550, 370, 'gnome', 0);
         this.gnomes[3] = new Gnome(this.game, 1750, 370, 'gnome', 0);
+        */
 
         this.minions = new Array();
         this.minions[0] = new Builder(this.game, 330, 370, 'Builder1', 0);
@@ -86,11 +91,6 @@ export default class Play extends Phaser.State {
     {
         this.game.physics.arcade.collide(this.hero, this.layer);
         this.hero.update();
-
-        if (this.hero.y > this.seaLevel) {
-            this.briefingText.text = 'Argh! I\'m drowing!!';
-            this.hero.drown();
-        }
 
         if (this.levelProgress.isFinished()) {
             this.briefingText.text = 'Yeahhhh!! Profit!!!! You finished the game :D';

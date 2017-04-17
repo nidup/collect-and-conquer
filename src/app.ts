@@ -11,7 +11,7 @@ class SimpleGame extends Phaser.Game {
     {
         super(
             800,
-            512,
+            500,
             Phaser.CANVAS,
             "content",
             null
