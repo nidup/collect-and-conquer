@@ -1,6 +1,5 @@
 module.exports = {
     entry: [
-        'webpack-dev-server/client?http://0.0.0.0:49666',
         './src/app.ts'
     ],
     output: {

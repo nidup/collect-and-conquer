@@ -28,7 +28,7 @@ docker images
 
 Run to mount local code inside the container and bind ports
 ```
-docker run --name phaserjs -v "$PWD":/usr/src/app -p 49666:8080 -d nidup/phaserjs
+docker run --name phaserjs -v "$PWD":/usr/src/app -p 8080:8080 -d nidup/phaserjs
 ```
 
 Your container should appears in list when typing,
@@ -54,7 +54,7 @@ docker exec -it phaserjs npm run dev
 
 Npm run dev running will launch webpack in watch mode, you can access your project in your browser at the following url,
 ```
-http://localhost:49666/
+http://localhost:8080/
 ```
 
 ## Build the bundle.js to prepare prod mode deploy
@@ -90,7 +90,3 @@ root@91f762a14068:/usr/src/app# ls
 Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  src  tsconfig.json  webpack.config.js
 ```
 
-## TODO:
-
-- webpack auto refresh
-- permissions when doing exec
