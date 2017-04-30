@@ -38,7 +38,7 @@ docker images
 
 Run to mount local code inside the container and bind ports
 ```
-docker run --name phaserjs -v "$PWD":/usr/src/app -p 49160:8080 -d nidup/phaserjs
+docker run --name phaserjs -v "$PWD":/usr/src/app -p 49666:8080 -d nidup/phaserjs
 ```
 
 Your container should appears in list when typing,
@@ -46,7 +46,36 @@ Your container should appears in list when typing,
 docker ps
 ```
 
-## Connect in bash to the dev image
+## Install / update project dependencies
+
+Run,
+```
+docker exec -it phaserjs npm install
+```
+
+### Running the project in dev mode:
+
+Run,
+```
+docker exec -it phaserjs npm run dev
+```
+
+### Access to your project
+
+Npm run dev running will launch webpack in watch mode, you can access your project in your browser at the following url,
+```
+http://localhost:49666/
+```
+
+## Troubleshooting
+
+### Conflict. The container name "/phaserjs" is already in use by container
+
+```
+docker rm phaserjs
+```
+
+### Connect in bash to the dev image
 
 Run,
 ```
@@ -59,32 +88,12 @@ root@91f762a14068:/usr/src/app# ls
 Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  src  tsconfig.json  webpack.config.js
 ```
 
-## Install / update project dependencies
 
-Run,
-```
-docker exec -it phaserjs npm install
-```
-
-### Running the project in dev mode:
-
-```
-docker exec -it phaserjs npm run dev
-```
-
-## Troubleshooting
-
-### Conflict. The container name "/phaserjs" is already in use by container
-
-```
-docker rm phaserjs
-```
 
 
 ## TODO:
 
-- access to port
-
+- webpack auto refresh
 - permissions when doing exec
 
 
