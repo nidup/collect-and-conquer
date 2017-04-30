@@ -67,6 +67,18 @@ Npm run dev running will launch webpack in watch mode, you can access your proje
 http://localhost:49666/
 ```
 
+### Build the bundle.js to prepare prod mode deploy
+
+Run,
+```
+docker exec -it phaserjs npm run build
+```
+
+Then deploy the index.html + lib/phaser.js + build/bundle.js on the server of your choice.
+
+For this project, i deploy on github gh-pages branch commiting the bundle.js file on this branch.
+
+
 ## Troubleshooting
 
 ### Conflict. The container name "/phaserjs" is already in use by container
