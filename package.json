@@ -4,7 +4,7 @@
   "description": "Lil' game created with phaser + typescript",
   "main": "index.html",
   "scripts": {
-    "dev": "webpack-dev-server --watch --content-base . -d --progress",
+    "dev": "webpack-dev-server --watch --content-base . -d --progress --host=0.0.0.0",
     "build": "tsc && webpack"
   },
   "repository": {
