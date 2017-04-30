@@ -18,9 +18,77 @@ The demo is deployed on the `gh-pages` branch versionning the `build/bundles.js`
 
 # Getting Started
 
-### Pre-requisites
+## Pre-requisites
 
-You need to have `node` and `npm` installed
+You need to have `docker` installed
+
+## Build the dev image
+
+Run,
+```
+docker build -t nidup/phaserjs .
+```
+
+Your image should appears in list when typing,
+```
+docker images
+```
+
+## Run the dev image
+
+Run to mount local code inside the container and bind ports
+```
+docker run --name phaserjs -v "$PWD":/usr/src/app -p 49160:8080 -d nidup/phaserjs
+```
+
+Your container should appears in list when typing,
+```
+docker ps
+```
+
+## Connect in bash to the dev image
+
+Run,
+```
+docker exec -it phaserjs bash
+```
+
+Your local files should be mounted in the container,
+```
+root@91f762a14068:/usr/src/app# ls
+Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  src  tsconfig.json  webpack.config.js
+```
+
+## Install / update project dependencies
+
+Run,
+```
+docker exec -it phaserjs npm install
+```
+
+### Running the project in dev mode:
+
+```
+docker exec -it phaserjs npm run dev
+```
+
+## Troubleshooting
+
+### Conflict. The container name "/phaserjs" is already in use by container
+
+```
+docker rm phaserjs
+```
+
+
+## TODO:
+
+- access to port
+
+- permissions when doing exec
+
+
+## OLD / DEPRECATED
 
 ### Dependencies
 
