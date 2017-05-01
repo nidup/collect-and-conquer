@@ -21,18 +21,11 @@ export default class Preload extends Phaser.State {
 
         this.load.spritesheet('Builder1', 'assets/vehicle/Builder1.png', 20, 20);
 
-        this.load.spritesheet('nude', 'assets/forrest/nude.png', 32, 32);
-        this.load.spritesheet('king', 'assets/forrest/king.png', 32, 32);
-        this.load.spritesheet('gnome', 'assets/forrest/gnome.png', 32, 32);
-        this.load.spritesheet('snake', 'assets/forrest/snake.png', 32, 32);
-        this.load.spritesheet('coin', 'assets/forrest/coins.png', 16, 16);
-        //this.load.image('background-day', 'assets/forrest/background-day.png');
-        //this.load.image('background-night', 'assets/forrest/background-night.png');
         this.load.bitmapFont('carrier-command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml');
     }
 
     public create ()
     {
-        this.game.state.start('Play'); // TODO: Menu!
+        this.game.state.start('Play'); // TODO: shortcuting "Menu" state :)
     }
 }

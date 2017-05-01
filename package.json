@@ -1,5 +1,5 @@
 {
-  "name": "nidup-underpants-gnomes",
+  "name": "nidup-phaserjs",
   "version": "1.0.0",
   "description": "Lil' game created with phaser + typescript",
   "main": "index.html",
@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nidup/underpants-gnomes"
+    "url": "https://github.com/nidup/phaserjs-ai-poc"
   },
   "author": "Nicolas <nicolas@akeneo.com>",
   "license": "MIT",
-  "homepage": "https://github.com/nidup/underpants-gnomes",
+  "homepage": "https://github.com/nidup/phaserjs-ai-poc",
   "devDependencies": {
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2",
