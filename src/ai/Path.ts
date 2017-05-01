@@ -14,11 +14,22 @@ export class Path {
         }
     }
 
-    public length () {
+    public length ()
+    {
         return this.points.length;
     }
 
-    public get(index) {
+    public get(index)
+    {
         return this.points[index];
+    }
+
+    public shift()
+    {
+        if (this.points.length > 0) {
+            return this.points.shift();
+        }
+
+        return null;
     }
 }

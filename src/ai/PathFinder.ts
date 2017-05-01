@@ -25,6 +25,7 @@ export class PathFinder {
         this.easystar.setGrid(grid);
         this.easystar.setAcceptableTiles(acceptableTiles);
         this.easystar.enableSync();
+        this.easystar.enableDiagonals();
     }
 
     public findPath(startX: number, startY: number, endX: number, endY: number)

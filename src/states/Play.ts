@@ -61,20 +61,21 @@ export default class Play extends Phaser.State {
         }
         this.layer.resizeWorld();
 
-        let pathfinder = new PathFinder(this.map, walkable);
+        const pathfinder = new PathFinder(this.map, walkable);
 
-        let startX = 3;
-        let startY = 7;
+/*
+        let startX = 17;
+        let startY = 19;
 
-        let endX = 32;
-        let endY = 2;
+        let endX = 20;
+        let endY = 12;
 
         let path = pathfinder.findPath(startX, startY, endX, endY);
         pathfinder.debugPath(path);
+        */
 
 
-
-        this.briefingText = this.game.add.bitmapText(40, 40, 'carrier-command','Night has come, Let\'s collect underpants!', 10);
+        this.briefingText = this.game.add.bitmapText(40, 40, 'carrier-command','Hello world!', 10);
         this.briefingText.fixedToCamera = true;
 
         this.game.physics.arcade.gravity.y = 350;
@@ -98,13 +99,17 @@ export default class Play extends Phaser.State {
         */
 
         this.minions = new Array();
-        this.minions[0] = new Builder(this.game, 330, 370, 'Builder1', 0);
+        this.minions[0] = new Builder(this.game, 330, 370, 'Builder1', 0, pathfinder);
 
         this.levelProgress = new LevelProgress(this.gnomes, this.hero);
     }
 
     public update()
     {
+        if (this.game.input.mousePointer.isDown) {
+            this.minions[0].changePath(this.game.input.x, this.game.input.y);
+        }
+
         this.game.physics.arcade.collide(this.hero, this.layer);
         this.hero.update();
 
