@@ -57,10 +57,10 @@ export class Builder extends Phaser.Sprite
             }
 
             if (position.getX() < this.target.getX()) {
-                facing = (facing == '' ? '' : '-') + 'right';
+                facing = (facing == '' ? '' : facing + '-') + 'right';
                 this.body.velocity.x = this.speed;
             } else if (position.getX() > this.target.getX()) {
-                facing = (facing == '' ? '' : '-') + 'left';
+                facing = (facing == '' ? '' : facing + '-') + 'left';
                 this.body.velocity.x = -this.speed;
             } else {
                 this.body.velocity.x = 0;
