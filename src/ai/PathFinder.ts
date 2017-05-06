@@ -43,11 +43,4 @@ export class PathFinder {
 
         return foundPath;
     }
-
-    public debugPath(path: Path)
-    {
-        for (let i = 0; i < path.length(); i++) {
-            this.map.layers[0].data[path.get(i).getY()][path.get(i).getX()].alpha = 0;
-        }
-    }
 }
