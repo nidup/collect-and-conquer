@@ -101,9 +101,8 @@ export class Builder extends Phaser.Sprite implements Boid
             const finalDestination = new Phaser.Point(targetX, targetY);
 
 
-            this.steeringComputer.seek(finalDestination)
-
-
+            this.steeringComputer.seek(finalDestination);
+            this.steeringComputer.apply();
 
             if(this.position.distance(finalDestination) < 20){
 

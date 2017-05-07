@@ -2,6 +2,12 @@
 import {Boid} from "./Boid";
 import {Builder} from "../../vehicle/Builder";
 
+/**
+ * Inspired by following posts
+ *
+ * @see https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-movement-manager--gamedev-4278
+ * @see http://www.emanueleferonato.com/2016/02/01/understanding-steering-behavior-html5-example-using-phaser/
+ */
 export class SteeringComputer
 {
     private steering : Phaser.Point;
@@ -29,10 +35,25 @@ export class SteeringComputer
         // normalizing again
         direction.normalize();
 
+        // TODO implem slowing!
+        /*
+         distance = direction.length;
+         if (distance <= slowingRadius) {
+         desired.scaleBy(host.getMaxVelocity() * distance/slowingRadius);
+         } else {
+         desired.scaleBy(host.getMaxVelocity());
+         }
+         */
+
+        this.steering.add(direction.x, direction.y);
+    }
+
+    public apply() :void
+    {
         // finally we set the magnitude to boid force, which should be WAY lower than its velocity
 //            direction.setMagnitude(this.force);
         // Now we add boid direction to current boid velocity
-        (<Builder>this.host).body.velocity.add(direction.x, direction.y);
+        (<Builder>this.host).body.velocity.add(this.steering.x, this.steering.y);
         // we normalize the velocity
         (<Builder>this.host).body.velocity.normalize();
         // we set the magnitue to boid speed
@@ -46,11 +67,6 @@ export class SteeringComputer
                     )
                 )
             );
-    }
-
-    public apply() :void
-    {
-
     }
 
     public reset() :void {
