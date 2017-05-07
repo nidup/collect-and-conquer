@@ -55,6 +55,7 @@ export default class Play extends Phaser.State {
         this.vehicles[2] = new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder);
 
         this.vehicles[3] = new Scout(this.game, 300, 300, 'Scout1', 0);
+        (<Scout>this.vehicles[3]).enemy = (<Builder>this.vehicles[0]);
 
         this.game.camera.follow(this.vehicles[0]);
     }

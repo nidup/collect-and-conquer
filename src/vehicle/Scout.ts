@@ -2,6 +2,7 @@
 import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
+import {Builder} from "./Builder";
 
 export class Scout extends Phaser.Sprite implements Boid, Bot
 {
@@ -29,9 +30,17 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
         this.steeringComputer = new SteeringComputer(this);
     }
 
+    public enemy: Builder;
+
+
     public update ()
     {
         this.steeringComputer.wander();
+
+        if (this.enemy.getPosition().distance(this.getPosition()) < 100) {
+            this.steeringComputer.flee(this.enemy.getPosition());
+        }
+
         this.steeringComputer.compute();
 
         // TODO: could be put back in steering computer?
