@@ -22,4 +22,9 @@ export class Path {
 
         return null;
     }
+
+    public length ()
+    {
+        return this.points.length;
+    }
 }

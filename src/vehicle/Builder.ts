@@ -6,6 +6,8 @@ import {Position} from "../ai/Position";
 export class Builder extends Phaser.Sprite
 {
     private speed: number = 60;
+    private maxSpeed: number = 60;
+
     private pathfinder: PathFinder;
     private currentPath: Path = null;
     private target: Position = null;
@@ -40,6 +42,12 @@ export class Builder extends Phaser.Sprite
     public update ()
     {
         const position = this.getPosition();
+
+        if (this.currentPath && this.currentPath.length() < 2) {
+            this.speed = this.maxSpeed - 20;
+        } else {
+            this.speed = this.maxSpeed;
+        }
 
         if (this.target && position.getX() == this.target.getX() && position.getY() == this.target.getY()) {
             this.target = this.currentPath.shift();

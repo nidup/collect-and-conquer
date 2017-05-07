@@ -62,17 +62,22 @@ export default class Play extends Phaser.State {
 
         this.vehicles = new Array();
         this.vehicles[0] = new Builder(this.game, 330, 370, 'Builder1', 0, pathfinder);
+        //this.vehicles[1] = new Builder(this.game, 130, 170, 'Builder1', 0, pathfinder);
+        //this.vehicles[2] = new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder);
+
         this.game.camera.follow(this.vehicles[0]);
     }
 
     public update()
     {
         if (this.game.input.mousePointer.isDown) {
-            this.vehicles[0].changePath(this.game.input.x, this.game.input.y);
+            for (let i = 0; i < this.vehicles.length; i++) {
+                this.vehicles[i].changePath(this.game.input.x, this.game.input.y);
+            }
         }
 
         for (let i = 0; i < this.vehicles.length; i++) {
-            //this.game.physics.arcade.collide(this.vehicles[i], this.layer);
+            // this.game.physics.arcade.collide(this.vehicles[i], this.layer); TODO: vehicles block easily when moving
             this.vehicles[i].update();
             //this.game.physics.arcade.overlap(this.hero, this.vehicles[i], this.bite, null, this);
         }
