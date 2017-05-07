@@ -67,19 +67,21 @@ export class SteeringComputer
         direction.subtract(this.host.getVelocity().x, this.host.getVelocity().y);
         // normalizing again
         direction.normalize();
+
         // finally we set the magnitude to boid force, which should be WAY lower than its velocity
-//        direction.setMagnitude(this.force);
+        // TODO? direction.setMagnitude(this.force);
 
-        // TODO implem slowing!
-
-//         const distance = direction.length;
+        // slows down when approaching from target TODO: does not work.
         /*
-         if (distance <= slowingRadius) {
-         desired.scaleBy(host.getMaxVelocity() * distance/slowingRadius);
-         } else {
-         desired.scaleBy(host.getMaxVelocity());
-         }
-         */
+        const distance = this.host.getPosition().distance(target);
+        if (distance <= slowingRadius) {
+            direction.multiply(
+                this.host.getMaxVelocity().x * distance / slowingRadius,
+                this.host.getMaxVelocity().x * distance / slowingRadius,
+            );
+        } else {
+            direction.multiply(this.host.getMaxVelocity().x, this.host.getMaxVelocity().y);
+        }*/
 
         return direction;
     }
