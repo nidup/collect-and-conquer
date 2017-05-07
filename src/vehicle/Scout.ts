@@ -2,15 +2,17 @@
 import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
-import {Builder} from "./Builder";
+import {BotRepository} from "./BotRepository";
 
 export class Scout extends Phaser.Sprite implements Boid, Bot
 {
+    private repository: BotRepository;
     public body: Phaser.Physics.Arcade.Body;
     public steeringComputer: SteeringComputer;
     private speed: number = 90;
+    private scope: number = 100;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number)
+    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, bots: BotRepository)
     {
         super(game, x, y, key, frame);
 
@@ -27,18 +29,20 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
 
         game.add.existing(this);
 
+        this.repository = bots;
         this.steeringComputer = new SteeringComputer(this);
     }
-
-    public enemy: Builder;
-
 
     public update ()
     {
         this.steeringComputer.wander();
 
-        if (this.enemy.getPosition().distance(this.getPosition()) < 100) {
-            this.steeringComputer.flee(this.enemy.getPosition());
+        const enemies = this.repository.enemiesOf(this);
+        for (let index = 0; index < enemies.length; index++) {
+            let enemy = this.repository.get(index);
+            if (enemy.getPosition().distance(this.getPosition()) < this.scope) {
+                this.steeringComputer.flee(enemy.getPosition());
+            }
         }
 
         this.steeringComputer.compute();

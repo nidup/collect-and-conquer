@@ -2,12 +2,12 @@
 import {Builder} from "../vehicle/Builder";
 import {PathFinder} from "../ai/path/PathFinder";
 import {MapAnalyser} from "../ai/map/MapAnalyser";
-import {Bot} from "../vehicle/Bot";
 import {Scout} from "../vehicle/Scout";
+import {BotRepository} from "../vehicle/BotRepository";
 
 export default class Play extends Phaser.State {
 
-    private vehicles: Array<Bot>;
+    private bots: BotRepository;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
     private debug: boolean = false;
@@ -49,28 +49,27 @@ export default class Play extends Phaser.State {
 
         this.game.physics.arcade.gravity.y = 350;
 
-        this.vehicles = new Array();
-        this.vehicles[0] = new Builder(this.game, 330, 370, 'Builder1', 0, pathfinder);
-        this.vehicles[1] = new Builder(this.game, 130, 170, 'Builder1', 0, pathfinder);
-        this.vehicles[2] = new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder);
+        this.bots = new BotRepository();
+        this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, pathfinder));
+        this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, pathfinder));
+        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder));
+        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
 
-        this.vehicles[3] = new Scout(this.game, 300, 300, 'Scout1', 0);
-        (<Scout>this.vehicles[3]).enemy = (<Builder>this.vehicles[0]);
-
-        this.game.camera.follow(this.vehicles[0]);
+        this.game.camera.follow(this.bots.first());
     }
 
     public update()
     {
+        /*
         if (this.game.input.mousePointer.isDown) {
             for (let i = 0; i < this.vehicles.length; i++) {
 //                this.vehicles[i].changePath(this.game.input.x, this.game.input.y);
             }
-        }
+        }*/
 
-        for (let i = 0; i < this.vehicles.length; i++) {
-            this.game.physics.arcade.collide(this.vehicles[i], this.layer); // TODO: vehicles block easily when moving
-            this.vehicles[i].update();
+        for (let i = 0; i < this.bots.length(); i++) {
+            this.game.physics.arcade.collide(this.bots.get(i), this.layer); // TODO: vehicles block easily when moving
+            this.bots.get(i).update();
             // TODO: handle vehicles collisions
             //this.game.physics.arcade.overlap(this.hero, this.vehicles[i], this.bite, null, this);
         }
@@ -80,10 +79,10 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            this.game.debug.body(this.vehicles[0]);
-            this.game.debug.bodyInfo(this.vehicles[0], 20, 20);
-            for (let i = 0; i < this.vehicles.length; i++) {
-                this.game.debug.body(this.vehicles[i]);
+            this.game.debug.body(this.bots.first());
+            this.game.debug.bodyInfo(this.bots.first(), 20, 20);
+            for (let i = 0; i < this.bots.length(); i++) {
+                this.game.debug.body(this.bots.first());
             }
 
             this.game.debug.text(
