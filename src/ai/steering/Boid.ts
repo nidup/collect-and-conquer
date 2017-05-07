@@ -1,5 +1,5 @@
 
-export interface SteerableEntity
+export interface Boid
 {
     getVelocity() : Phaser.Point;// Vector?
     getMaxVelocity() : Phaser.Point;

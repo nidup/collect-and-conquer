@@ -2,13 +2,16 @@
 import {PathFinder} from "../ai/path/PathFinder";
 import {Path} from "../ai/path/Path";
 import {Position} from "../ai/path/Position";
-import {SteerableEntity} from "../ai/steering/SteerableEntity";
+import {Boid} from "../ai/steering/Boid";
+import {SteeringComputer} from "../ai/steering/SteeringComputer";
 
-export class Builder extends Phaser.Sprite implements SteerableEntity
+export class Builder extends Phaser.Sprite implements Boid
 {
     public body: Phaser.Physics.Arcade.Body;
 
-    private speed: number = 60;
+    public steeringComputer: SteeringComputer;
+
+    public speed: number = 60;
     private maxSpeed: number = 60;
 
     private pathfinder: PathFinder;
@@ -43,6 +46,8 @@ export class Builder extends Phaser.Sprite implements SteerableEntity
         this.animations.play('left');
 
         game.add.existing(this);
+
+        this.steeringComputer = new SteeringComputer(this);
     }
 
     public update ()
@@ -95,27 +100,9 @@ export class Builder extends Phaser.Sprite implements SteerableEntity
             const targetY = this.target.getY() * 20;
             const finalDestination = new Phaser.Point(targetX, targetY);
 
-            // direction vector is the straight direction from the boid to the target
-            var direction = new Phaser.Point(targetX, targetY);
-            // now we subtract the current boid position
-            direction.subtract(this.x, this.y);
-            // then we normalize it. A normalized vector has its length is 1, but it retains the same direction
-            direction.normalize();
-            // time to set magnitude (length) to boid speed
-            direction.setMagnitude(this.speed);
-            // now we subtract the current boid velocity
-            direction.subtract(this.body.velocity.x, this.body.velocity.y);
-            // normalizing again
-            direction.normalize();
-            // finally we set the magnitude to boid force, which should be WAY lower than its velocity
-//            direction.setMagnitude(this.force);
-            // Now we add boid direction to current boid velocity
-            this.body.velocity.add(direction.x, direction.y);
-            // we normalize the velocity
-            this.body.velocity.normalize();
-            // we set the magnitue to boid speed
-            this.body.velocity.setMagnitude(this.speed);
-            this.angle = 180 + Phaser.Math.radToDeg(Phaser.Point.angle(this.position, new Phaser.Point(this.x + this.body.velocity.x, this.y + this.body.velocity.y)));
+
+            this.steeringComputer.seek(finalDestination)
+
 
 
             if(this.position.distance(finalDestination) < 20){
