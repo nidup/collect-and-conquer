@@ -2,8 +2,9 @@
 import {PathFinder} from "../ai/path/PathFinder";
 import {Path} from "../ai/path/Path";
 import {Position} from "../ai/path/Position";
+import {SteerableEntity} from "../ai/steering/SteerableEntity";
 
-export class Builder extends Phaser.Sprite
+export class Builder extends Phaser.Sprite implements SteerableEntity
 {
     private speed: number = 60;
     private maxSpeed: number = 60;
@@ -41,7 +42,7 @@ export class Builder extends Phaser.Sprite
 
     public update ()
     {
-        const position = this.getPosition();
+        const position = this.getPositionOnMap();
 
         if (this.currentPath && this.currentPath.length() < 2) {
             this.speed = this.maxSpeed - 20;
@@ -87,7 +88,7 @@ export class Builder extends Phaser.Sprite
 
     public changePath(targetX: number, targetY: number)
     {
-        const position = this.getPosition();
+        const position = this.getPositionOnMap();
         const startX = position.getX();
         const startY = position.getY();
         const endX = Math.ceil(targetX / 20) - 1;
@@ -100,7 +101,24 @@ export class Builder extends Phaser.Sprite
         }
     }
 
-    private getPosition()
+    getVelocity(): Phaser.Point {
+        return (<Phaser.Physics.Arcade.Body>this.body).velocity;
+    }
+
+    getMaxVelocity(): Phaser.Point {
+        return (<Phaser.Physics.Arcade.Body>this.body).maxVelocity;
+    }
+
+    getPosition(): Phaser.Point
+    {
+        return (<Phaser.Physics.Arcade.Body>this.body).position;
+    }
+
+    getMass(): number {
+        return (<Phaser.Physics.Arcade.Body>this.body).mass;
+    }
+
+    getPositionOnMap()
     {
         return new Position(Math.ceil(this.x / 20) - 1, Math.ceil(this.y / 20) - 1);
     }
