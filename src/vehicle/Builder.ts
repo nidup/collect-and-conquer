@@ -102,7 +102,7 @@ export class Builder extends Phaser.Sprite implements Boid
 
 
             this.steeringComputer.seek(finalDestination);
-            this.steeringComputer.apply();
+            this.steeringComputer.compute();
 
             if(this.position.distance(finalDestination) < 20){
 

@@ -22,48 +22,26 @@ export class SteeringComputer
 
     public seek(target: Phaser.Point, slowingRadius :number = 20) :void
     {
-        // direction vector is the straight direction from the boid to the target
-        const direction = new Phaser.Point(target.x, target.y);
-        // now we subtract the current boid position
-        direction.subtract((<Builder>this.host).x, (<Builder>this.host).y);
-        // then we normalize it. A normalized vector has its length is 1, but it retains the same direction
-        direction.normalize();
-        // time to set magnitude (length) to boid speed
-        direction.setMagnitude((<Builder>this.host).speed);
-        // now we subtract the current boid velocity
-        direction.subtract((<Builder>this.host).body.velocity.x, (<Builder>this.host).body.velocity.y);
-        // normalizing again
-        direction.normalize();
-
-        // TODO implem slowing!
-        /*
-         distance = direction.length;
-         if (distance <= slowingRadius) {
-         desired.scaleBy(host.getMaxVelocity() * distance/slowingRadius);
-         } else {
-         desired.scaleBy(host.getMaxVelocity());
-         }
-         */
-
-        this.steering.add(direction.x, direction.y);
+        const force = this.doSeek(target, slowingRadius);
+        this.steering.add(force.x, force.y);
     }
 
-    public apply() :void
+    public compute() :void
     {
         // finally we set the magnitude to boid force, which should be WAY lower than its velocity
 //            direction.setMagnitude(this.force);
         // Now we add boid direction to current boid velocity
-        (<Builder>this.host).body.velocity.add(this.steering.x, this.steering.y);
+        this.host.getVelocity().add(this.steering.x, this.steering.y);
         // we normalize the velocity
-        (<Builder>this.host).body.velocity.normalize();
-        // we set the magnitue to boid speed
-        (<Builder>this.host).body.velocity.setMagnitude((<Builder>this.host).speed);
+        this.host.getVelocity().normalize();
+        // we set the magnitude to boid speed
+        this.host.getVelocity().setMagnitude((<Builder>this.host).speed);
         (<Builder>this.host).angle = 180 + Phaser.Math.radToDeg(
                 Phaser.Point.angle(
-                    (<Builder>this.host).position,
+                    this.host.getPosition(),
                     new Phaser.Point(
-                        (<Builder>this.host).x + (<Builder>this.host).body.velocity.x,
-                        (<Builder>this.host).y + (<Builder>this.host).body.velocity.y
+                        this.host.getPosition().x + this.host.getVelocity().x,
+                        this.host.getPosition().y + this.host.getVelocity().y
                     )
                 )
             );
@@ -80,15 +58,38 @@ export class SteeringComputer
     public function pursuit(target :IBoid) :void {}
 
 
-    // The update method.
-    // Should be called after all behaviors have been invoked
-
-
     // The internal API
-    private function doSeek(target :Vector3D, slowingRadius :Number = 0) :Vector3D {}
     private function doFlee(target :Vector3D) :Vector3D {}
     private function doWander() :Vector3D {}
     private function doEvade(target :IBoid) :Vector3D {}
     private function doPursuit(target :IBoid) :Vector3D {}
     */
+
+    private doSeek(target :Phaser.Point, slowingRadius :number = 0)
+    {
+        // direction vector is the straight direction from the boid to the target
+        const direction = new Phaser.Point(target.x, target.y);
+        // now we subtract the current boid position
+        direction.subtract(this.host.getPosition().x, this.host.getPosition().y);
+        // then we normalize it. A normalized vector has its length is 1, but it retains the same direction
+        direction.normalize();
+        // time to set magnitude (length) to boid speed
+        direction.setMagnitude((<Builder>this.host).speed);
+        // now we subtract the current boid velocity
+        direction.subtract(this.host.getVelocity().x, this.host.getVelocity().y);
+        // normalizing again
+        direction.normalize();
+
+        // TODO implem slowing!
+        /*
+         distance = direction.length;
+         if (distance <= slowingRadius) {
+         desired.scaleBy(host.getMaxVelocity() * distance/slowingRadius);
+         } else {
+         desired.scaleBy(host.getMaxVelocity());
+         }
+         */
+
+        return direction;
+    }
 }
