@@ -4,8 +4,9 @@ import {Path} from "../ai/path/Path";
 import {Position} from "../ai/path/Position";
 import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
+import {Bot} from "./Bot";
 
-export class Builder extends Phaser.Sprite implements Boid
+export class Builder extends Phaser.Sprite implements Boid, Bot
 {
     public body: Phaser.Physics.Arcade.Body;
     public steeringComputer: SteeringComputer;
@@ -13,6 +14,7 @@ export class Builder extends Phaser.Sprite implements Boid
     private pathfinder: PathFinder;
     private currentPath: Path = null;
     private target: Position = null;
+    private speed: number = 60;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, pathfinder: PathFinder)
     {
@@ -23,7 +25,7 @@ export class Builder extends Phaser.Sprite implements Boid
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
-        this.body.maxVelocity.set(60, 60);
+        this.body.maxVelocity.set(this.speed, this.speed);
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);

@@ -2,13 +2,15 @@
 import {Builder} from "../vehicle/Builder";
 import {PathFinder} from "../ai/path/PathFinder";
 import {MapAnalyser} from "../ai/map/MapAnalyser";
+import {Bot} from "../vehicle/Bot";
+import {Scout} from "../vehicle/Scout";
 
 export default class Play extends Phaser.State {
 
-    private vehicles: Array<Builder>;
+    private vehicles: Array<Bot>;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
-    private debug: boolean = true;
+    private debug: boolean = false;
 
     public create()
     {
@@ -52,6 +54,8 @@ export default class Play extends Phaser.State {
         this.vehicles[1] = new Builder(this.game, 130, 170, 'Builder1', 0, pathfinder);
         this.vehicles[2] = new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder);
 
+        this.vehicles[3] = new Scout(this.game, 300, 300, 'Scout1', 0);
+
         this.game.camera.follow(this.vehicles[0]);
     }
 
@@ -59,7 +63,7 @@ export default class Play extends Phaser.State {
     {
         if (this.game.input.mousePointer.isDown) {
             for (let i = 0; i < this.vehicles.length; i++) {
-                this.vehicles[i].changePath(this.game.input.x, this.game.input.y);
+//                this.vehicles[i].changePath(this.game.input.x, this.game.input.y);
             }
         }
 
