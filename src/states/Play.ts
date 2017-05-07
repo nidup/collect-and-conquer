@@ -4,6 +4,7 @@ import {PathFinder} from "../ai/path/PathFinder";
 import {MapAnalyser} from "../ai/map/MapAnalyser";
 import {Scout} from "../vehicle/Scout";
 import {BotRepository} from "../vehicle/BotRepository";
+import {Tank} from "../vehicle/Tank";
 
 export default class Play extends Phaser.State {
 
@@ -55,8 +56,9 @@ export default class Play extends Phaser.State {
         this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, pathfinder));
         this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, pathfinder));
         this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder));
+        this.bots.add(new Tank(this.game, 300, 340, 'Tank5', 0, this.bots));
 
-        this.game.camera.follow(this.bots.first());
+        this.game.camera.follow(this.bots.get(5));
     }
 
     public update()
@@ -80,11 +82,11 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            this.game.debug.body(this.bots.get(0));
-            this.game.debug.bodyInfo(this.bots.get(0), 20, 20);
-            for (let i = 0; i < this.bots.length(); i++) {
+            this.game.debug.body(this.bots.get(5));
+            this.game.debug.bodyInfo(this.bots.get(5), 20, 20);
+            /*for (let i = 0; i < this.bots.length(); i++) {
                 this.game.debug.body(this.bots.get(i));
-            }
+            }*/
 
             this.game.debug.text(
                 "FPS: "  + this.game.time.fps + " ",

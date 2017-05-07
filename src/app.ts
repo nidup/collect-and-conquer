@@ -10,7 +10,7 @@ class SimpleGame extends Phaser.Game {
     constructor()
     {
         super(
-            800,
+            1000,
             500,
             Phaser.CANVAS,
             "content",

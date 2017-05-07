@@ -3,6 +3,7 @@ import {Boid} from "./Boid";
 import {SeekBehavior} from "./behavior/SeekBehavior";
 import {WanderBehavior} from "./behavior/WanderBehavior";
 import {FleeBehavior} from "./behavior/FleeBehavior";
+import {PursuingBehavior} from "./behavior/PursuingBehavior";
 
 /**
  * Inspired by following posts
@@ -17,6 +18,7 @@ export class SteeringComputer
     private seekBehavior: SeekBehavior;
     private wanderBehavior: WanderBehavior;
     private fleeBehavior: FleeBehavior;
+    private pursuingBehavior: PursuingBehavior;
 
     constructor(host: Boid)
     {
@@ -25,6 +27,7 @@ export class SteeringComputer
         this.seekBehavior = new SeekBehavior(host);
         this.wanderBehavior = new WanderBehavior(host);
         this.fleeBehavior = new FleeBehavior(host);
+        this.pursuingBehavior = new PursuingBehavior(host, this.seekBehavior);
     }
 
     public seek(target: Phaser.Point, slowingRadius :number = 20) :void
@@ -42,6 +45,12 @@ export class SteeringComputer
     public flee(target: Phaser.Point) :void
     {
         const force = this.fleeBehavior.doFlee(target);
+        this.steering.add(force.x, force.y);
+    }
+
+    public pursuing(target: Boid) :void
+    {
+        const force = this.pursuingBehavior.doPursuing(target);
         this.steering.add(force.x, force.y);
     }
 
