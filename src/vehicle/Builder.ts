@@ -6,6 +6,8 @@ import {SteerableEntity} from "../ai/steering/SteerableEntity";
 
 export class Builder extends Phaser.Sprite implements SteerableEntity
 {
+    public body: Phaser.Physics.Arcade.Body;
+
     private speed: number = 60;
     private maxSpeed: number = 60;
 
@@ -102,20 +104,20 @@ export class Builder extends Phaser.Sprite implements SteerableEntity
     }
 
     getVelocity(): Phaser.Point {
-        return (<Phaser.Physics.Arcade.Body>this.body).velocity;
+        return this.body.velocity;
     }
 
     getMaxVelocity(): Phaser.Point {
-        return (<Phaser.Physics.Arcade.Body>this.body).maxVelocity;
+        return this.body.maxVelocity;
     }
 
     getPosition(): Phaser.Point
     {
-        return (<Phaser.Physics.Arcade.Body>this.body).position;
+        return this.body.position;
     }
 
     getMass(): number {
-        return (<Phaser.Physics.Arcade.Body>this.body).mass;
+        return this.body.mass;
     }
 
     getPositionOnMap()

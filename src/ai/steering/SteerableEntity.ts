@@ -1,5 +1,4 @@
 
-
 export interface SteerableEntity
 {
     getVelocity() : Phaser.Point;// Vector?
