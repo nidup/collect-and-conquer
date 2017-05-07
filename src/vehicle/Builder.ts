@@ -39,6 +39,9 @@ export class Builder extends Phaser.Sprite implements SteerableEntity
 
         this.pathfinder = pathfinder;
 
+        // TODO: not need of facing if sprite is rotating
+        this.animations.play('left');
+
         game.add.existing(this);
     }
 
@@ -46,14 +49,20 @@ export class Builder extends Phaser.Sprite implements SteerableEntity
     {
         const position = this.getPositionOnMap();
 
+        /*
+        TODO : naive slow down
         if (this.currentPath && this.currentPath.length() < 2) {
             this.speed = this.maxSpeed - 20;
         } else {
             this.speed = this.maxSpeed;
-        }
+        }*/
 
         if (this.target && position.getX() == this.target.getX() && position.getY() == this.target.getY()) {
-            this.target = this.currentPath.shift();
+
+            // TODO: hack to last target
+            for (let ind = this.currentPath.length(); ind > 0; ind--) {
+                this.target = this.currentPath.shift();
+            }
         }
 
         if (this.target) {
@@ -61,25 +70,64 @@ export class Builder extends Phaser.Sprite implements SteerableEntity
 
             if (position.getY() < this.target.getY()) {
                 facing = 'bottom';
-                this.body.velocity.y = this.speed;
+//                this.body.velocity.y = this.speed;
             } else if (position.getY() > this.target.getY()) {
                 facing = 'top';
-                this.body.velocity.y = -this.speed;
+//                this.body.velocity.y = -this.speed;
             } else {
-                this.body.velocity.y = 0;
+//                this.body.velocity.y = 0;
             }
 
             if (position.getX() < this.target.getX()) {
                 facing = (facing == '' ? '' : facing + '-') + 'right';
-                this.body.velocity.x = this.speed;
+//                this.body.velocity.x = this.speed;
             } else if (position.getX() > this.target.getX()) {
                 facing = (facing == '' ? '' : facing + '-') + 'left';
-                this.body.velocity.x = -this.speed;
+//                this.body.velocity.x = -this.speed;
             } else {
-                this.body.velocity.x = 0;
+//                this.body.velocity.x = 0;
             }
 
-            this.animations.play(facing);
+//            this.animations.play(facing);
+
+
+            const targetX = this.target.getX() * 20;
+            const targetY = this.target.getY() * 20;
+            const finalDestination = new Phaser.Point(targetX, targetY);
+
+            // direction vector is the straight direction from the boid to the target
+            var direction = new Phaser.Point(targetX, targetY);
+            // now we subtract the current boid position
+            direction.subtract(this.x, this.y);
+            // then we normalize it. A normalized vector has its length is 1, but it retains the same direction
+            direction.normalize();
+            // time to set magnitude (length) to boid speed
+            direction.setMagnitude(this.speed);
+            // now we subtract the current boid velocity
+            direction.subtract(this.body.velocity.x, this.body.velocity.y);
+            // normalizing again
+            direction.normalize();
+            // finally we set the magnitude to boid force, which should be WAY lower than its velocity
+//            direction.setMagnitude(this.force);
+            // Now we add boid direction to current boid velocity
+            this.body.velocity.add(direction.x, direction.y);
+            // we normalize the velocity
+            this.body.velocity.normalize();
+            // we set the magnitue to boid speed
+            this.body.velocity.setMagnitude(this.speed);
+            this.angle = 180 + Phaser.Math.radToDeg(Phaser.Point.angle(this.position, new Phaser.Point(this.x + this.body.velocity.x, this.y + this.body.velocity.y)));
+
+
+            if(this.position.distance(finalDestination) < 20){
+
+                this.currentPath = null;
+                this.target = null;
+                this.body.velocity.x = 0;
+                this.body.velocity.y = 0;
+                //target.x = game.rnd.between(10, game.width - 10);
+                //target.y = game.rnd.between(10, game.height - 10);
+            }
+
 
         } else {
             this.currentPath = null;
