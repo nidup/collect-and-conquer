@@ -1,6 +1,5 @@
 
 import {Boid} from "./Boid";
-import {Builder} from "../../vehicle/Builder";
 
 /**
  * Inspired by following posts
@@ -15,7 +14,6 @@ export class SteeringComputer
 
     constructor (host: Boid)
     {
-        // TODO: temporary
         this.host = host;
         this.steering = new Phaser.Point(0, 0);
     }
@@ -34,18 +32,6 @@ export class SteeringComputer
         this.host.getVelocity().normalize();
         // we set the magnitude to boid speed
         this.host.getVelocity().setMagnitude(this.host.getMaxVelocity().x);
-
-        (<Builder>this.host).angle = 180 + Phaser.Math.radToDeg(
-                Phaser.Point.angle(
-                    this.host.getPosition(),
-                    new Phaser.Point(
-                        this.host.getPosition().x + this.host.getVelocity().x,
-                        this.host.getPosition().y + this.host.getVelocity().y
-                    )
-                )
-            );
-
-//        console.log(this.host.getMaxVelocity());
     }
 
     public reset() :void {
@@ -74,6 +60,7 @@ export class SteeringComputer
         direction.subtract(this.host.getPosition().x, this.host.getPosition().y);
         // then we normalize it. A normalized vector has its length is 1, but it retains the same direction
         direction.normalize();
+
         // time to set magnitude (length) to boid speed
         direction.setMagnitude(this.host.getMaxVelocity().x);
         // now we subtract the current boid velocity

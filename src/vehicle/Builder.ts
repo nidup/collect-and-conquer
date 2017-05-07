@@ -102,6 +102,16 @@ export class Builder extends Phaser.Sprite implements Boid
             this.steeringComputer.seek(finalDestination);
             this.steeringComputer.compute();
 
+            this.angle = 180 + Phaser.Math.radToDeg(
+                    Phaser.Point.angle(
+                        this.getPosition(),
+                        new Phaser.Point(
+                            this.getPosition().x + this.getVelocity().x,
+                            this.getPosition().y + this.getVelocity().y
+                        )
+                    )
+                );
+
             if(this.position.distance(finalDestination) < 20){
 
                 this.currentPath = null;
