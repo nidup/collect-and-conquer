@@ -28,14 +28,13 @@ export class SteeringComputer
 
     public compute() :void
     {
-        // finally we set the magnitude to boid force, which should be WAY lower than its velocity
-//            direction.setMagnitude(this.force);
         // Now we add boid direction to current boid velocity
         this.host.getVelocity().add(this.steering.x, this.steering.y);
         // we normalize the velocity
         this.host.getVelocity().normalize();
         // we set the magnitude to boid speed
-        this.host.getVelocity().setMagnitude((<Builder>this.host).speed);
+        this.host.getVelocity().setMagnitude(this.host.getMaxVelocity().x);
+
         (<Builder>this.host).angle = 180 + Phaser.Math.radToDeg(
                 Phaser.Point.angle(
                     this.host.getPosition(),
@@ -45,6 +44,8 @@ export class SteeringComputer
                     )
                 )
             );
+
+//        console.log(this.host.getMaxVelocity());
     }
 
     public reset() :void {
@@ -74,15 +75,18 @@ export class SteeringComputer
         // then we normalize it. A normalized vector has its length is 1, but it retains the same direction
         direction.normalize();
         // time to set magnitude (length) to boid speed
-        direction.setMagnitude((<Builder>this.host).speed);
+        direction.setMagnitude(this.host.getMaxVelocity().x);
         // now we subtract the current boid velocity
         direction.subtract(this.host.getVelocity().x, this.host.getVelocity().y);
         // normalizing again
         direction.normalize();
+        // finally we set the magnitude to boid force, which should be WAY lower than its velocity
+//        direction.setMagnitude(this.force);
 
         // TODO implem slowing!
+
+//         const distance = direction.length;
         /*
-         distance = direction.length;
          if (distance <= slowingRadius) {
          desired.scaleBy(host.getMaxVelocity() * distance/slowingRadius);
          } else {

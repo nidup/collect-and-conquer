@@ -11,9 +11,6 @@ export class Builder extends Phaser.Sprite implements Boid
 
     public steeringComputer: SteeringComputer;
 
-    public speed: number = 60;
-    private maxSpeed: number = 60;
-
     private pathfinder: PathFinder;
     private currentPath: Path = null;
     private target: Position = null;
@@ -27,6 +24,7 @@ export class Builder extends Phaser.Sprite implements Boid
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
+        this.body.maxVelocity.set(60, 60);
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);

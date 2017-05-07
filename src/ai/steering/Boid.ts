@@ -1,7 +1,7 @@
 
 export interface Boid
 {
-    getVelocity() : Phaser.Point;// Vector?
+    getVelocity() : Phaser.Point;
     getMaxVelocity() : Phaser.Point;
     getPosition() : Phaser.Point;
     getMass() : number;
