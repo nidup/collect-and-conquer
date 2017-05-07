@@ -8,8 +8,7 @@ export default class Play extends Phaser.State {
     private vehicles: Array<Builder>;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
-    private debug: boolean = true;
-    private briefingText : Phaser.BitmapText;
+    private debug: boolean = false;
 
     public create()
     {
@@ -46,9 +45,6 @@ export default class Play extends Phaser.State {
 
         const pathfinder = new PathFinder(this.map, analyse.getWalkableIndexes());
 
-        this.briefingText = this.game.add.bitmapText(40, 40, 'carrier-command','Hello world!', 10);
-        this.briefingText.fixedToCamera = true;
-
         this.game.physics.arcade.gravity.y = 350;
 
         this.vehicles = new Array();
@@ -78,7 +74,9 @@ export default class Play extends Phaser.State {
     public render()
     {
         if (this.debug) {
+            // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
             this.game.debug.body(this.vehicles[0]);
+            this.game.debug.bodyInfo(this.vehicles[0], 20, 20);
             for (let i = 0; i < this.vehicles.length; i++) {
                 this.game.debug.body(this.vehicles[i]);
             }

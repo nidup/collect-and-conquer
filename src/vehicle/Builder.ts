@@ -8,7 +8,6 @@ import {SteeringComputer} from "../ai/steering/SteeringComputer";
 export class Builder extends Phaser.Sprite implements Boid
 {
     public body: Phaser.Physics.Arcade.Body;
-
     public steeringComputer: SteeringComputer;
 
     private pathfinder: PathFinder;
@@ -29,20 +28,10 @@ export class Builder extends Phaser.Sprite implements Boid
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);
 
-        this.animations.add('top-left', [0], 10, true);
-        this.animations.add('top', [1], 10, true);
-        this.animations.add('top-right', [2], 10, true);
-        this.animations.add('left', [3], 10, true);
         this.animations.add('right', [5], 10, true);
-        this.animations.add('bottom-left', [6], 10, true);
-        this.animations.add('bottom', [7], 10, true);
-        this.animations.add('bottom-right', [8], 10, true);
+        this.animations.play('right');
 
         this.pathfinder = pathfinder;
-
-        // TODO: not need of facing if sprite is rotating
-        this.animations.play('left');
-
         game.add.existing(this);
 
         this.steeringComputer = new SteeringComputer(this);
@@ -50,17 +39,9 @@ export class Builder extends Phaser.Sprite implements Boid
 
     public update ()
     {
-        const position = this.getPositionOnMap();
+        const positionOnMap = this.getPositionOnMap();
 
-        /*
-        TODO : naive slow down
-        if (this.currentPath && this.currentPath.length() < 2) {
-            this.speed = this.maxSpeed - 20;
-        } else {
-            this.speed = this.maxSpeed;
-        }*/
-
-        if (this.target && position.getX() == this.target.getX() && position.getY() == this.target.getY()) {
+        if (this.target && positionOnMap.getX() == this.target.getX() && positionOnMap.getY() == this.target.getY()) {
 
             // TODO: hack to last target
             for (let ind = this.currentPath.length(); ind > 0; ind--) {
@@ -69,35 +50,9 @@ export class Builder extends Phaser.Sprite implements Boid
         }
 
         if (this.target) {
-            let facing = '';
-
-            if (position.getY() < this.target.getY()) {
-                facing = 'bottom';
-//                this.body.velocity.y = this.speed;
-            } else if (position.getY() > this.target.getY()) {
-                facing = 'top';
-//                this.body.velocity.y = -this.speed;
-            } else {
-//                this.body.velocity.y = 0;
-            }
-
-            if (position.getX() < this.target.getX()) {
-                facing = (facing == '' ? '' : facing + '-') + 'right';
-//                this.body.velocity.x = this.speed;
-            } else if (position.getX() > this.target.getX()) {
-                facing = (facing == '' ? '' : facing + '-') + 'left';
-//                this.body.velocity.x = -this.speed;
-            } else {
-//                this.body.velocity.x = 0;
-            }
-
-//            this.animations.play(facing);
-
-
             const targetX = this.target.getX() * 20;
             const targetY = this.target.getY() * 20;
             const finalDestination = new Phaser.Point(targetX, targetY);
-
 
             this.steeringComputer.seek(finalDestination, 80);
             this.steeringComputer.compute();
@@ -112,14 +67,21 @@ export class Builder extends Phaser.Sprite implements Boid
                     )
                 );
 
-            if(this.position.distance(finalDestination) < 20){
 
+            /*
+             TODO : naive slow down does not work in steering computer
+             if (this.currentPath && this.currentPath.length() < 2) {
+             this.speed = this.maxSpeed - 20;
+             } else {
+             this.speed = this.maxSpeed;
+             }*/
+
+
+            if(this.position.distance(finalDestination) < 20){
                 this.currentPath = null;
                 this.target = null;
                 this.body.velocity.x = 0;
                 this.body.velocity.y = 0;
-                //target.x = game.rnd.between(10, game.width - 10);
-                //target.y = game.rnd.between(10, game.height - 10);
             }
 
 
