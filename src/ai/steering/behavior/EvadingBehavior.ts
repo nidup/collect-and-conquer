@@ -1,22 +1,22 @@
 
 import {Boid} from "../Boid";
-import {SeekBehavior} from "./SeekBehavior";
+import {FleeBehavior} from "./FleeBehavior";
 
 /**
- * @see https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-pursuit-and-evade--gamedev-2946s
+ * @see https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-pursuit-and-evade--gamedev-2946
  */
-export class PursuingBehavior
+export class EvadingBehavior
 {
     private host: Boid;
-    private seekBehavior: SeekBehavior;
+    private fleeBehavior: FleeBehavior;
 
-    constructor (host: Boid, seekBehavior: SeekBehavior)
+    constructor (host: Boid, fleeBehavior: FleeBehavior)
     {
         this.host = host;
-        this.seekBehavior = seekBehavior;
+        this.fleeBehavior = fleeBehavior;
     }
 
-    public doPursuing(target :Boid)
+    public doEvading(target :Boid)
     {
         let distance = this.host.getPosition().distance(target.getPosition());
         let updatesAhead = distance / target.getMaxVelocity().x;
@@ -27,6 +27,6 @@ export class PursuingBehavior
             target.getVelocity().y * updatesAhead
         );
 
-        return this.seekBehavior.doSeek(futurePosition);
+        return this.fleeBehavior.doFlee(futurePosition);
     }
 }

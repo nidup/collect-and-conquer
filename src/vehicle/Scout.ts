@@ -66,20 +66,20 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
 
     public wander = () =>
     {
-        const enemy = this.closeToEnemy();
+        const enemy = this.closestEnemy();
         if (enemy !== null) {
-            this.brain.pushState(this.flee);
+            this.brain.pushState(this.evading);
 
         } else {
             this.behavior.wander();
         }
     }
 
-    public flee = () =>
+    public evading = () =>
     {
-        const enemy = this.closeToEnemy();
+        const enemy = this.closestEnemy();
         if (enemy !== null) {
-            this.behavior.flee(enemy.getPosition());
+            this.behavior.evading(enemy);
         } else {
             this.brain.popState();
         }
@@ -102,16 +102,20 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
         return this.body.mass;
     }
 
-    private closeToEnemy(): Bot|null
+    private closestEnemy(): Boid|null
     {
         const enemies = this.repository.enemiesOf(this);
+        let closestEnemy = null;
+        let closestDistance = this.scope * 10;
         for (let index = 0; index < enemies.length; index++) {
             let enemy = enemies[index];
-            if (this.getPosition().distance(enemy.getPosition()) < this.scope) {
-                return enemy;
+            let distance = this.getPosition().distance(enemies[index].getPosition());
+            if (distance < this.scope && distance < closestDistance) {
+                closestEnemy = enemy;
+                closestDistance = distance;
             }
         }
 
-        return null;
+        return <Boid>closestEnemy;
     }
 }
