@@ -1,7 +1,7 @@
 
-import {PathFinder} from "../ai/PathFinder";
-import {Path} from "../ai/Path";
-import {Position} from "../ai/Position";
+import {PathFinder} from "../ai/path/PathFinder";
+import {Path} from "../ai/path/Path";
+import {Position} from "../ai/path/Position";
 
 export class Builder extends Phaser.Sprite
 {

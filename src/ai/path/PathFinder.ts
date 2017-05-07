@@ -1,7 +1,7 @@
 
 import {Path} from "./Path";
 // TODO: how to fix or not fix the following?
-import * as EasyStar from "../../node_modules/easystarjs"
+import * as EasyStar from "../../../node_modules/easystarjs"
 
 export class PathFinder {
 

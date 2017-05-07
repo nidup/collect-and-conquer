@@ -1,6 +1,6 @@
 
 import {Builder} from "../vehicle/Builder";
-import {PathFinder} from "../ai/PathFinder";
+import {PathFinder} from "../ai/path/PathFinder";
 
 export default class Play extends Phaser.State {
 
