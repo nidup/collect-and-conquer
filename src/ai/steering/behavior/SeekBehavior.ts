@@ -19,8 +19,20 @@ export class SeekBehavior
         // then we normalize it. A normalized vector has its length is 1, but it retains the same direction
         direction.normalize();
 
-        // time to set magnitude (length) to boid speed
-        direction.setMagnitude(this.host.getMaxVelocity().x);
+        // Check the distance to detect whether the character is inside the slowing area
+        const distance = this.host.getPosition().distance(target);
+        if (distance > slowingRadius) {
+            // time to set magnitude (length) to boid speed
+            direction.setMagnitude(this.host.getMaxVelocity().x);
+        } else {
+            const ratio = distance / slowingRadius;
+            if (ratio < 0.1) {
+                direction.setMagnitude(0);
+            } else {
+                direction.setMagnitude(this.host.getMaxVelocity().x * ratio);
+            }
+        }
+
         // now we subtract the current boid velocity
         direction.subtract(this.host.getVelocity().x, this.host.getVelocity().y);
         // normalizing again
@@ -28,18 +40,6 @@ export class SeekBehavior
 
         // finally we set the magnitude to boid force, which should be WAY lower than its velocity
         // TODO? direction.setMagnitude(this.force);
-
-        // slows down when approaching from target TODO: does not work.
-        /*
-         const distance = this.host.getPosition().distance(target);
-         if (distance <= slowingRadius) {
-         direction.multiply(
-         this.host.getMaxVelocity().x * distance / slowingRadius,
-         this.host.getMaxVelocity().x * distance / slowingRadius,
-         );
-         } else {
-         direction.multiply(this.host.getMaxVelocity().x, this.host.getMaxVelocity().y);
-         }*/
 
         return direction;
     }

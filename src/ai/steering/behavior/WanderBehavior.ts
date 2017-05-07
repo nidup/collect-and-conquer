@@ -40,6 +40,10 @@ export class WanderBehavior
         const wanderForce = circleCenter.add(displacement.x, displacement.y);
         wanderForce.normalize();
 
+        // time to set magnitude (length) to boid speed
+        wanderForce.setMagnitude(this.host.getMaxVelocity().x);
+        wanderForce.normalize();
+
         return wanderForce;
     }
 }

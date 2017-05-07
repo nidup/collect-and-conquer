@@ -33,16 +33,27 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
         this.steeringComputer = new SteeringComputer(this);
     }
 
+    private target: Phaser.Point = new Phaser.Point(600, 450);
+    private state: string = 'seek';
+
     public update ()
     {
-        this.steeringComputer.wander();
-
-        const enemies = this.repository.enemiesOf(this);
-        for (let index = 0; index < enemies.length; index++) {
-            let enemy = this.repository.get(index);
-            if (enemy.getPosition().distance(this.getPosition()) < this.scope) {
-                this.steeringComputer.flee(enemy.getPosition());
+        if (this.state === 'flee') {
+            const enemies = this.repository.enemiesOf(this);
+            for (let index = 0; index < enemies.length; index++) {
+                let enemy = this.repository.get(index);
+                if (this.getPosition().distance(enemy.getPosition()) < this.scope) {
+                    this.steeringComputer.flee(enemy.getPosition());
+                }
             }
+        }
+
+        if (this.state === 'wander') {
+            this.steeringComputer.wander();
+        }
+
+        if (this.state === 'seek') {
+            this.steeringComputer.seek(this.target, 150);
         }
 
         this.steeringComputer.compute();

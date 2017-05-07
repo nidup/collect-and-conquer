@@ -41,6 +41,10 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
     public update ()
     {
+        this.steeringComputer.wander();
+        this.steeringComputer.compute();
+
+        /*
         const positionOnMap = this.getPositionOnMap();
 
         if (this.target && positionOnMap.getX() == this.target.getX() && positionOnMap.getY() == this.target.getY()) {
@@ -50,7 +54,6 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
                 this.target = this.currentPath.shift();
             }
         }
-
 
         if (!this.target) {
             this.steeringComputer.wander();
@@ -64,22 +67,13 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
             this.steeringComputer.seek(finalDestination, 80);
             this.steeringComputer.compute();
 
-            /*
-             TODO : naive slow down does not work in steering computer
-             if (this.currentPath && this.currentPath.length() < 2) {
-             this.speed = this.maxSpeed - 20;
-             } else {
-             this.speed = this.maxSpeed;
-             }*/
-
-
             if (this.position.distance(finalDestination) < 20){
                 this.currentPath = null;
                 this.target = null;
                 this.body.velocity.x = 0;
                 this.body.velocity.y = 0;
             }
-        }
+        }*/
 
 
         // TODO: could be put back in steering computer?

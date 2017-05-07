@@ -10,7 +10,7 @@ export default class Play extends Phaser.State {
     private bots: BotRepository;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
-    private debug: boolean = false;
+    private debug: boolean = true;
 
     public create()
     {
@@ -50,10 +50,10 @@ export default class Play extends Phaser.State {
         this.game.physics.arcade.gravity.y = 350;
 
         this.bots = new BotRepository();
+        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
         this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, pathfinder));
         this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, pathfinder));
         this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder));
-        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
 
         this.game.camera.follow(this.bots.first());
     }
@@ -79,10 +79,10 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            this.game.debug.body(this.bots.first());
-            this.game.debug.bodyInfo(this.bots.first(), 20, 20);
+            this.game.debug.body(this.bots.get(1));
+            this.game.debug.bodyInfo(this.bots.get(0), 20, 20);
             for (let i = 0; i < this.bots.length(); i++) {
-                this.game.debug.body(this.bots.first());
+                this.game.debug.body(this.bots.get(i));
             }
 
             this.game.debug.text(

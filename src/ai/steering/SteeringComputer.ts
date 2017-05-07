@@ -53,6 +53,8 @@ export class SteeringComputer
         this.host.getVelocity().normalize();
         // we set the magnitude to boid speed
         this.host.getVelocity().setMagnitude(this.host.getMaxVelocity().x);
+        // TODO: fix the slow down, break the rest
+        //this.host.getVelocity().setMagnitude(this.steering.getMagnitude());
     }
 
     public reset() :void {
