@@ -8,7 +8,7 @@ export default class Play extends Phaser.State {
     private vehicles: Array<Builder>;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
-    private debug: boolean = false;
+    private debug: boolean = true;
 
     public create()
     {

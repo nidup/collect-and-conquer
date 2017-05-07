@@ -11,16 +11,24 @@ export class SteeringComputer
 {
     private steering : Phaser.Point;
     private host : Boid;
+    private wanderAngle: number;
 
     constructor (host: Boid)
     {
         this.host = host;
         this.steering = new Phaser.Point(0, 0);
+        this.wanderAngle = 0;
     }
 
     public seek(target: Phaser.Point, slowingRadius :number = 20) :void
     {
         const force = this.doSeek(target, slowingRadius);
+        this.steering.add(force.x, force.y);
+    }
+
+    public wander() :void
+    {
+        const force = this.doWander();
         this.steering.add(force.x, force.y);
     }
 
@@ -32,6 +40,8 @@ export class SteeringComputer
         this.host.getVelocity().normalize();
         // we set the magnitude to boid speed
         this.host.getVelocity().setMagnitude(this.host.getMaxVelocity().x);
+
+
     }
 
     public reset() :void {
@@ -40,14 +50,12 @@ export class SteeringComputer
 
     /*
     public function flee(target :Vector3D) :void {}
-    public function wander() :void {}
     public function evade(target :IBoid) :void {}
     public function pursuit(target :IBoid) :void {}
 
 
     // The internal API
     private function doFlee(target :Vector3D) :Vector3D {}
-    private function doWander() :Vector3D {}
     private function doEvade(target :IBoid) :Vector3D {}
     private function doPursuit(target :IBoid) :Vector3D {}
     */
@@ -84,5 +92,36 @@ export class SteeringComputer
         }*/
 
         return direction;
+    }
+
+    private doWander()
+    {
+        const circleDistance = 50;
+        const circleRadius = 50;
+        const angleChange = 180;
+
+        // Calculate the circle center
+        const circleCenter = this.host.getVelocity().clone();
+        circleCenter.multiply(circleDistance, circleDistance);
+        circleCenter.normalize();
+
+        // Calculate the displacement force
+        const displacement = new Phaser.Point(0, -1);
+        displacement.multiply(circleRadius, circleRadius);
+        displacement.normalize();
+
+        // Randomly change the vector direction by making it change its current angle
+        const distance = this.host.getPosition().distance(displacement);
+        displacement.x = Math.cos(this.wanderAngle) * distance;
+        displacement.y = Math.sin(this.wanderAngle) * distance;
+
+        // Change wanderAngle just a bit, so it won't have the same value in the next game frame.
+        this.wanderAngle += (Math.random() * -angleChange) - (angleChange * .5);
+
+        // Finally calculate and return the wander force
+        const wanderForce = circleCenter.add(displacement.x, displacement.y);
+        wanderForce.normalize();
+
+        return wanderForce;
     }
 }

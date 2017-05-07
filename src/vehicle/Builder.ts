@@ -49,24 +49,18 @@ export class Builder extends Phaser.Sprite implements Boid
             }
         }
 
-        if (this.target) {
+
+        if (!this.target) {
+            this.steeringComputer.wander();
+            this.steeringComputer.compute();
+
+        } else {
             const targetX = this.target.getX() * 20;
             const targetY = this.target.getY() * 20;
             const finalDestination = new Phaser.Point(targetX, targetY);
 
             this.steeringComputer.seek(finalDestination, 80);
             this.steeringComputer.compute();
-
-            this.angle = 180 + Phaser.Math.radToDeg(
-                    Phaser.Point.angle(
-                        this.getPosition(),
-                        new Phaser.Point(
-                            this.getPosition().x + this.getVelocity().x,
-                            this.getPosition().y + this.getVelocity().y
-                        )
-                    )
-                );
-
 
             /*
              TODO : naive slow down does not work in steering computer
@@ -77,19 +71,31 @@ export class Builder extends Phaser.Sprite implements Boid
              }*/
 
 
-            if(this.position.distance(finalDestination) < 20){
+            if (this.position.distance(finalDestination) < 20){
                 this.currentPath = null;
                 this.target = null;
                 this.body.velocity.x = 0;
                 this.body.velocity.y = 0;
             }
+        }
 
 
-        } else {
+        // TODO: could be put back in steering computer?
+        this.angle = 180 + Phaser.Math.radToDeg(
+                Phaser.Point.angle(
+                    this.getPosition(),
+                    new Phaser.Point(
+                        this.getPosition().x + this.getVelocity().x,
+                        this.getPosition().y + this.getVelocity().y
+                    )
+                )
+            );
+
+        /*else {
             this.currentPath = null;
             this.body.velocity.x = 0;
             this.body.velocity.y = 0;
-        }
+        }*/
     }
 
     public changePath(targetX: number, targetY: number)
