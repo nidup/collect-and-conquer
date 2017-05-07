@@ -51,6 +51,7 @@ export default class Play extends Phaser.State {
 
         this.bots = new BotRepository();
         this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
+        this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));
         this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, pathfinder));
         this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, pathfinder));
         this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder));
@@ -79,7 +80,7 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            this.game.debug.body(this.bots.get(1));
+            this.game.debug.body(this.bots.get(0));
             this.game.debug.bodyInfo(this.bots.get(0), 20, 20);
             for (let i = 0; i < this.bots.length(); i++) {
                 this.game.debug.body(this.bots.get(i));

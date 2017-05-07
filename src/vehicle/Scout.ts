@@ -3,20 +3,23 @@ import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {BotRepository} from "./BotRepository";
+import {StackFSM} from "../ai/fsm/StackFSM";
 
 export class Scout extends Phaser.Sprite implements Boid, Bot
 {
-    private repository: BotRepository;
     public body: Phaser.Physics.Arcade.Body;
-    public steeringComputer: SteeringComputer;
+
+    private repository: BotRepository;
+    private behavior: SteeringComputer;
+    private brain: StackFSM;
+
     private speed: number = 90;
     private scope: number = 100;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, bots: BotRepository)
-    {
+    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, bots: BotRepository) {
         super(game, x, y, key, frame);
 
-        this.anchor.setTo(.5,.5);
+        this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
         this.body.maxVelocity.set(this.speed, this.speed);
@@ -30,33 +33,24 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
         game.add.existing(this);
 
         this.repository = bots;
-        this.steeringComputer = new SteeringComputer(this);
+        this.behavior = new SteeringComputer(this);
+        this.brain = new StackFSM();
+        this.brain.pushState(this.wander);
     }
 
     private target: Phaser.Point = new Phaser.Point(600, 450);
-    private state: string = 'seek';
 
     public update ()
     {
-        if (this.state === 'flee') {
-            const enemies = this.repository.enemiesOf(this);
-            for (let index = 0; index < enemies.length; index++) {
-                let enemy = this.repository.get(index);
-                if (this.getPosition().distance(enemy.getPosition()) < this.scope) {
-                    this.steeringComputer.flee(enemy.getPosition());
-                }
-            }
-        }
+        this.brain.update();
 
-        if (this.state === 'wander') {
-            this.steeringComputer.wander();
-        }
-
+        /*
         if (this.state === 'seek') {
-            this.steeringComputer.seek(this.target, 150);
-        }
+            this.behavior.seek(this.target, 150);
+        }*/
 
-        this.steeringComputer.compute();
+
+        this.behavior.compute();
 
         // TODO: could be put back in steering computer?
         this.angle = 180 + Phaser.Math.radToDeg(
@@ -68,6 +62,27 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
                     )
                 )
             );
+    }
+
+    public wander = () =>
+    {
+        const enemy = this.closeToEnemy();
+        if (enemy !== null) {
+            this.brain.pushState(this.flee);
+
+        } else {
+            this.behavior.wander();
+        }
+    }
+
+    public flee = () =>
+    {
+        const enemy = this.closeToEnemy();
+        if (enemy !== null) {
+            this.behavior.flee(enemy.getPosition());
+        } else {
+            this.brain.popState();
+        }
     }
 
     getVelocity(): Phaser.Point {
@@ -85,5 +100,18 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
 
     getMass(): number {
         return this.body.mass;
+    }
+
+    private closeToEnemy(): Bot|null
+    {
+        const enemies = this.repository.enemiesOf(this);
+        for (let index = 0; index < enemies.length; index++) {
+            let enemy = enemies[index];
+            if (this.getPosition().distance(enemy.getPosition()) < this.scope) {
+                return enemy;
+            }
+        }
+
+        return null;
     }
 }

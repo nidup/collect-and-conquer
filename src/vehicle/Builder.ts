@@ -9,8 +9,8 @@ import {Bot} from "./Bot";
 export class Builder extends Phaser.Sprite implements Boid, Bot
 {
     public body: Phaser.Physics.Arcade.Body;
-    public steeringComputer: SteeringComputer;
 
+    private steeringComputer: SteeringComputer;
     private pathfinder: PathFinder;
     private currentPath: Path = null;
     private target: Position = null;
