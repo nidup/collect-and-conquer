@@ -1,7 +1,7 @@
 
 import {Path} from "./Path";
 // TODO: how to fix or not fix the following?
-import * as EasyStar from "../../node_modules/easystarjs"
+import * as EasyStar from "../../../node_modules/easystarjs"
 
 export class PathFinder {
 
@@ -42,12 +42,5 @@ export class PathFinder {
         this.easystar.calculate();
 
         return foundPath;
-    }
-
-    public debugPath(path: Path)
-    {
-        for (let i = 0; i < path.length(); i++) {
-            this.map.layers[0].data[path.get(i).getY()][path.get(i).getX()].alpha = 0;
-        }
     }
 }

@@ -14,16 +14,6 @@ export class Path {
         }
     }
 
-    public length ()
-    {
-        return this.points.length;
-    }
-
-    public get(index)
-    {
-        return this.points[index];
-    }
-
     public shift()
     {
         if (this.points.length > 0) {
@@ -31,5 +21,10 @@ export class Path {
         }
 
         return null;
+    }
+
+    public length ()
+    {
+        return this.points.length;
     }
 }
