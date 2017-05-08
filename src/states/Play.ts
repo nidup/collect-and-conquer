@@ -64,12 +64,13 @@ export default class Play extends Phaser.State {
 
     public update()
     {
-        /*
         if (this.game.input.mousePointer.isDown) {
-            for (let i = 0; i < this.vehicles.length; i++) {
-//                this.vehicles[i].changePath(this.game.input.x, this.game.input.y);
+            for (let i = 0; i < this.bots.length(); i++) {
+                if (this.bots.get(i) instanceof Builder) {
+                    (<Builder>this.bots.get(i)).changePath(new Phaser.Point(this.game.input.x, this.game.input.y));
+                }
             }
-        }*/
+        }
 
         for (let i = 0; i < this.bots.length(); i++) {
             this.game.physics.arcade.collide(this.bots.get(i), this.layer); // TODO: vehicles block easily when moving

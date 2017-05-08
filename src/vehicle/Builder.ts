@@ -13,6 +13,7 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
     private behavior: SteeringComputer;
     private brain: StackFSM;
+    private pathfinder: PathFinder;
 
     private speed: number = 60;
 
@@ -39,8 +40,8 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
         this.behavior = new SteeringComputer(this);
 
-        const pathfinder = new PathFinder(mapAnalyse);
-        this.path = pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
+        this.pathfinder = new PathFinder(mapAnalyse);
+        this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
 
         this.brain = new StackFSM();
         this.brain.pushState(this.pathFollowing);
@@ -64,6 +65,15 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
             );
     }
 
+    // TODO: for debug purpose
+    public changePath(finalDestination: Phaser.Point)
+    {
+        const newPath = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), finalDestination);
+        if (newPath) {
+            this.path = newPath;
+        }
+    }
+
     public pathFollowing = () =>
     {
         if (this.path && this.getPosition().distance(this.path.lastNode()) > 20) {
@@ -78,8 +88,13 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
     public wander = () =>
     {
-        this.behavior.wander();
-        this.behavior.avoidCollision(this.body);
+        if (this.path == null) {
+            this.behavior.wander();
+            this.behavior.avoidCollision(this.body);
+        } else {
+            this.brain.popState();
+            this.brain.pushState(this.pathFollowing);
+        }
     }
 
     getVelocity(): Phaser.Point {

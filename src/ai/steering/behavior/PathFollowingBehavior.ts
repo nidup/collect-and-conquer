@@ -11,6 +11,7 @@ export class PathFollowingBehavior
     private host: Boid;
     private seekBehavior: SeekBehavior;
     private currentNodeIndex: number;
+    private currentPath: PhaserPointPath;
 
     constructor (host: Boid, seekBehavior: SeekBehavior)
     {
@@ -20,6 +21,8 @@ export class PathFollowingBehavior
 
     public followPath(path :PhaserPointPath, slowingRadius :number = 0)
     {
+        this.resetIfPathHasChanged(path);
+
         let target :Phaser.Point = null;
 
         if (path != null && path.getNodes().length > 0) {
@@ -41,5 +44,13 @@ export class PathFollowingBehavior
         }
 
         return target != null ? this.seekBehavior.seek(target, slowingRadius) : new Phaser.Point(0, 0);
+    }
+
+    private resetIfPathHasChanged(path :PhaserPointPath)
+    {
+        if (this.currentPath != path) {
+            this.currentPath = path;
+            this.currentNodeIndex = 0;
+        }
     }
 }
