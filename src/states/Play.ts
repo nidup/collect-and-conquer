@@ -54,8 +54,8 @@ export default class Play extends Phaser.State {
         this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
         this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));
         this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse));
-        //this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0));
-        //this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0));
+        this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse));
+        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));
         this.bots.add(new Tank(this.game, 300, 340, 'Tank5', 0, this.bots));
         this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0));
 

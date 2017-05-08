@@ -15,7 +15,7 @@ export class CollisionAvoidanceBehavior
     public avoidCollision(body: Phaser.Physics.Arcade.Body)
     {
         const avoidForce = new Phaser.Point(0, 0);
-        const force = 50;
+        const force = 20;
 
         if (body.blocked.up) {
             avoidForce.add(0, force);

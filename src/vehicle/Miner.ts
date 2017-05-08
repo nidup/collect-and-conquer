@@ -79,6 +79,7 @@ export class Miner extends Phaser.Sprite implements Boid, Bot
     public wander = () =>
     {
         this.behavior.wander();
+        this.behavior.avoidCollision(this.body);
     }
 
     getVelocity(): Phaser.Point {
