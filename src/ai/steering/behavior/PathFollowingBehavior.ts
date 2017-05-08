@@ -10,6 +10,7 @@ export class PathFollowingBehavior
 {
     private host: Boid;
     private seekBehavior: SeekBehavior;
+    private currentNodeIndex: number;
 
     constructor (host: Boid, seekBehavior: SeekBehavior)
     {
@@ -19,8 +20,26 @@ export class PathFollowingBehavior
 
     public doPathFollowing(path :PhaserPointPath, slowingRadius :number = 0)
     {
-        const finalDestination = path.getNodes()[path.getNodes().length-1];
+        let target :Phaser.Point = null;
 
-        return this.seekBehavior.doSeek(finalDestination, slowingRadius);
+        if (path != null && path.getNodes().length > 0) {
+            const nodes = path.getNodes();
+
+            if (this.currentNodeIndex == null) {
+                this.currentNodeIndex = 0;
+            }
+
+            target = nodes[this.currentNodeIndex];
+            const distance = this.host.getPosition().distance(target);
+
+            if (distance <= 20) {
+                this.currentNodeIndex += 1;
+                if (this.currentNodeIndex >= nodes.length) {
+                    this.currentNodeIndex = nodes.length - 1;
+                }
+            }
+        }
+
+        return target != null ? this.seekBehavior.doSeek(target, slowingRadius) : new Phaser.Point(0, 0);
     }
 }

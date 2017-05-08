@@ -5,7 +5,7 @@ import {Bot} from "./Bot";
 import {StackFSM} from "../ai/fsm/StackFSM";
 import {MapAnalyse} from "../ai/map/MapAnalyse";
 import {PathFinder} from "../ai/path/PathFinder";
-import {TilePosition} from "../ai/path/TilePosition";
+import {PhaserPointPath} from "../ai/path/PhaserPointPath";
 
 export class Builder extends Phaser.Sprite implements Boid, Bot
 {
@@ -15,6 +15,8 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
     private brain: StackFSM;
 
     private speed: number = 60;
+
+    private path: PhaserPointPath;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
@@ -36,26 +38,16 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
         game.add.existing(this);
 
         this.behavior = new SteeringComputer(this);
-        this.brain = new StackFSM();
-        this.brain.pushState(this.pathFollowing);
-
 
         const pathfinder = new PathFinder(mapAnalyse);
-        const path = pathfinder.findTilePositionPath(new TilePosition(16, 18), new TilePosition(39, 14));
-        console.log(path);
+        this.path = pathfinder.findPhaserPointPath(this.getPosition(), new Phaser.Point(800, 300));
 
-        const pointpath = pathfinder.findPhaserPointPath(new Phaser.Point(330, 370), new Phaser.Point(800, 300));
-        console.log(pointpath);
+        this.brain = new StackFSM();
+        this.brain.pushState(this.pathFollowing);
     }
 
     public update ()
     {
-
-        /*
-         if (this.state === 'seek') {
-         this.behavior.seek(this.target, 150);
-         }*/
-
         this.brain.update();
 
         this.behavior.compute();
@@ -74,8 +66,12 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
     public pathFollowing = () =>
     {
-
-        //this.behavior.pathFollowing(new Phaser.Point(800, 300));
+        if (this.path) {
+            this.behavior.pathFollowing(this.path);
+        } else {
+            this.brain.popState();
+            this.brain.pushState(this.wander);
+        }
     }
 
     public wander = () =>

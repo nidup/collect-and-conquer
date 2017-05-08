@@ -21,7 +21,7 @@ export class SeekBehavior
 
         // Check the distance to detect whether the character is inside the slowing area
         const distance = this.host.getPosition().distance(target);
-        if (distance > slowingRadius) {
+        if (slowingRadius == 0 || distance > slowingRadius) {
             // time to set magnitude (length) to boid speed
             direction.setMagnitude(this.host.getMaxVelocity().x);
         } else {
