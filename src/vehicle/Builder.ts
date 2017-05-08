@@ -78,7 +78,7 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
     {
         if (this.path && this.getPosition().distance(this.path.lastNode()) > 20) {
             this.behavior.pathFollowing(this.path);
-            this.behavior.avoidCollision(this.body);
+            this.behavior.reactCollision(this.body);
         } else {
             this.path = null;
             this.brain.popState();
@@ -90,7 +90,7 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
     {
         if (this.path == null) {
             this.behavior.wander();
-            this.behavior.avoidCollision(this.body);
+            this.behavior.reactCollision(this.body);
         } else {
             this.brain.popState();
             this.brain.pushState(this.pathFollowing);

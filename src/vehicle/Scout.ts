@@ -64,7 +64,7 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
 
         } else {
             this.behavior.wander();
-            this.behavior.avoidCollision(this.body);
+            this.behavior.reactCollision(this.body);
         }
     }
 
