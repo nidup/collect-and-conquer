@@ -16,6 +16,7 @@ export class SteeringComputer
 {
     private steering : Phaser.Point;
     private host : Boid;
+
     private seekBehavior: SeekBehavior;
     private wanderBehavior: WanderBehavior;
     private fleeBehavior: FleeBehavior;
@@ -71,7 +72,7 @@ export class SteeringComputer
         this.host.getVelocity().normalize();
         // we set the magnitude to boid speed
         this.host.getVelocity().setMagnitude(this.host.getMaxVelocity().x);
-        // TODO: fix the slow down, break the rest
+        // TODO: fix the slow down for seek behavior but break velocity for the rest
         //this.host.getVelocity().setMagnitude(this.steering.getMagnitude());
     }
 
