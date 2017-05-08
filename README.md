@@ -108,3 +108,17 @@ ls
 Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  src  tsconfig.json  webpack.config.js
 ```
 
+# Resources
+
+## Steering Behavior
+
+ - http://www.red3d.com/cwr/steer/
+ - https://gamedevelopment.tutsplus.com/series/understanding-steering-behaviors--gamedev-12732
+
+## Finite State Machine
+
+ - https://gamedevelopment.tutsplus.com/tutorials/finite-state-machines-theory-and-implementation--gamedev-11867
+
+## Assets
+
+ - http://lunar.lostgarden.com/game_HardVacuum.htm
