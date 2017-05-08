@@ -6,6 +6,7 @@ import {FleeBehavior} from "./behavior/FleeBehavior";
 import {PursuingBehavior} from "./behavior/PursuingBehavior";
 import {EvadingBehavior} from "./behavior/EvadingBehavior";
 import {PathFollowingBehavior} from "./behavior/PathFollowingBehavior";
+import {PhaserPointPath} from "../path/PhaserPointPath";
 
 /**
  * Inspired by following posts
@@ -64,6 +65,12 @@ export class SteeringComputer
     public evading(target: Boid) :void
     {
         const force = this.evadingBehavior.doEvading(target);
+        this.steering.add(force.x, force.y);
+    }
+
+    public pathFollowing(path: PhaserPointPath, slowingRadius :number = 20) :void
+    {
+        const force = this.pathFollowingBehavior.doPathFollowing(path, slowingRadius);
         this.steering.add(force.x, force.y);
     }
 

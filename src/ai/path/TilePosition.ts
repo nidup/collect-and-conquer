@@ -1,5 +1,8 @@
 
-export class Position
+/**
+ * Position in the tilemap
+ */
+export class TilePosition
 {
     private x: number;
     private y: number;
@@ -10,11 +13,13 @@ export class Position
         this.y = y;
     }
 
-    public getX () {
+    public getX() :number
+    {
         return this.x;
     }
 
-    public getY () {
+    public getY() :number
+    {
         return this.y;
     }
 }

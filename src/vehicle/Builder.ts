@@ -1,7 +1,4 @@
 
-import {PathFinder} from "../ai/path/PathFinder";
-import {Path} from "../ai/path/Path";
-import {Position} from "../ai/path/Position";
 import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
@@ -14,12 +11,9 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
     private behavior: SteeringComputer;
     private brain: StackFSM;
 
-    private pathfinder: PathFinder;
-    private currentPath: Path = null;
-    private target: Position = null;
     private speed: number = 60;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, pathfinder: PathFinder)
+    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number)
     {
         super(game, x, y, key, frame);
 
@@ -36,51 +30,24 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
         this.animations.add('right', [5], 10, true);
         this.animations.play('right');
 
-        this.pathfinder = pathfinder;
         game.add.existing(this);
 
         this.behavior = new SteeringComputer(this);
         this.brain = new StackFSM();
-        this.brain.pushState(this.wander);
+        this.brain.pushState(this.pathFollowing);
     }
 
     public update ()
     {
+
+        /*
+         if (this.state === 'seek') {
+         this.behavior.seek(this.target, 150);
+         }*/
+
         this.brain.update();
 
         this.behavior.compute();
-
-        /*
-        const positionOnMap = this.getPositionOnMap();
-
-        if (this.target && positionOnMap.getX() == this.target.getX() && positionOnMap.getY() == this.target.getY()) {
-
-            // TODO: hack to last target
-            for (let ind = this.currentPath.length(); ind > 0; ind--) {
-                this.target = this.currentPath.shift();
-            }
-        }
-
-        if (!this.target) {
-            this.behavior.wander();
-            this.behavior.compute();
-
-        } else {
-            const targetX = this.target.getX() * 20;
-            const targetY = this.target.getY() * 20;
-            const finalDestination = new Phaser.Point(targetX, targetY);
-
-            this.behavior.seek(finalDestination, 80);
-            this.behavior.compute();
-
-            if (this.position.distance(finalDestination) < 20){
-                this.currentPath = null;
-                this.target = null;
-                this.body.velocity.x = 0;
-                this.body.velocity.y = 0;
-            }
-        }*/
-
 
         // TODO: could be put back in steering computer?
         this.angle = 180 + Phaser.Math.radToDeg(
@@ -92,14 +59,8 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
                     )
                 )
             );
-
-        /*else {
-            this.currentPath = null;
-            this.body.velocity.x = 0;
-            this.body.velocity.y = 0;
-        }*/
     }
-
+/*
     public changePath(targetX: number, targetY: number)
     {
         const position = this.getPositionOnMap();
@@ -113,6 +74,21 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
             this.currentPath = path;
             this.target = this.currentPath.shift();
         }
+    }*/
+
+    /*
+     getPositionOnMap()
+     {
+     return new Position(Math.ceil(this.x / 20) - 1, Math.ceil(this.y / 20) - 1);
+     }*/
+
+    public pathFollowing = () =>
+    {
+/*        if (this.path == null) {
+
+        }*/
+
+        //this.behavior.pathFollowing(new Phaser.Point(800, 300));
     }
 
     public wander = () =>
@@ -135,10 +111,5 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
     getMass(): number {
         return this.body.mass;
-    }
-
-    getPositionOnMap()
-    {
-        return new Position(Math.ceil(this.x / 20) - 1, Math.ceil(this.y / 20) - 1);
     }
 }
