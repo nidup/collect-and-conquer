@@ -3,6 +3,13 @@ import {MapAnalyse} from "./MapAnalyse";
 
 export class MapAnalyser
 {
+    private tiles: Array<Array<Phaser.Tile>>;
+
+    public constructor (tiles: Array<Array<Phaser.Tile>>)
+    {
+        this.tiles = tiles;
+    }
+
     public analyse ()
     {
         let unwalkable = [
@@ -23,6 +30,6 @@ export class MapAnalyser
         }
         walkable = walkable.filter(x => unwalkable.indexOf(x) == -1);
 
-        return new MapAnalyse(walkable, unwalkable);
+        return new MapAnalyse(this.tiles, walkable, unwalkable);
     }
 }

@@ -3,9 +3,9 @@ import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {StackFSM} from "../ai/fsm/StackFSM";
-import {MapAnalyser} from "../ai/map/MapAnalyser";
-import {TilePosition} from "../ai/path/TilePosition";
+import {MapAnalyse} from "../ai/map/MapAnalyse";
 import {PathFinder} from "../ai/path/PathFinder";
+import {TilePosition} from "../ai/path/TilePosition";
 
 export class Builder extends Phaser.Sprite implements Boid, Bot
 {
@@ -16,7 +16,7 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
     private speed: number = 60;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number)
+    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
         super(game, x, y, key, frame);
 
@@ -40,11 +40,7 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
         this.brain.pushState(this.pathFollowing);
 
 
-        const analyser = new MapAnalyser();
-        const analyse = analyser.analyse();
-        const mapData = (<Phaser.TilemapLayer>this.game.world.children[0]).map.layers[0].data;
-
-        const pathfinder = new PathFinder(mapData, analyse.getWalkableIndexes());
+        const pathfinder = new PathFinder(mapAnalyse);
         const path = pathfinder.findTilePositionPath(new TilePosition(16, 18), new TilePosition(39, 14));
         console.log(path);
 

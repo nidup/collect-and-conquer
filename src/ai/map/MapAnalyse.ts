@@ -1,21 +1,28 @@
 
 export class MapAnalyse
 {
-    private walkableIndexes: number[];
-    private unwalkableIndexes: number[];
+    private tiles: Array<Array<Phaser.Tile>>;
+    private walkableIndexes: Array<number>;
+    private unwalkableIndexes: Array<number>;
 
-    constructor (walkableIndexes: number[], unwalkableIndexes: number[])
+    constructor (indexes: Array<Array<Phaser.Tile>>, walkableIndexes: Array<number>, unwalkableIndexes: Array<number>)
     {
+        this.tiles = indexes;
         this.walkableIndexes = walkableIndexes;
         this.unwalkableIndexes = unwalkableIndexes;
     }
 
-    public getWalkableIndexes()
+    public getTiles() : Array<Array<Phaser.Tile>>
+    {
+        return this.tiles;
+    }
+
+    public getWalkableIndexes() : Array<number>
     {
         return this.walkableIndexes;
     }
 
-    public getUnwalkableIndexes()
+    public getUnwalkableIndexes() : Array<number>
     {
         return this.unwalkableIndexes;
     }

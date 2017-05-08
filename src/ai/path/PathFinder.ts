@@ -4,21 +4,26 @@ import {TilePositionPath} from "./TilePositionPath";
 import * as EasyStar from "../../../node_modules/easystarjs"
 import {TilePosition} from "./TilePosition";
 import {PhaserPointPath} from "./PhaserPointPath";
+import {MapAnalyse} from "../map/MapAnalyse";
 
 export class PathFinder
 {
     private static TILE_SIZE: number = 20;
+    private mapAnalyse: MapAnalyse;
     private easystar;
 
-    constructor(mapData, acceptableTiles: Array<number>)
+    constructor(mapAnalyse: MapAnalyse)
     {
+        const tiles = mapAnalyse.getTiles();
+        const acceptableTiles = mapAnalyse.getWalkableIndexes();
+
         // cf https://github.com/prettymuchbryce/easystarjs
         this.easystar = new EasyStar.js();
         let grid = [];
-        for (let i = 0; i < mapData.length; i++) {
+        for (let i = 0; i < tiles.length; i++) {
             grid[i] = [];
-            for (let j = 0; j < mapData[i].length; j++) {
-                grid[i][j] = mapData[i][j].index;
+            for (let j = 0; j < tiles[i].length; j++) {
+                grid[i][j] = tiles[i][j].index;
             }
         }
         this.easystar.setGrid(grid);

@@ -34,9 +34,10 @@ export default class Play extends Phaser.State {
         this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', 20, 20, 0, 20);
         this.map.addTilesetImage('GrssMisc', 'GrssMisc', 20, 20, 0, 20);
 
-        const analyser = new MapAnalyser();
-        const analyse = analyser.analyse();
-        this.map.setCollision(analyse.getUnwalkableIndexes());
+
+        const analyser = new MapAnalyser(this.map.layers[0].data);
+        const mapAnalyse = analyser.analyse();
+        this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
 
         this.layer = this.map.createLayer('Tile Layer 1');
         if (this.debug) {
@@ -49,7 +50,7 @@ export default class Play extends Phaser.State {
         this.bots = new BotRepository();
         this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
         this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));
-        this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0));
+        this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse));
         //this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0));
         //this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0));
         this.bots.add(new Tank(this.game, 300, 340, 'Tank5', 0, this.bots));
