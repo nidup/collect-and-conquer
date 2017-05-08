@@ -1,12 +1,9 @@
 
 import {Builder} from "../vehicle/Builder";
-import {PathFinder} from "../ai/path/PathFinder";
 import {MapAnalyser} from "../ai/map/MapAnalyser";
 import {Scout} from "../vehicle/Scout";
 import {BotRepository} from "../vehicle/BotRepository";
 import {Tank} from "../vehicle/Tank";
-import Tilemap = Phaser.Tilemap;
-import {TilePosition} from "../ai/path/TilePosition";
 
 export default class Play extends Phaser.State {
 
@@ -39,7 +36,6 @@ export default class Play extends Phaser.State {
 
         const analyser = new MapAnalyser();
         const analyse = analyser.analyse();
-
         this.map.setCollision(analyse.getUnwalkableIndexes());
 
         this.layer = this.map.createLayer('Tile Layer 1');
@@ -47,14 +43,6 @@ export default class Play extends Phaser.State {
             this.layer.debug = true;
         }
         this.layer.resizeWorld();
-
-        const pathfinder = new PathFinder(this.map.layers[0].data, analyse.getWalkableIndexes());
-        const path = pathfinder.findTilePositionPath(new TilePosition(16, 18), new TilePosition(39, 14));
-        console.log(path);
-
-        const pointpath = pathfinder.findPhaserPointPath(new Phaser.Point(330, 370), new Phaser.Point(800, 300));
-        console.log(pointpath);
-
 
         this.game.physics.arcade.gravity.y = 350;
 

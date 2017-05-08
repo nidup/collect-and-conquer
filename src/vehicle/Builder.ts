@@ -3,6 +3,9 @@ import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {StackFSM} from "../ai/fsm/StackFSM";
+import {MapAnalyser} from "../ai/map/MapAnalyser";
+import {TilePosition} from "../ai/path/TilePosition";
+import {PathFinder} from "../ai/path/PathFinder";
 
 export class Builder extends Phaser.Sprite implements Boid, Bot
 {
@@ -35,6 +38,18 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
         this.behavior = new SteeringComputer(this);
         this.brain = new StackFSM();
         this.brain.pushState(this.pathFollowing);
+
+
+        const analyser = new MapAnalyser();
+        const analyse = analyser.analyse();
+        const mapData = (<Phaser.TilemapLayer>this.game.world.children[0]).map.layers[0].data;
+
+        const pathfinder = new PathFinder(mapData, analyse.getWalkableIndexes());
+        const path = pathfinder.findTilePositionPath(new TilePosition(16, 18), new TilePosition(39, 14));
+        console.log(path);
+
+        const pointpath = pathfinder.findPhaserPointPath(new Phaser.Point(330, 370), new Phaser.Point(800, 300));
+        console.log(pointpath);
     }
 
     public update ()
