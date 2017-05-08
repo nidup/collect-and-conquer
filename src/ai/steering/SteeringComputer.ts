@@ -70,7 +70,7 @@ export class SteeringComputer
 
     public pathFollowing(path: PhaserPointPath, slowingRadius :number = 20) :void
     {
-        const force = this.pathFollowingBehavior.doPathFollowing(path, slowingRadius);
+        const force = this.pathFollowingBehavior.followPath(path, slowingRadius);
         this.steering.add(force.x, force.y);
     }
 

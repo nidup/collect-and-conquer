@@ -12,4 +12,9 @@ export class PhaserPointPath
     {
          return this.nodes;
     }
+
+    public lastNode() : Phaser.Point
+    {
+        return this.nodes.length > 0 ? this.nodes[this.nodes.length-1] : null;
+    }
 }

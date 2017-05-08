@@ -40,7 +40,7 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
         this.behavior = new SteeringComputer(this);
 
         const pathfinder = new PathFinder(mapAnalyse);
-        this.path = pathfinder.findPhaserPointPath(this.getPosition(), new Phaser.Point(800, 300));
+        this.path = pathfinder.findPhaserPointPath(this.getPosition(), new Phaser.Point(800, 200));
 
         this.brain = new StackFSM();
         this.brain.pushState(this.pathFollowing);
@@ -66,9 +66,10 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
     public pathFollowing = () =>
     {
-        if (this.path) {
+        if (this.path && this.getPosition().distance(this.path.lastNode()) > 20) {
             this.behavior.pathFollowing(this.path);
         } else {
+            this.path = null;
             this.brain.popState();
             this.brain.pushState(this.wander);
         }

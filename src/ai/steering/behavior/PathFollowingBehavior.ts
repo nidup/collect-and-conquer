@@ -18,7 +18,7 @@ export class PathFollowingBehavior
         this.seekBehavior = seekBehavior;
     }
 
-    public doPathFollowing(path :PhaserPointPath, slowingRadius :number = 0)
+    public followPath(path :PhaserPointPath, slowingRadius :number = 0)
     {
         let target :Phaser.Point = null;
 
