@@ -110,12 +110,12 @@ Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  s
 
 # Resources
 
-## Steering Behavior
+## Steering Behavior
 
  - http://www.red3d.com/cwr/steer/
  - https://gamedevelopment.tutsplus.com/series/understanding-steering-behaviors--gamedev-12732
 
-## Finite State Machine
+## Finite State Machine
 
  - https://gamedevelopment.tutsplus.com/tutorials/finite-state-machines-theory-and-implementation--gamedev-11867
 
