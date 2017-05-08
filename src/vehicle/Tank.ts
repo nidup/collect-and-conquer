@@ -73,7 +73,6 @@ export class Tank extends Phaser.Sprite implements Boid, Bot
             this.behavior.pursuing(enemy);
         } else {
             this.brain.popState();
-            console.log('back to wander');
         }
     }
 

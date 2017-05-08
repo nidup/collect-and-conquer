@@ -38,17 +38,9 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
         this.brain.pushState(this.wander);
     }
 
-    private target: Phaser.Point = new Phaser.Point(600, 450);
-
     public update ()
     {
         this.brain.update();
-
-        /*
-        if (this.state === 'seek') {
-            this.behavior.seek(this.target, 150);
-        }*/
-
 
         this.behavior.compute();
 
