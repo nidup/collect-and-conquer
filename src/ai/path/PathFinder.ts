@@ -1,25 +1,29 @@
 
-import {Path} from "./Path";
+import {TilePositionPath} from "./TilePositionPath";
 // TODO: how to fix or not fix the following?
 import * as EasyStar from "../../../node_modules/easystarjs"
+import {TilePosition} from "./TilePosition";
+import {PhaserPointPath} from "./PhaserPointPath";
+import {MapAnalyse} from "../map/MapAnalyse";
 
-export class PathFinder {
-
-    private map: Phaser.Tilemap;
+export class PathFinder
+{
+    private mapAnalyse: MapAnalyse;
     private easystar;
 
-    constructor(map: Phaser.Tilemap, acceptableTiles: Array<number>)
+    constructor(mapAnalyse: MapAnalyse)
     {
-        this.map = map;
+        this.mapAnalyse = mapAnalyse;
+        const tiles = mapAnalyse.getTiles();
+        const acceptableTiles = mapAnalyse.getWalkableIndexes();
 
         // cf https://github.com/prettymuchbryce/easystarjs
         this.easystar = new EasyStar.js();
-        let mapData = map.layers[0].data;
         let grid = [];
-        for (let i = 0; i < mapData.length; i++) {
+        for (let i = 0; i < tiles.length; i++) {
             grid[i] = [];
-            for (let j = 0; j < mapData[i].length; j++) {
-                grid[i][j] = this.map.layers[0].data[i][j].index;
+            for (let j = 0; j < tiles[i].length; j++) {
+                grid[i][j] = tiles[i][j].index;
             }
         }
         this.easystar.setGrid(grid);
@@ -28,19 +32,57 @@ export class PathFinder {
         this.easystar.enableDiagonals();
     }
 
-    public findPath(startX: number, startY: number, endX: number, endY: number)
+    public findTilePositionPath(start: TilePosition, end: TilePosition): TilePositionPath
     {
         let foundPath = null;
         let pathCallback = function(path) {
             if (path === null) {
                 console.log("path not found");
             } else {
-                foundPath = new Path(path);
+                foundPath = new TilePositionPath(path);
             }
         };
-        this.easystar.findPath(startX, startY, endX, endY, pathCallback);
+        this.easystar.findPath(start.getX(), start.getY(), end.getX(), end.getY(), pathCallback);
         this.easystar.calculate();
 
         return foundPath;
+    }
+
+    public findPhaserPointPath(start: Phaser.Point, end: Phaser.Point): PhaserPointPath
+    {
+        let foundPath = this.findTilePositionPath(
+            this.convertToTilePosition(start),
+            this.convertToTilePosition(end)
+        );
+
+        if (foundPath) {
+            const points = new Array<Phaser.Point>();
+            const nodes = foundPath.getNodes();
+            for (let index = 0; index < nodes.length; index++) {
+                let point = this.convertToPhaserPoint(nodes[index]);
+                points.push(point);
+            }
+
+            return new PhaserPointPath(points);
+        }
+
+        return null;
+    }
+
+    private convertToTilePosition(point: Phaser.Point) :TilePosition
+    {
+        return new TilePosition(
+            Math.ceil(point.x / this.mapAnalyse.getTileSize()) - 1,
+            Math.ceil(point.y / this.mapAnalyse.getTileSize()) - 1
+        );
+    }
+
+    private convertToPhaserPoint(position: TilePosition) :Phaser.Point
+    {
+        // round to the center of the tile
+        return new Phaser.Point(
+            position.getX() * this.mapAnalyse.getTileSize() + this.mapAnalyse.getTileSize() / 2,
+            position.getY() * this.mapAnalyse.getTileSize() + this.mapAnalyse.getTileSize() / 2,
+        );
     }
 }

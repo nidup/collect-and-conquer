@@ -10,7 +10,7 @@ export class SeekBehavior
         this.host = host;
     }
 
-    public doSeek(target :Phaser.Point, slowingRadius :number = 0)
+    public seek(target :Phaser.Point, slowingRadius :number = 0)
     {
         // direction vector is the straight direction from the boid to the target
         const direction = new Phaser.Point(target.x, target.y);
@@ -21,7 +21,7 @@ export class SeekBehavior
 
         // Check the distance to detect whether the character is inside the slowing area
         const distance = this.host.getPosition().distance(target);
-        if (distance > slowingRadius) {
+        if (slowingRadius == 0 || distance > slowingRadius) {
             // time to set magnitude (length) to boid speed
             direction.setMagnitude(this.host.getMaxVelocity().x);
         } else {

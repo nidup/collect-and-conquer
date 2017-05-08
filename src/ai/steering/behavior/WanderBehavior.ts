@@ -12,7 +12,7 @@ export class WanderBehavior
         this.wanderAngle = 0;
     }
 
-    public doWander()
+    public wander()
     {
         const circleDistance = 50;
         const circleRadius = 50;

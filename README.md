@@ -61,7 +61,7 @@ We deploy online version directly from our Github repository with https://pages.
 
 ```
 git checkout gh-pages
-git rebase -i master
+git rebase master -i
 ```
 
 ## Build the bundle.js
@@ -73,6 +73,7 @@ docker exec -it phaserjs-ai-sandbox npm run build
 ## Commit then push the bundle.js
 
 ```
+git add build/bundle.js
 git commit
 git push
 ```
@@ -107,3 +108,17 @@ ls
 Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  src  tsconfig.json  webpack.config.js
 ```
 
+# Resources
+
+## Steering Behavior
+
+ - http://www.red3d.com/cwr/steer/
+ - https://gamedevelopment.tutsplus.com/series/understanding-steering-behaviors--gamedev-12732
+
+## Finite State Machine
+
+ - https://gamedevelopment.tutsplus.com/tutorials/finite-state-machines-theory-and-implementation--gamedev-11867
+
+## Assets
+
+ - http://lunar.lostgarden.com/game_HardVacuum.htm

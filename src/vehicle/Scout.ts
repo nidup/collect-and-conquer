@@ -38,17 +38,9 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
         this.brain.pushState(this.wander);
     }
 
-    private target: Phaser.Point = new Phaser.Point(600, 450);
-
     public update ()
     {
         this.brain.update();
-
-        /*
-        if (this.state === 'seek') {
-            this.behavior.seek(this.target, 150);
-        }*/
-
 
         this.behavior.compute();
 
@@ -72,6 +64,7 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
 
         } else {
             this.behavior.wander();
+            this.behavior.avoidCollision(this.body);
         }
     }
 
@@ -79,6 +72,8 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
     {
         const enemy = this.closestEnemy();
         if (enemy !== null) {
+            // TODO: flee makes something more natural when pursuing!
+            // TODO: sometimes both bot and enemy does not move anymore!
             this.behavior.evading(enemy);
         } else {
             this.brain.popState();

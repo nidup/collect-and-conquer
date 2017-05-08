@@ -16,7 +16,7 @@ export class EvadingBehavior
         this.fleeBehavior = fleeBehavior;
     }
 
-    public doEvading(target :Boid)
+    public evading(target :Boid)
     {
         let distance = this.host.getPosition().distance(target.getPosition());
         let updatesAhead = distance / target.getMaxVelocity().x;
@@ -27,6 +27,6 @@ export class EvadingBehavior
             target.getVelocity().y * updatesAhead
         );
 
-        return this.fleeBehavior.doFlee(futurePosition);
+        return this.fleeBehavior.flee(futurePosition);
     }
 }

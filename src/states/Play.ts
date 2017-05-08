@@ -1,10 +1,10 @@
 
 import {Builder} from "../vehicle/Builder";
-import {PathFinder} from "../ai/path/PathFinder";
 import {MapAnalyser} from "../ai/map/MapAnalyser";
 import {Scout} from "../vehicle/Scout";
 import {BotRepository} from "../vehicle/BotRepository";
 import {Tank} from "../vehicle/Tank";
+import {Miner} from "../vehicle/Miner";
 
 export default class Play extends Phaser.State {
 
@@ -20,25 +20,27 @@ export default class Play extends Phaser.State {
         }
         this.game.stage.backgroundColor = '#000000';
 
+        const tileSize = 20;
+        const tileSpacing = 20;
         this.map = this.game.add.tilemap('level1');
-        this.map.addTilesetImage('GrasClif', 'GrasClif', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grass', 'Grass', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grass2', 'Grass2', 20, 20, 0, 20);
-        this.map.addTilesetImage('GrasRoad', 'GrasRoad', 20, 20, 0, 20);
-        this.map.addTilesetImage('GrassRDst', 'GrassRDst', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2CrtB', 'Grs2CrtB', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2Crtc', 'Grs2Crtc', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2Crtr', 'Grs2Crtr', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2Watr', 'Grs2Watr', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grss2Lav', 'Grss2Lav', 20, 20, 0, 20);
-        this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', 20, 20, 0, 20);
-        this.map.addTilesetImage('GrssMisc', 'GrssMisc', 20, 20, 0, 20);
+        this.map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grass', 'Grass', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grass2', 'Grass2', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('GrasRoad', 'GrasRoad', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('GrassRDst', 'GrassRDst', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2CrtB', 'Grs2CrtB', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2Crtc', 'Grs2Crtc', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2Crtr', 'Grs2Crtr', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2Watr', 'Grs2Watr', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grss2Lav', 'Grss2Lav', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing);
 
-        const analyser = new MapAnalyser();
-        const analyse = analyser.analyse();
 
-        this.map.setCollision(analyse.getUnwalkableIndexes());
+        const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
+        const mapAnalyse = analyser.analyse();
+        this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
 
         this.layer = this.map.createLayer('Tile Layer 1');
         if (this.debug) {
@@ -46,29 +48,29 @@ export default class Play extends Phaser.State {
         }
         this.layer.resizeWorld();
 
-        const pathfinder = new PathFinder(this.map, analyse.getWalkableIndexes());
-
         this.game.physics.arcade.gravity.y = 350;
 
         this.bots = new BotRepository();
         this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
         this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));
-        this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, pathfinder));
-        this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, pathfinder));
-        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, pathfinder));
+        this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse));
+        this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse));
+        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));
         this.bots.add(new Tank(this.game, 300, 340, 'Tank5', 0, this.bots));
+        this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0));
 
         this.game.camera.follow(this.bots.get(5));
     }
 
     public update()
     {
-        /*
         if (this.game.input.mousePointer.isDown) {
-            for (let i = 0; i < this.vehicles.length; i++) {
-//                this.vehicles[i].changePath(this.game.input.x, this.game.input.y);
+            for (let i = 0; i < this.bots.length(); i++) {
+                if (this.bots.get(i) instanceof Builder) {
+                    (<Builder>this.bots.get(i)).changePath(new Phaser.Point(this.game.input.x, this.game.input.y));
+                }
             }
-        }*/
+        }
 
         for (let i = 0; i < this.bots.length(); i++) {
             this.game.physics.arcade.collide(this.bots.get(i), this.layer); // TODO: vehicles block easily when moving
@@ -82,8 +84,8 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            this.game.debug.body(this.bots.get(5));
-            this.game.debug.bodyInfo(this.bots.get(5), 20, 20);
+            this.game.debug.body(this.bots.get(1));
+            this.game.debug.bodyInfo(this.bots.get(1), 20, 20);
             /*for (let i = 0; i < this.bots.length(); i++) {
                 this.game.debug.body(this.bots.get(i));
             }*/
