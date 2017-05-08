@@ -1,7 +1,7 @@
 {
-  "name": "nidup-phaserjs",
+  "name": "nidup-phaserjs-ai-sandbox",
   "version": "1.0.0",
-  "description": "Lil' game created with phaser + typescript",
+  "description": "AI sandbox using phaserjs + typescript + web pack server",
   "main": "index.html",
   "scripts": {
     "dev": "webpack-dev-server --watch --content-base . -d --progress --host=0.0.0.0",
@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nidup/phaserjs-ai-poc"
+    "url": "https://github.com/nidup/phaserjs-ai-sandbox"
   },
   "author": "Nicolas <nicolas@akeneo.com>",
   "license": "MIT",
-  "homepage": "https://github.com/nidup/phaserjs-ai-poc",
+  "homepage": "https://github.com/nidup/phaserjs-ai-sandbox",
   "devDependencies": {
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2",
