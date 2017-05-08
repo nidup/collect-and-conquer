@@ -61,7 +61,7 @@ We deploy online version directly from our Github repository with https://pages.
 
 ```
 git checkout gh-pages
-git rebase -i master
+git rebase master -i
 ```
 
 ## Build the bundle.js
@@ -73,6 +73,7 @@ docker exec -it phaserjs-ai-sandbox npm run build
 ## Commit then push the bundle.js
 
 ```
+git add build/bundle.js
 git commit
 git push
 ```
