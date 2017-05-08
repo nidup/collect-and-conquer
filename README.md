@@ -1,10 +1,10 @@
-# PhaserJs AI POC
+# AI Sandbox
 
-TODO
+Playing with steering behaviors, stacked FSM and A* path finding.
 
 # Demo
 
-TODO
+https://nidup.github.io/phaserjs-ai-poc/
 
 # Getting Started
 
@@ -14,70 +14,87 @@ You need to have `docker` installed
 
 ## Build the dev image
 
-Run,
 ```
 docker build -t nidup/phaserjs .
 ```
 
-Your image should appears in list when typing,
+Your image should appears in the list when typing,
 ```
 docker images
 ```
 
 ## Run the dev image
 
-Run to mount local code inside the container and bind ports
+Run to mount local project code inside the container and bind ports
 ```
 docker run --name phaserjs -v "$PWD":/usr/src/app -p 8080:8080 -d nidup/phaserjs
 ```
 
-Your container should appears in list when typing,
+Your container should appears in the list when typing,
 ```
 docker ps
 ```
 
 ## Install / update project dependencies
 
-Run,
 ```
 docker exec -it phaserjs npm install
 ```
 
-### Running the project in dev mode:
+## Running the project in dev mode:
 
-Run,
+Launch webpack server in watch mode,
 ```
 docker exec -it phaserjs npm run dev
 ```
 
-### Access to your project
-
-Npm run dev running will launch webpack in watch mode, you can access your project in your browser at the following url,
+You can access your project in your browser,
 ```
 http://localhost:8080/
 ```
 
-## Build the bundle.js to prepare prod mode deploy
+# Deploy in production
 
-Run,
+We deploy online version directly from our Github repository with https://pages.github.com/
+
+## Checkout the gh-page and rebase master on
+
+```
+git checkout gh-pages
+git rebase -i master
+```
+
+## Build the bundle.js
+
 ```
 docker exec -it phaserjs npm run build
 ```
 
-Then deploy the index.html + lib/phaser.js + build/bundle.js on the server of your choice.
+## Commit then push the bundle.js
 
-For this project, i deploy on github gh-pages branch commiting the bundle.js file on this branch.
+```
+git commit
+git push
+```
 
+## Check the deployment
 
-## Troubleshooting
+The game is available on the following website,
+```
+https://nidup.github.io/phaserjs-ai-poc/
+```
 
-### Conflict. The container name "/phaserjs" is already in use by container
+# Troubleshooting
+
+## Conflict. The container name "/phaserjs" is already in use by container
 
 ```
 docker rm phaserjs
 ```
 
-### Connect in bash to the dev image
+# Utils
+
+## Connect in bash to the dev image
 
 Run,
 ```
@@ -86,7 +103,7 @@ docker exec -it phaserjs bash
 
 Your local files should be mounted in the container,
 ```
-root@91f762a14068:/usr/src/app# ls
+ls
 Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  src  tsconfig.json  webpack.config.js
 ```
 
