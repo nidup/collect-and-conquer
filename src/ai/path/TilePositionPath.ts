@@ -8,11 +8,11 @@ export class TilePositionPath {
 
     private nodes: Array<TilePosition>;
 
-    constructor (nodes)
+    constructor (rawPositions)
     {
         this.nodes = [];
-        for (let i = 0; i < nodes.length; i++) {
-            this.nodes[i] = new TilePosition(nodes[i].x, nodes[i].y)
+        for (let i = 0; i < rawPositions.length; i++) {
+            this.nodes[i] = new TilePosition(rawPositions[i].x, rawPositions[i].y)
 
         }
     }
@@ -29,5 +29,10 @@ export class TilePositionPath {
     public length() : number
     {
         return this.nodes.length;
+    }
+
+    public getNodes() : Array<TilePosition>
+    {
+        return this.nodes;
     }
 }

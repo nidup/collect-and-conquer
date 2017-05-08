@@ -60,33 +60,9 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
                 )
             );
     }
-/*
-    public changePath(targetX: number, targetY: number)
-    {
-        const position = this.getPositionOnMap();
-        const startX = position.getX();
-        const startY = position.getY();
-        const endX = Math.ceil(targetX / 20) - 1;
-        const endY = Math.ceil(targetY / 20) - 1;
-
-        const path = this.pathfinder.findPath(startX, startY, endX, endY);
-        if (path != null) {
-            this.currentPath = path;
-            this.target = this.currentPath.shift();
-        }
-    }*/
-
-    /*
-     getPositionOnMap()
-     {
-     return new Position(Math.ceil(this.x / 20) - 1, Math.ceil(this.y / 20) - 1);
-     }*/
 
     public pathFollowing = () =>
     {
-/*        if (this.path == null) {
-
-        }*/
 
         //this.behavior.pathFollowing(new Phaser.Point(800, 300));
     }

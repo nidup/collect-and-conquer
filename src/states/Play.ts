@@ -49,8 +49,12 @@ export default class Play extends Phaser.State {
         this.layer.resizeWorld();
 
         const pathfinder = new PathFinder(this.map.layers[0].data, analyse.getWalkableIndexes());
-        const path = pathfinder.findTilePositionPath(new TilePosition(10, 10), new TilePosition(20, 20));
+        const path = pathfinder.findTilePositionPath(new TilePosition(16, 18), new TilePosition(39, 14));
         console.log(path);
+
+        const pointpath = pathfinder.findPhaserPointPath(new Phaser.Point(330, 370), new Phaser.Point(800, 300));
+        console.log(pointpath);
+
 
         this.game.physics.arcade.gravity.y = 350;
 

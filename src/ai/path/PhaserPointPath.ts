@@ -3,9 +3,9 @@ export class PhaserPointPath
 {
     private nodes :Phaser.Point[];
 
-    public constructor()
+    public constructor(nodes: Phaser.Point[] = [])
     {
-        this.nodes = [];
+        this.nodes = nodes;
     }
 
     public getNodes() :Phaser.Point[]
