@@ -5,12 +5,15 @@ import {Position} from "../ai/path/Position";
 import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
+import {StackFSM} from "../ai/fsm/StackFSM";
 
 export class Builder extends Phaser.Sprite implements Boid, Bot
 {
     public body: Phaser.Physics.Arcade.Body;
 
-    private steeringComputer: SteeringComputer;
+    private behavior: SteeringComputer;
+    private brain: StackFSM;
+
     private pathfinder: PathFinder;
     private currentPath: Path = null;
     private target: Position = null;
@@ -36,13 +39,16 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
         this.pathfinder = pathfinder;
         game.add.existing(this);
 
-        this.steeringComputer = new SteeringComputer(this);
+        this.behavior = new SteeringComputer(this);
+        this.brain = new StackFSM();
+        this.brain.pushState(this.wander);
     }
 
     public update ()
     {
-        this.steeringComputer.wander();
-        this.steeringComputer.compute();
+        this.brain.update();
+
+        this.behavior.compute();
 
         /*
         const positionOnMap = this.getPositionOnMap();
@@ -56,16 +62,16 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
         }
 
         if (!this.target) {
-            this.steeringComputer.wander();
-            this.steeringComputer.compute();
+            this.behavior.wander();
+            this.behavior.compute();
 
         } else {
             const targetX = this.target.getX() * 20;
             const targetY = this.target.getY() * 20;
             const finalDestination = new Phaser.Point(targetX, targetY);
 
-            this.steeringComputer.seek(finalDestination, 80);
-            this.steeringComputer.compute();
+            this.behavior.seek(finalDestination, 80);
+            this.behavior.compute();
 
             if (this.position.distance(finalDestination) < 20){
                 this.currentPath = null;
@@ -107,6 +113,11 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
             this.currentPath = path;
             this.target = this.currentPath.shift();
         }
+    }
+
+    public wander = () =>
+    {
+        this.behavior.wander();
     }
 
     getVelocity(): Phaser.Point {

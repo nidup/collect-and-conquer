@@ -79,6 +79,8 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
     {
         const enemy = this.closestEnemy();
         if (enemy !== null) {
+            // TODO: flee makes something more natural when pursuing!
+            // TODO: sometimes both bot and enemy does not move anymore!
             this.behavior.evading(enemy);
         } else {
             this.brain.popState();
