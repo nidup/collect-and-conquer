@@ -8,6 +8,7 @@ import {EvadingBehavior} from "./behavior/EvadingBehavior";
 import {PathFollowingBehavior} from "./behavior/PathFollowingBehavior";
 import {PhaserPointPath} from "../path/PhaserPointPath";
 import {PathPatrollingBehavior} from "./behavior/PathPatrollingBehavior";
+import {CollisionAvoidanceBehavior} from "./behavior/CollisionAvoidanceBehavior";
 
 /**
  * Inspired by following posts
@@ -27,6 +28,7 @@ export class SteeringComputer
     private evadingBehavior: EvadingBehavior;
     private pathFollowingBehavior: PathFollowingBehavior;
     private pathPatrollingBehavior: PathPatrollingBehavior;
+    private collisionAvoidanceBehavior: CollisionAvoidanceBehavior;
 
     constructor(host: Boid)
     {
@@ -39,6 +41,7 @@ export class SteeringComputer
         this.evadingBehavior = new EvadingBehavior(host, this.fleeBehavior);
         this.pathFollowingBehavior = new PathFollowingBehavior(host, this.seekBehavior);
         this.pathPatrollingBehavior = new PathPatrollingBehavior(host, this.seekBehavior);
+        this.collisionAvoidanceBehavior = new CollisionAvoidanceBehavior(host);
     }
 
     public seek(target: Phaser.Point, slowingRadius :number = 20) :void
@@ -80,6 +83,12 @@ export class SteeringComputer
     public pathPatrolling(path: PhaserPointPath, slowingRadius :number = 20) :void
     {
         const force = this.pathPatrollingBehavior.patrolPath(path, slowingRadius);
+        this.steering.add(force.x, force.y);
+    }
+
+    public avoidCollision(body: Phaser.Physics.Arcade.Body) :void
+    {
+        const force = this.collisionAvoidanceBehavior.avoidCollision(body);
         this.steering.add(force.x, force.y);
     }
 

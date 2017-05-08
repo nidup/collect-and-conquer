@@ -83,8 +83,8 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            this.game.debug.body(this.bots.get(4));
-            this.game.debug.bodyInfo(this.bots.get(4), 20, 20);
+            this.game.debug.body(this.bots.get(1));
+            this.game.debug.bodyInfo(this.bots.get(1), 20, 20);
             /*for (let i = 0; i < this.bots.length(); i++) {
                 this.game.debug.body(this.bots.get(i));
             }*/
