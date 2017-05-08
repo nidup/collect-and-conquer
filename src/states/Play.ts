@@ -4,6 +4,7 @@ import {MapAnalyser} from "../ai/map/MapAnalyser";
 import {Scout} from "../vehicle/Scout";
 import {BotRepository} from "../vehicle/BotRepository";
 import {Tank} from "../vehicle/Tank";
+import {Miner} from "../vehicle/Miner";
 
 export default class Play extends Phaser.State {
 
@@ -56,6 +57,7 @@ export default class Play extends Phaser.State {
         //this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0));
         //this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0));
         this.bots.add(new Tank(this.game, 300, 340, 'Tank5', 0, this.bots));
+        this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0));
 
         this.game.camera.follow(this.bots.get(5));
     }
@@ -81,8 +83,8 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            this.game.debug.body(this.bots.get(2));
-            this.game.debug.bodyInfo(this.bots.get(2), 20, 20);
+            this.game.debug.body(this.bots.get(4));
+            this.game.debug.bodyInfo(this.bots.get(4), 20, 20);
             /*for (let i = 0; i < this.bots.length(); i++) {
                 this.game.debug.body(this.bots.get(i));
             }*/
