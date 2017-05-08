@@ -19,23 +19,25 @@ export default class Play extends Phaser.State {
         }
         this.game.stage.backgroundColor = '#000000';
 
+        const tileSize = 20;
+        const tileSpacing = 20;
         this.map = this.game.add.tilemap('level1');
-        this.map.addTilesetImage('GrasClif', 'GrasClif', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grass', 'Grass', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grass2', 'Grass2', 20, 20, 0, 20);
-        this.map.addTilesetImage('GrasRoad', 'GrasRoad', 20, 20, 0, 20);
-        this.map.addTilesetImage('GrassRDst', 'GrassRDst', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2CrtB', 'Grs2CrtB', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2Crtc', 'Grs2Crtc', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2Crtr', 'Grs2Crtr', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grs2Watr', 'Grs2Watr', 20, 20, 0, 20);
-        this.map.addTilesetImage('Grss2Lav', 'Grss2Lav', 20, 20, 0, 20);
-        this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', 20, 20, 0, 20);
-        this.map.addTilesetImage('GrssMisc', 'GrssMisc', 20, 20, 0, 20);
+        this.map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grass', 'Grass', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grass2', 'Grass2', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('GrasRoad', 'GrasRoad', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('GrassRDst', 'GrassRDst', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2CrtB', 'Grs2CrtB', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2Crtc', 'Grs2Crtc', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2Crtr', 'Grs2Crtr', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grs2Watr', 'Grs2Watr', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('Grss2Lav', 'Grss2Lav', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing);
+        this.map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing);
 
 
-        const analyser = new MapAnalyser(this.map.layers[0].data);
+        const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
         const mapAnalyse = analyser.analyse();
         this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
 

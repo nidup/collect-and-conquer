@@ -4,10 +4,12 @@ import {MapAnalyse} from "./MapAnalyse";
 export class MapAnalyser
 {
     private tiles: Array<Array<Phaser.Tile>>;
+    private tileSize: number;
 
-    public constructor (tiles: Array<Array<Phaser.Tile>>)
+    public constructor (tiles: Array<Array<Phaser.Tile>>, tileSize: number)
     {
         this.tiles = tiles;
+        this.tileSize = tileSize;
     }
 
     public analyse ()
@@ -30,6 +32,6 @@ export class MapAnalyser
         }
         walkable = walkable.filter(x => unwalkable.indexOf(x) == -1);
 
-        return new MapAnalyse(this.tiles, walkable, unwalkable);
+        return new MapAnalyse(this.tiles, this.tileSize, walkable, unwalkable);
     }
 }

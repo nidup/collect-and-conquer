@@ -8,12 +8,12 @@ import {MapAnalyse} from "../map/MapAnalyse";
 
 export class PathFinder
 {
-    private static TILE_SIZE: number = 20;
     private mapAnalyse: MapAnalyse;
     private easystar;
 
     constructor(mapAnalyse: MapAnalyse)
     {
+        this.mapAnalyse = mapAnalyse;
         const tiles = mapAnalyse.getTiles();
         const acceptableTiles = mapAnalyse.getWalkableIndexes();
 
@@ -72,8 +72,8 @@ export class PathFinder
     private convertToTilePosition(point: Phaser.Point) :TilePosition
     {
         return new TilePosition(
-            Math.ceil(point.x / PathFinder.TILE_SIZE) - 1,
-            Math.ceil(point.y / PathFinder.TILE_SIZE) - 1
+            Math.ceil(point.x / this.mapAnalyse.getTileSize()) - 1,
+            Math.ceil(point.y / this.mapAnalyse.getTileSize()) - 1
         );
     }
 
@@ -81,8 +81,8 @@ export class PathFinder
     {
         // round to the center of the tile
         return new Phaser.Point(
-            position.getX() * PathFinder.TILE_SIZE + PathFinder.TILE_SIZE / 2,
-            position.getY() * PathFinder.TILE_SIZE + PathFinder.TILE_SIZE / 2,
+            position.getX() * this.mapAnalyse.getTileSize() + this.mapAnalyse.getTileSize() / 2,
+            position.getY() * this.mapAnalyse.getTileSize() + this.mapAnalyse.getTileSize() / 2,
         );
     }
 }
