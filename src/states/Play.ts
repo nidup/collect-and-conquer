@@ -11,7 +11,7 @@ export default class Play extends Phaser.State {
     private bots: BotRepository;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
-    private debug: boolean = true;
+    private debug: boolean = false;
 
     public create()
     {
@@ -84,11 +84,11 @@ export default class Play extends Phaser.State {
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            this.game.debug.body(this.bots.get(1));
-            this.game.debug.bodyInfo(this.bots.get(1), 20, 20);
-            /*for (let i = 0; i < this.bots.length(); i++) {
+            //this.game.debug.body(this.bots.get(1));
+            //this.game.debug.bodyInfo(this.bots.get(1), 20, 20);
+            for (let i = 0; i < this.bots.length(); i++) {
                 this.game.debug.body(this.bots.get(i));
-            }*/
+            }
 
             this.game.debug.text(
                 "FPS: "  + this.game.time.fps + " ",
