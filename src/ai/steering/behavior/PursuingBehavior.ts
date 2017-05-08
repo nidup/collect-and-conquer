@@ -16,7 +16,7 @@ export class PursuingBehavior
         this.seekBehavior = seekBehavior;
     }
 
-    public doPursuing(target :Boid)
+    public pursuing(target :Boid)
     {
         let distance = this.host.getPosition().distance(target.getPosition());
         let updatesAhead = distance / target.getMaxVelocity().x;
@@ -27,6 +27,6 @@ export class PursuingBehavior
             target.getVelocity().y * updatesAhead
         );
 
-        return this.seekBehavior.doSeek(futurePosition);
+        return this.seekBehavior.seek(futurePosition);
     }
 }

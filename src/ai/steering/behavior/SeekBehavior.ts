@@ -10,7 +10,7 @@ export class SeekBehavior
         this.host = host;
     }
 
-    public doSeek(target :Phaser.Point, slowingRadius :number = 0)
+    public seek(target :Phaser.Point, slowingRadius :number = 0)
     {
         // direction vector is the straight direction from the boid to the target
         const direction = new Phaser.Point(target.x, target.y);

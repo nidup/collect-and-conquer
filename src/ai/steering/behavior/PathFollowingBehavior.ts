@@ -40,6 +40,6 @@ export class PathFollowingBehavior
             }
         }
 
-        return target != null ? this.seekBehavior.doSeek(target, slowingRadius) : new Phaser.Point(0, 0);
+        return target != null ? this.seekBehavior.seek(target, slowingRadius) : new Phaser.Point(0, 0);
     }
 }

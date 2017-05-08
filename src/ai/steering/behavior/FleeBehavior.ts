@@ -15,7 +15,7 @@ export class FleeBehavior
      * @param target
      * @returns {Phaser.Point}
      */
-    public doFlee(target :Phaser.Point)
+    public flee(target :Phaser.Point)
     {
         // direction vector is the straight direction from the target to the boid
         const force = new Phaser.Point(this.host.getPosition().x, this.host.getPosition().y);

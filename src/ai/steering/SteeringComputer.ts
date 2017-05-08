@@ -40,31 +40,31 @@ export class SteeringComputer
 
     public seek(target: Phaser.Point, slowingRadius :number = 20) :void
     {
-        const force = this.seekBehavior.doSeek(target, slowingRadius);
+        const force = this.seekBehavior.seek(target, slowingRadius);
         this.steering.add(force.x, force.y);
     }
 
     public wander() :void
     {
-        const force = this.wanderBehavior.doWander();
+        const force = this.wanderBehavior.wander();
         this.steering.add(force.x, force.y);
     }
 
     public flee(target: Phaser.Point) :void
     {
-        const force = this.fleeBehavior.doFlee(target);
+        const force = this.fleeBehavior.flee(target);
         this.steering.add(force.x, force.y);
     }
 
     public pursuing(target: Boid) :void
     {
-        const force = this.pursuingBehavior.doPursuing(target);
+        const force = this.pursuingBehavior.pursuing(target);
         this.steering.add(force.x, force.y);
     }
 
     public evading(target: Boid) :void
     {
-        const force = this.evadingBehavior.doEvading(target);
+        const force = this.evadingBehavior.evading(target);
         this.steering.add(force.x, force.y);
     }
 
