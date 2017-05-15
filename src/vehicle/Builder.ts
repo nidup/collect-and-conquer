@@ -5,6 +5,7 @@ import {StackFSM} from "../ai/fsm/StackFSM";
 import {MapAnalyse} from "../ai/map/MapAnalyse";
 import {PathFinder} from "../ai/path/PathFinder";
 import {PhaserPointPath} from "../ai/path/PhaserPointPath";
+import {State} from "../ai/fsm/State";
 
 export class Builder extends Bot
 {
@@ -42,7 +43,7 @@ export class Builder extends Bot
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
 
         this.brain = new StackFSM();
-        this.brain.pushState(this.pathFollowing);
+        this.brain.pushState(new State('path following', this.pathFollowing));
 
         var style = {font: "carrier-command", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle"};
         this.stateText = this.game.add.text(this.x, this.y - 20, '', style);
@@ -67,12 +68,7 @@ export class Builder extends Bot
                 )
             );
 
-        if (this.brain.getCurrentState() == this.wander) {
-            this.stateText.setText('wander');
-        } else {
-            this.stateText.setText('path following');
-        }
-
+        this.stateText.setText(this.brain.getCurrentState().getName());
         this.game.physics.arcade.moveToXY(this.stateText, this.body.x, this.body.y -20);
     }
 
@@ -93,7 +89,7 @@ export class Builder extends Bot
         } else {
             this.path = null;
             this.brain.popState();
-            this.brain.pushState(this.wander);
+            this.brain.pushState(new State('wander', this.wander));
         }
     }
 
@@ -104,7 +100,7 @@ export class Builder extends Bot
             this.behavior.avoidCollision(this.body);
         } else {
             this.brain.popState();
-            this.brain.pushState(this.pathFollowing);
+            this.brain.pushState(new State('path following', this.pathFollowing));
         }
     }
 }

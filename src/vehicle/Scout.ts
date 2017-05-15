@@ -4,6 +4,7 @@ import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {BotRepository} from "./BotRepository";
 import {StackFSM} from "../ai/fsm/StackFSM";
+import {State} from "../ai/fsm/State";
 
 export class Scout extends Bot
 {
@@ -33,14 +34,14 @@ export class Scout extends Bot
         this.repository = bots;
         this.behavior = new SteeringComputer(this);
         this.brain = new StackFSM();
-        this.brain.pushState(this.wander);
+        this.brain.pushState(new State('wander', this.wander));
     }
 
     public wander = () =>
     {
         const enemy = this.closestEnemy();
         if (enemy !== null) {
-            this.brain.pushState(this.evading);
+            this.brain.pushState(new State('evading', this.evading));
 
         } else {
             this.behavior.wander();

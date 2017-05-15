@@ -3,6 +3,7 @@ import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {StackFSM} from "../ai/fsm/StackFSM";
 import {PhaserPointPath} from "../ai/path/PhaserPointPath";
+import {State} from "../ai/fsm/State";
 
 export class Miner extends Bot
 {
@@ -40,7 +41,7 @@ export class Miner extends Bot
             ]);
 
         this.brain = new StackFSM();
-        this.brain.pushState(this.pathPatrolling);
+        this.brain.pushState(new State('path patrolling', this.pathPatrolling));
     }
 
     public pathPatrolling = () =>
@@ -50,7 +51,7 @@ export class Miner extends Bot
         } else {
             this.path = null;
             this.brain.popState();
-            this.brain.pushState(this.wander);
+            this.brain.pushState(new State('wander', this.wander));
         }
     }
 
