@@ -3,11 +3,13 @@ export class State
 {
     private name: string;
     private func: Function;
+    private color: string;
 
-    constructor(name: string, func: Function)
+    constructor(name: string, func: Function, color: string = '#ffffff')
     {
         this.name = name;
         this.func = func;
+        this.color = color;
     }
 
     public getName() :string
@@ -18,5 +20,10 @@ export class State
     public getFunc() :Function
     {
         return this.func;
+    }
+
+    public getColor() :string
+    {
+        return this.color;
     }
 }

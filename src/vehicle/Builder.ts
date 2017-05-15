@@ -43,11 +43,9 @@ export class Builder extends Bot
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
 
         this.brain = new StackFSM();
-        this.brain.pushState(new State('path following', this.pathFollowing));
+        this.brain.pushState(new State('path following', this.pathFollowing, '#00FF00'));
 
-        var style = {font: "carrier-command", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle"};
-        this.stateText = this.game.add.text(this.x, this.y - 20, '', style);
-        this.stateText.setShadow(1, 1, 'rgba(0,0,0,0.5)', 2);
+        this.stateText = this.game.add.text(this.x, this.y - 20, '', {});
         game.physics.enable(this.stateText, Phaser.Physics.ARCADE);
     }
 
@@ -69,6 +67,8 @@ export class Builder extends Bot
             );
 
         this.stateText.setText(this.brain.getCurrentState().getName());
+        const style = {font: "carrier-command", fill: this.brain.getCurrentState().getColor(), boundsAlignH: "center", boundsAlignV: "top"};
+        this.stateText.setStyle(style);
         this.game.physics.arcade.moveToXY(this.stateText, this.body.x, this.body.y -20);
     }
 
@@ -89,7 +89,7 @@ export class Builder extends Bot
         } else {
             this.path = null;
             this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.brain.pushState(new State('wander', this.wander, '#0000FF'));
         }
     }
 
@@ -100,7 +100,7 @@ export class Builder extends Bot
             this.behavior.avoidCollision(this.body);
         } else {
             this.brain.popState();
-            this.brain.pushState(new State('path following', this.pathFollowing));
+            this.brain.pushState(new State('path following', this.pathFollowing, '#00FF00'));
         }
     }
 }
