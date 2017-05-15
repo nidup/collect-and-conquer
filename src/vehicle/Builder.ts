@@ -23,8 +23,6 @@ export class Builder extends Bot
     {
         super(game, x, y, key, frame);
 
-        // TODO: offset to compensate the path finding coordinates
-
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 

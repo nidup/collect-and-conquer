@@ -12,17 +12,20 @@ export abstract class Bot extends Phaser.Sprite implements Boid
     {
         this.brain.update();
         this.behavior.compute();
+        this.updateAngle();
+    }
 
-        // TODO: could be put back in steering computer?
+    updateAngle()
+    {
         this.angle = 180 + Phaser.Math.radToDeg(
-                Phaser.Point.angle(
-                    this.getPosition(),
-                    new Phaser.Point(
-                        this.getPosition().x + this.getVelocity().x,
-                        this.getPosition().y + this.getVelocity().y
-                    )
+            Phaser.Point.angle(
+                this.getPosition(),
+                new Phaser.Point(
+                    this.getPosition().x + this.getVelocity().x,
+                    this.getPosition().y + this.getVelocity().y
                 )
-            );
+            )
+        );
     }
 
     getVelocity(): Phaser.Point
