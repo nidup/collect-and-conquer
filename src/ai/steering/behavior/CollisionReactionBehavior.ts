@@ -1,7 +1,7 @@
 
 import {Boid} from "../Boid";
 
-export class CollisionAvoidanceBehavior
+export class CollisionReactionBehavior
 {
     private host: Boid;
     private wanderAngle: number;
@@ -12,7 +12,7 @@ export class CollisionAvoidanceBehavior
         this.wanderAngle = 0;
     }
 
-    public avoidCollision(body: Phaser.Physics.Arcade.Body)
+    public reactToCollision(body: Phaser.Physics.Arcade.Body)
     {
         const avoidForce = new Phaser.Point(0, 0);
         const force = 20;

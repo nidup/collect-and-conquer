@@ -61,6 +61,6 @@ export class Miner extends Bot
     public wander = () =>
     {
         this.behavior.wander();
-        this.behavior.avoidCollision(this.body);
+        this.behavior.reactToCollision(this.body);
     }
 }
