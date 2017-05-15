@@ -58,7 +58,8 @@ export class Scout extends Bot
         if (enemy !== null) {
             // TODO: flee makes something more natural when pursuing!
             // TODO: sometimes both bot and enemy does not move anymore!
-            this.behavior.evading(enemy);
+            //this.behavior.evading(enemy);
+            this.behavior.flee(enemy.getPosition());
         } else {
             this.brain.popState();
         }
