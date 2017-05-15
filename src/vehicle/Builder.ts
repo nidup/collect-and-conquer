@@ -9,8 +9,6 @@ import {PhaserPointPath} from "../ai/path/PhaserPointPath";
 
 export class Builder extends Phaser.Sprite implements Boid, Bot
 {
-    public body: Phaser.Physics.Arcade.Body;
-
     private behavior: SteeringComputer;
     private brain: StackFSM;
     private pathfinder: PathFinder;
@@ -18,6 +16,8 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
     private speed: number = 60;
 
     private path: PhaserPointPath;
+
+    private stateText: Phaser.Text;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
@@ -45,6 +45,11 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
 
         this.brain = new StackFSM();
         this.brain.pushState(this.pathFollowing);
+
+        var style = {font: "carrier-command", fill: "#ffffff", boundsAlignH: "center", boundsAlignV: "middle"};
+        this.stateText = this.game.add.text(this.x, this.y - 20, '', style);
+        this.stateText.setShadow(1, 1, 'rgba(0,0,0,0.5)', 2);
+        game.physics.enable(this.stateText, Phaser.Physics.ARCADE);
     }
 
     public update ()
@@ -63,6 +68,14 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
                     )
                 )
             );
+
+        if (this.brain.getCurrentState() == this.wander) {
+            this.stateText.setText('wander');
+        } else {
+            this.stateText.setText('path following');
+        }
+
+        this.game.physics.arcade.moveToXY(this.stateText, this.body.x, this.body.y -20);
     }
 
     // TODO: for debug purpose
