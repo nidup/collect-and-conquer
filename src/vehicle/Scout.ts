@@ -5,13 +5,11 @@ import {Bot} from "./Bot";
 import {BotRepository} from "./BotRepository";
 import {StackFSM} from "../ai/fsm/StackFSM";
 
-export class Scout extends Phaser.Sprite implements Boid, Bot
+export class Scout extends Bot
 {
     public body: Phaser.Physics.Arcade.Body;
 
     private repository: BotRepository;
-    private behavior: SteeringComputer;
-    private brain: StackFSM;
 
     private speed: number = 90;
     private scope: number = 100;
@@ -38,24 +36,6 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
         this.brain.pushState(this.wander);
     }
 
-    public update ()
-    {
-        this.brain.update();
-
-        this.behavior.compute();
-
-        // TODO: could be put back in steering computer?
-        this.angle = 180 + Phaser.Math.radToDeg(
-                Phaser.Point.angle(
-                    this.getPosition(),
-                    new Phaser.Point(
-                        this.getPosition().x + this.getVelocity().x,
-                        this.getPosition().y + this.getVelocity().y
-                    )
-                )
-            );
-    }
-
     public wander = () =>
     {
         const enemy = this.closestEnemy();
@@ -78,23 +58,6 @@ export class Scout extends Phaser.Sprite implements Boid, Bot
         } else {
             this.brain.popState();
         }
-    }
-
-    getVelocity(): Phaser.Point {
-        return this.body.velocity;
-    }
-
-    getMaxVelocity(): Phaser.Point {
-        return this.body.maxVelocity;
-    }
-
-    getPosition(): Phaser.Point
-    {
-        return this.body.position;
-    }
-
-    getMass(): number {
-        return this.body.mass;
     }
 
     private closestEnemy(): Boid|null

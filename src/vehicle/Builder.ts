@@ -1,5 +1,4 @@
 
-import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {StackFSM} from "../ai/fsm/StackFSM";
@@ -7,10 +6,11 @@ import {MapAnalyse} from "../ai/map/MapAnalyse";
 import {PathFinder} from "../ai/path/PathFinder";
 import {PhaserPointPath} from "../ai/path/PhaserPointPath";
 
-export class Builder extends Phaser.Sprite implements Boid, Bot
+export class Builder extends Bot
 {
-    private behavior: SteeringComputer;
-    private brain: StackFSM;
+    // TODO: should be changed by changing avoiding behavior
+    public body: Phaser.Physics.Arcade.Body;
+
     private pathfinder: PathFinder;
 
     private speed: number = 60;
@@ -108,22 +108,5 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
             this.brain.popState();
             this.brain.pushState(this.pathFollowing);
         }
-    }
-
-    getVelocity(): Phaser.Point {
-        return this.body.velocity;
-    }
-
-    getMaxVelocity(): Phaser.Point {
-        return this.body.maxVelocity;
-    }
-
-    getPosition(): Phaser.Point
-    {
-        return this.body.position;
-    }
-
-    getMass(): number {
-        return this.body.mass;
     }
 }
