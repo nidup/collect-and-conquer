@@ -6,6 +6,7 @@ import {MapAnalyse} from "../ai/map/MapAnalyse";
 import {PathFinder} from "../ai/path/PathFinder";
 import {PhaserPointPath} from "../ai/path/PhaserPointPath";
 import {State} from "../ai/fsm/State";
+import {BrainText} from "./BrainText";
 
 export class Builder extends Bot
 {
@@ -18,7 +19,7 @@ export class Builder extends Bot
 
     private path: PhaserPointPath;
 
-    private stateText: Phaser.Text;
+    private brainText: BrainText;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
@@ -43,10 +44,9 @@ export class Builder extends Bot
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
 
         this.brain = new StackFSM();
-        this.brain.pushState(new State('path following', this.pathFollowing, '#00FF00'));
+        this.brain.pushState(new State('path following', this.pathFollowing));
 
-        this.stateText = this.game.add.text(this.x, this.y - 20, '', {});
-        game.physics.enable(this.stateText, Phaser.Physics.ARCADE);
+        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     public update ()
@@ -66,10 +66,7 @@ export class Builder extends Bot
                 )
             );
 
-        this.stateText.setText(this.brain.getCurrentState().getName());
-        const style = {font: "carrier-command", fill: this.brain.getCurrentState().getColor(), boundsAlignH: "center", boundsAlignV: "top"};
-        this.stateText.setStyle(style);
-        this.game.physics.arcade.moveToXY(this.stateText, this.body.x, this.body.y -20);
+        this.brainText.update();
     }
 
     // TODO: for debug purpose
@@ -89,7 +86,7 @@ export class Builder extends Bot
         } else {
             this.path = null;
             this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander, '#0000FF'));
+            this.brain.pushState(new State('wander', this.wander));
         }
     }
 
@@ -100,7 +97,7 @@ export class Builder extends Bot
             this.behavior.avoidCollision(this.body);
         } else {
             this.brain.popState();
-            this.brain.pushState(new State('path following', this.pathFollowing, '#00FF00'));
+            this.brain.pushState(new State('path following', this.pathFollowing));
         }
     }
 }
