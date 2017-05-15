@@ -19,8 +19,6 @@ export class Builder extends Bot
 
     private path: PhaserPointPath;
 
-    private brainText: BrainText;
-
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
         super(game, x, y, key, frame);
@@ -47,26 +45,6 @@ export class Builder extends Bot
         this.brain.pushState(new State('path following', this.pathFollowing));
 
         this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
-    }
-
-    public update ()
-    {
-        this.brain.update();
-
-        this.behavior.compute();
-
-        // TODO: could be put back in steering computer?
-        this.angle = 180 + Phaser.Math.radToDeg(
-                Phaser.Point.angle(
-                    this.getPosition(),
-                    new Phaser.Point(
-                        this.getPosition().x + this.getVelocity().x,
-                        this.getPosition().y + this.getVelocity().y
-                    )
-                )
-            );
-
-        this.brainText.update();
     }
 
     // TODO: for debug purpose

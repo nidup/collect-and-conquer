@@ -7,8 +7,11 @@ export class BrainText extends Phaser.Text
     private bot: Bot;
     private brain: StackFSM;
     private stateColors: {} = {
-        'wander': '#0000FF',
-        'path following': '#00FF00'
+        'wander': '#93d9f4',
+        'path following': '#00cd00',
+        'patrolling': '#ee8400',
+        'pursuing': '#8a2be2',
+        'evading': '#ff4040'
     };
 
     constructor(game: Phaser.Game, x: number, y: number, text: string, style, bot: Bot, brain: StackFSM)
@@ -28,8 +31,8 @@ export class BrainText extends Phaser.Text
             color = '#FFFFFF';
         }
 
-        const style = {font: "carrier-command", fill: color, boundsAlignH: "center", boundsAlignV: "top"};
+        const style = {font: "12px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "top"};
         this.setStyle(style);
-        this.game.physics.arcade.moveToXY(this, this.bot.body.x, this.bot.body.y -20);
+        this.game.physics.arcade.moveToXY(this, this.bot.body.x, this.bot.body.y -20, this.bot.body.speed);
     }
 }

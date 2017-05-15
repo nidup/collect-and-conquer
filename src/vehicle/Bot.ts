@@ -2,17 +2,20 @@
 import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {StackFSM} from "../ai/fsm/StackFSM";
+import {BrainText} from "./BrainText";
 
 export abstract class Bot extends Phaser.Sprite implements Boid
 {
     protected behavior: SteeringComputer;
     protected brain: StackFSM;
+    protected brainText: BrainText;
 
     public update ()
     {
         this.brain.update();
         this.behavior.compute();
         this.updateAngle();
+        this.brainText.update();
     }
 
     updateAngle()

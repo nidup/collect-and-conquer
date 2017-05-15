@@ -4,6 +4,7 @@ import {Bot} from "./Bot";
 import {StackFSM} from "../ai/fsm/StackFSM";
 import {PhaserPointPath} from "../ai/path/PhaserPointPath";
 import {State} from "../ai/fsm/State";
+import {BrainText} from "./BrainText";
 
 export class Miner extends Bot
 {
@@ -41,7 +42,9 @@ export class Miner extends Bot
             ]);
 
         this.brain = new StackFSM();
-        this.brain.pushState(new State('path patrolling', this.pathPatrolling));
+        this.brain.pushState(new State('patrolling', this.pathPatrolling));
+
+        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     public pathPatrolling = () =>

@@ -5,6 +5,7 @@ import {Bot} from "./Bot";
 import {BotRepository} from "./BotRepository";
 import {StackFSM} from "../ai/fsm/StackFSM";
 import {State} from "../ai/fsm/State";
+import {BrainText} from "./BrainText";
 
 export class Scout extends Bot
 {
@@ -35,6 +36,8 @@ export class Scout extends Bot
         this.behavior = new SteeringComputer(this);
         this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
+
+        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     public wander = () =>
