@@ -1,16 +1,14 @@
 
-import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {StackFSM} from "../ai/fsm/StackFSM";
 import {PhaserPointPath} from "../ai/path/PhaserPointPath";
+import {State} from "../ai/fsm/State";
+import {BrainText} from "./BrainText";
 
-export class Miner extends Phaser.Sprite implements Boid, Bot
+export class Miner extends Bot
 {
     public body: Phaser.Physics.Arcade.Body;
-
-    private behavior: SteeringComputer;
-    private brain: StackFSM;
 
     private speed: number = 60;
 
@@ -44,25 +42,9 @@ export class Miner extends Phaser.Sprite implements Boid, Bot
             ]);
 
         this.brain = new StackFSM();
-        this.brain.pushState(this.pathPatrolling);
-    }
+        this.brain.pushState(new State('patrolling', this.pathPatrolling));
 
-    public update ()
-    {
-        this.brain.update();
-
-        this.behavior.compute();
-
-        // TODO: could be put back in steering computer?
-        this.angle = 180 + Phaser.Math.radToDeg(
-                Phaser.Point.angle(
-                    this.getPosition(),
-                    new Phaser.Point(
-                        this.getPosition().x + this.getVelocity().x,
-                        this.getPosition().y + this.getVelocity().y
-                    )
-                )
-            );
+        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     public pathPatrolling = () =>
@@ -72,30 +54,13 @@ export class Miner extends Phaser.Sprite implements Boid, Bot
         } else {
             this.path = null;
             this.brain.popState();
-            this.brain.pushState(this.wander);
+            this.brain.pushState(new State('wander', this.wander));
         }
     }
 
     public wander = () =>
     {
         this.behavior.wander();
-        this.behavior.avoidCollision(this.body);
-    }
-
-    getVelocity(): Phaser.Point {
-        return this.body.velocity;
-    }
-
-    getMaxVelocity(): Phaser.Point {
-        return this.body.maxVelocity;
-    }
-
-    getPosition(): Phaser.Point
-    {
-        return this.body.position;
-    }
-
-    getMass(): number {
-        return this.body.mass;
+        this.behavior.reactToCollision(this.body);
     }
 }

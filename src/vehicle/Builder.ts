@@ -1,18 +1,18 @@
 
-import {Boid} from "../ai/steering/Boid";
 import {SteeringComputer} from "../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {StackFSM} from "../ai/fsm/StackFSM";
 import {MapAnalyse} from "../ai/map/MapAnalyse";
 import {PathFinder} from "../ai/path/PathFinder";
 import {PhaserPointPath} from "../ai/path/PhaserPointPath";
+import {State} from "../ai/fsm/State";
+import {BrainText} from "./BrainText";
 
-export class Builder extends Phaser.Sprite implements Boid, Bot
+export class Builder extends Bot
 {
+    // TODO: should be changed by changing avoiding behavior
     public body: Phaser.Physics.Arcade.Body;
 
-    private behavior: SteeringComputer;
-    private brain: StackFSM;
     private pathfinder: PathFinder;
 
     private speed: number = 60;
@@ -22,8 +22,6 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
         super(game, x, y, key, frame);
-
-        // TODO: offset to compensate the path finding coordinates
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -44,25 +42,9 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
 
         this.brain = new StackFSM();
-        this.brain.pushState(this.pathFollowing);
-    }
+        this.brain.pushState(new State('path following', this.pathFollowing));
 
-    public update ()
-    {
-        this.brain.update();
-
-        this.behavior.compute();
-
-        // TODO: could be put back in steering computer?
-        this.angle = 180 + Phaser.Math.radToDeg(
-                Phaser.Point.angle(
-                    this.getPosition(),
-                    new Phaser.Point(
-                        this.getPosition().x + this.getVelocity().x,
-                        this.getPosition().y + this.getVelocity().y
-                    )
-                )
-            );
+        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     // TODO: for debug purpose
@@ -78,11 +60,11 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
     {
         if (this.path && this.getPosition().distance(this.path.lastNode()) > 20) {
             this.behavior.pathFollowing(this.path);
-            this.behavior.avoidCollision(this.body);
+            this.behavior.reactToCollision(this.body);
         } else {
             this.path = null;
             this.brain.popState();
-            this.brain.pushState(this.wander);
+            this.brain.pushState(new State('wander', this.wander));
         }
     }
 
@@ -90,27 +72,10 @@ export class Builder extends Phaser.Sprite implements Boid, Bot
     {
         if (this.path == null) {
             this.behavior.wander();
-            this.behavior.avoidCollision(this.body);
+            this.behavior.reactToCollision(this.body);
         } else {
             this.brain.popState();
-            this.brain.pushState(this.pathFollowing);
+            this.brain.pushState(new State('path following', this.pathFollowing));
         }
-    }
-
-    getVelocity(): Phaser.Point {
-        return this.body.velocity;
-    }
-
-    getMaxVelocity(): Phaser.Point {
-        return this.body.maxVelocity;
-    }
-
-    getPosition(): Phaser.Point
-    {
-        return this.body.position;
-    }
-
-    getMass(): number {
-        return this.body.mass;
     }
 }
