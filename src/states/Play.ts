@@ -5,9 +5,15 @@ import {Scout} from "../vehicle/Scout";
 import {BotRepository} from "../vehicle/BotRepository";
 import {Tank} from "../vehicle/Tank";
 import {Miner} from "../vehicle/Miner";
+import {BuildingRepository} from "../building/BuildingRepository";
+import {Base} from "../building/Base";
+import {Mine} from "../building/Mine";
+import {Generator} from "../building/Generator";
 
-export default class Play extends Phaser.State {
+export default class Play extends Phaser.State
+{
 
+    private buildings: BuildingRepository;
     private bots: BotRepository;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
@@ -37,7 +43,6 @@ export default class Play extends Phaser.State {
         this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing);
         this.map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing);
 
-
         const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
         const mapAnalyse = analyser.analyse();
         this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
@@ -49,6 +54,11 @@ export default class Play extends Phaser.State {
         this.layer.resizeWorld();
 
         this.game.physics.arcade.gravity.y = 350;
+
+        this.buildings = new BuildingRepository();
+        this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
+        this.buildings.add(new Mine(this.game, 800, 200, 'Mine', 0));
+        this.buildings.add(new Generator(this.game, 100, 200, 'Generator', 0));
 
         this.bots = new BotRepository();
         this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
