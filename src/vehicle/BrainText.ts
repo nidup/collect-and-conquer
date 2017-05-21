@@ -10,7 +10,7 @@ export class BrainText extends Phaser.Text
         'wander': '#93d9f4',
         'path following': '#00cd00',
         'patrolling': '#ee8400',
-        'pursuing': '#8a2be2',
+        'pursuing': '#2c23e2',
         'evading': '#ff4040'
     };
 
@@ -31,7 +31,7 @@ export class BrainText extends Phaser.Text
             color = '#FFFFFF';
         }
 
-        const style = {font: "12px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "top"};
+        const style = {font: "13px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "top"};
         this.setStyle(style);
         this.game.physics.arcade.moveToXY(this, this.bot.body.x, this.bot.body.y -20, this.bot.body.speed);
     }

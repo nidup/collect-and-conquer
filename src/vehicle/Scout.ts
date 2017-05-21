@@ -48,6 +48,7 @@ export class Scout extends Bot
 
         } else {
             this.behavior.wander();
+            //this.behavior.avoidCollision(this.body);
             this.behavior.reactToCollision(this.body);
         }
     }

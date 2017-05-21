@@ -4,12 +4,10 @@ import {Boid} from "../Boid";
 export class CollisionReactionBehavior
 {
     private host: Boid;
-    private wanderAngle: number;
 
     constructor (host: Boid)
     {
         this.host = host;
-        this.wanderAngle = 0;
     }
 
     public reactToCollision(body: Phaser.Physics.Arcade.Body)
