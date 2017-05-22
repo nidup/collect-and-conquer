@@ -57,16 +57,16 @@ export default class Play extends Phaser.State
 
         this.buildings = new BuildingRepository();
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
-        this.buildings.add(new Mine(this.game, 800, 200, 'Mine', 0));
+/*        this.buildings.add(new Mine(this.game, 800, 200, 'Mine', 0));
         this.buildings.add(new Generator(this.game, 100, 200, 'Generator', 0));
-
+*/
         this.bots = new BotRepository();
-        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
+/*        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
         this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));
         this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse));
         this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse));
-        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));
-        this.bots.add(new Tank(this.game, 300, 340, 'Tank5', 0, this.bots));
+        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));*/
+//        this.bots.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.bots));
         this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0));
 
         this.game.camera.follow(this.bots.get(5));
