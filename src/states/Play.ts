@@ -74,6 +74,8 @@ export default class Play extends Phaser.State
         this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));*/
 //        this.bots.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.bots));
         this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0, mapAnalyse, this.items, this.buildings, this.bots));
+        this.bots.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, this.items, this.buildings, this.bots));
+        this.bots.add(new Miner(this.game, 400, 100, 'Miner', 0, mapAnalyse, this.items, this.buildings, this.bots));
 
         this.game.camera.follow(this.bots.get(5));
     }

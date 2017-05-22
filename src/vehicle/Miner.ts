@@ -13,13 +13,14 @@ import {BuildingRepository} from "../building/BuildingRepository";
 import {BotRepository} from "./BotRepository";
 import {Mine} from "../building/Mine";
 import {Oil} from "../item/Oil";
+import {Base} from "../building/Base";
 
 export class Miner extends Bot
 {
     public body: Phaser.Physics.Arcade.Body;
 
     private speed: number = 60;
-    private scope: number = 400;
+    private scope: number = 200;
 
     private pathfinder: PathFinder;
     private path: PhaserPointPath;
@@ -87,14 +88,33 @@ export class Miner extends Bot
     public wander = () =>
     {
         const item = this.closestVisibleItem();
-        if (item) {
+        const mine = this.closestMine();
+        const base = this.closestBase();
+
+        // TODO: first go to the mine, then patrol between
+        if (mine != null && base != null) {
+            this.path = this.pathfinder.findPhaserPointPath(mine.getPosition().clone(), base.getPosition().clone());
+
+            console.log(this.path);
+
+            this.brain.popState();
+            this.brain.pushState(new State('collecting', this.collecting));
+
+        } else if (item) {
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), item.getPosition().clone());
             this.brain.popState();
             this.brain.pushState(new State('path following', this.pathFollowing));
+
         } else {
             this.behavior.wander();
             this.behavior.reactToCollision(this.body);
         }
+    }
+
+    public collecting = () =>
+    {
+        this.behavior.pathPatrolling(this.path);
+        this.behavior.reactToCollision(this.body);
     }
 
     private closestVisibleItem(): Item|null
@@ -111,6 +131,38 @@ export class Miner extends Bot
         }
 
         return closestItem;
+    }
+
+    private closestMine(): Item|null
+    {
+        let closestMine = null;
+        let closestDistance = this.scope * 100;
+        for (let index = 0; index < this.buildings.length(); index++) {
+            let building = this.buildings.get(index);
+            let distance = this.getPosition().distance(this.buildings.get(index).getPosition());
+            if (building instanceof Mine && distance < closestDistance) {
+                closestMine = building;
+                closestDistance = distance;
+            }
+        }
+
+        return closestMine;
+    }
+
+    private closestBase(): Item|null
+    {
+        let closestBase = null;
+        let closestDistance = this.scope * 100;
+        for (let index = 0; index < this.buildings.length(); index++) {
+            let building = this.buildings.get(index);
+            let distance = this.getPosition().distance(this.buildings.get(index).getPosition());
+            if (building instanceof Base && distance < closestDistance) {
+                closestBase = building;
+                closestDistance = distance;
+            }
+        }
+
+        return closestBase;
     }
 
     public buildMine = (oil: Oil) =>
