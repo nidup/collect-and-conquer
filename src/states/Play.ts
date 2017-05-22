@@ -9,10 +9,13 @@ import {BuildingRepository} from "../building/BuildingRepository";
 import {Base} from "../building/Base";
 import {Mine} from "../building/Mine";
 import {Generator} from "../building/Generator";
+import {ItemRepository} from "../item/ItemRepository";
+import {Item} from "../item/Item";
+import {Oil} from "../item/Oil";
 
 export default class Play extends Phaser.State
 {
-
+    private items: ItemRepository;
     private buildings: BuildingRepository;
     private bots: BotRepository;
     private map : Phaser.Tilemap;
@@ -55,6 +58,9 @@ export default class Play extends Phaser.State
 
         this.game.physics.arcade.gravity.y = 350;
 
+        this.items = new ItemRepository();
+        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0));
+
         this.buildings = new BuildingRepository();
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
 /*        this.buildings.add(new Mine(this.game, 800, 200, 'Mine', 0));
@@ -67,7 +73,7 @@ export default class Play extends Phaser.State
         this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse));
         this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));*/
 //        this.bots.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.bots));
-        this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0));
+        this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0, mapAnalyse, this.items, this.buildings, this.bots));
 
         this.game.camera.follow(this.bots.get(5));
     }

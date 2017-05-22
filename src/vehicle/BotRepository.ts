@@ -15,6 +15,12 @@ export class BotRepository
         this.bots.push(bot);
     }
 
+    public remove(bot: Bot): void
+    {
+        const index = this.bots.indexOf(bot);
+        this.bots.splice(index, 1);
+    }
+
     public enemiesOf(myself: Bot) :Bot[]
     {
         return this.bots.filter(function (bot: Bot) { return bot != myself; });
