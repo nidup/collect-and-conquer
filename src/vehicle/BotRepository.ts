@@ -10,6 +10,11 @@ export class BotRepository
         this.bots = [];
     }
 
+    public all(): Bot[]
+    {
+        return this.bots;
+    }
+
     public add(bot: Bot): void
     {
         this.bots.push(bot);
@@ -40,5 +45,4 @@ export class BotRepository
     {
         return this.bots[index];
     }
-
 }

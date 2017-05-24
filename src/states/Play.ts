@@ -12,6 +12,7 @@ import {Generator} from "../building/Generator";
 import {ItemRepository} from "../item/ItemRepository";
 import {Item} from "../item/Item";
 import {Oil} from "../item/Oil";
+import {Bot} from "../vehicle/Bot";
 
 export default class Play extends Phaser.State
 {
@@ -68,10 +69,10 @@ export default class Play extends Phaser.State
 */
         this.bots = new BotRepository();
 /*        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
-        this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));
+        this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));*/
         this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse));
         this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse));
-        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));*/
+        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));
 //        this.bots.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.bots));
         this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0, mapAnalyse, this.items, this.buildings, this.bots));
         this.bots.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, this.items, this.buildings, this.bots));
@@ -83,19 +84,20 @@ export default class Play extends Phaser.State
     public update()
     {
         if (this.game.input.mousePointer.isDown) {
-            for (let i = 0; i < this.bots.length(); i++) {
-                if (this.bots.get(i) instanceof Builder) {
-                    (<Builder>this.bots.get(i)).changePath(new Phaser.Point(this.game.input.x, this.game.input.y));
+            const game = this.game;
+            this.bots.all().map(function(bot: Bot) {
+                if (bot instanceof Builder) {
+                    (<Builder>bot).changePath(new Phaser.Point(game.input.x, game.input.y));
                 }
-            }
+            });
         }
 
-        for (let i = 0; i < this.bots.length(); i++) {
-            this.game.physics.arcade.collide(this.bots.get(i), this.layer); // TODO: vehicles block easily when moving
-            this.bots.get(i).update();
-            // TODO: handle vehicles collisions
-            //this.game.physics.arcade.overlap(this.hero, this.vehicles[i], this.bite, null, this);
-        }
+        const game = this.game;
+        const layer = this.layer;
+        this.bots.all().map(function(bot: Bot) {
+            game.physics.arcade.collide(bot, layer);
+            bot.update();
+        });
     }
 
     public render()

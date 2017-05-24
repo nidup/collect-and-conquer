@@ -30,7 +30,6 @@ export class Miner extends Bot
     private buildings: BuildingRepository;
     private bots: BotRepository;
 
-
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, items: ItemRepository, buildings: BuildingRepository, bots: BotRepository)
     {
         super(game, x, y, key, frame);
@@ -94,9 +93,6 @@ export class Miner extends Bot
         // TODO: first go to the mine, then patrol between
         if (mine != null && base != null) {
             this.path = this.pathfinder.findPhaserPointPath(mine.getPosition().clone(), base.getPosition().clone());
-
-            console.log(this.path);
-
             this.brain.popState();
             this.brain.pushState(new State('collecting', this.collecting));
 
@@ -124,7 +120,7 @@ export class Miner extends Bot
         for (let index = 0; index < this.items.length(); index++) {
             let item = this.items.get(index);
             let distance = this.getPosition().distance(this.items.get(index).getPosition());
-            if (distance < this.scope && distance < closestDistance) {
+            if (distance < this.scope && !item.hasBeenCollected() && distance < closestDistance) {
                 closestItem = item;
                 closestDistance = distance;
             }
@@ -140,7 +136,7 @@ export class Miner extends Bot
         for (let index = 0; index < this.buildings.length(); index++) {
             let building = this.buildings.get(index);
             let distance = this.getPosition().distance(this.buildings.get(index).getPosition());
-            if (building instanceof Mine && <Mine>building.isCollecting() && distance < closestDistance) {
+            if (building instanceof Mine && (<Mine>building).isCollecting() && distance < closestDistance) {
                 closestExploitableMine = building;
                 closestDistance = distance;
             }
