@@ -88,7 +88,7 @@ export class Miner extends Bot
     public wander = () =>
     {
         const item = this.closestVisibleItem();
-        const mine = this.closestMine();
+        const mine = this.closestExploitableMine();
         const base = this.closestBase();
 
         // TODO: first go to the mine, then patrol between
@@ -133,20 +133,20 @@ export class Miner extends Bot
         return closestItem;
     }
 
-    private closestMine(): Item|null
+    private closestExploitableMine(): Item|null
     {
-        let closestMine = null;
+        let closestExploitableMine = null;
         let closestDistance = this.scope * 100;
         for (let index = 0; index < this.buildings.length(); index++) {
             let building = this.buildings.get(index);
             let distance = this.getPosition().distance(this.buildings.get(index).getPosition());
-            if (building instanceof Mine && distance < closestDistance) {
-                closestMine = building;
+            if (building instanceof Mine && <Mine>building.isCollecting() && distance < closestDistance) {
+                closestExploitableMine = building;
                 closestDistance = distance;
             }
         }
 
-        return closestMine;
+        return closestExploitableMine;
     }
 
     private closestBase(): Item|null
