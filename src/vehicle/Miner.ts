@@ -14,6 +14,7 @@ import {BotRepository} from "./BotRepository";
 import {Mine} from "../building/Mine";
 import {Oil} from "../item/Oil";
 import {Base} from "../building/Base";
+import {Radar} from "./sensor/Radar";
 
 export class Miner extends Bot
 {
@@ -25,12 +26,11 @@ export class Miner extends Bot
     private pathfinder: PathFinder;
     private path: PhaserPointPath;
 
-    // TODO: Radar class?
-    private items: ItemRepository;
-    private buildings: BuildingRepository;
-    private bots: BotRepository;
+    private radar: Radar;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, items: ItemRepository, buildings: BuildingRepository, bots: BotRepository)
+    private buildings: BuildingRepository;
+
+    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar, buildings: BuildingRepository)
     {
         super(game, x, y, key, frame);
 
@@ -51,31 +51,32 @@ export class Miner extends Bot
 
         this.behavior = new SteeringComputer(this);
 
-        this.items = items;
-        this.buildings = buildings;
-        this.bots = bots;
+        this.radar = radar;
 
         this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
 
         this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
+
+        // TODO how to remove / replace for the new mine building? a factory?
+        this.buildings = buildings;
     }
 
     public pathFollowing = () =>
     {
-        const item = this.closestVisibleItem();
-        const objectHasAlreadyBeenPicked = !item;// || this.path.lastNode() != item.getPosition();
-        const hasPathAndObjectCannotBePicked = this.path && this.getPosition().distance(this.path.lastNode()) > 10;
-        const hasPathAndObjectCanBePicked = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
-        if (objectHasAlreadyBeenPicked) {
+        const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
+        const lookForOilPosition = !oil;
+        const canGoToMinePlaceholder = this.path && this.getPosition().distance(this.path.lastNode()) > 10;
+        const canBuildMine = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
+        if (lookForOilPosition) {
             this.path = null;
             this.brain.popState();
             this.brain.pushState(new State('wander', this.wander));
-        } else if (hasPathAndObjectCannotBePicked) {
+        } else if (canGoToMinePlaceholder) {
             this.behavior.pathFollowing(this.path);
             this.behavior.reactToCollision(this.body);
-        } else if (hasPathAndObjectCanBePicked) {
-            this.buildMine(item);
+        } else if (canBuildMine) {
+            this.buildMine(oil);
         } else {
             this.path = null;
             this.brain.popState();
@@ -83,21 +84,21 @@ export class Miner extends Bot
         }
     }
 
-
     public wander = () =>
     {
-        const item = this.closestVisibleItem();
-        const mine = this.closestExploitableMine();
-        const base = this.closestBase();
+        const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
+        const mine = this.radar.closestExploitableMine(this.getPosition(), this.scope);
+        const base = this.radar.closestBase(this.getPosition(), this.scope);
+        const knowBaseAndMine = mine != null && base != null;
+        const knowMinePlaceholder = oil != null;
 
-        // TODO: first go to the mine, then patrol between
-        if (mine != null && base != null) {
+        if (knowBaseAndMine) {
             this.path = this.pathfinder.findPhaserPointPath(mine.getPosition().clone(), base.getPosition().clone());
             this.brain.popState();
             this.brain.pushState(new State('collecting', this.collecting));
 
-        } else if (item) {
-            this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), item.getPosition().clone());
+        } else if (knowMinePlaceholder) {
+            this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), oil.getPosition().clone());
             this.brain.popState();
             this.brain.pushState(new State('path following', this.pathFollowing));
 
@@ -111,54 +112,6 @@ export class Miner extends Bot
     {
         this.behavior.pathPatrolling(this.path);
         this.behavior.reactToCollision(this.body);
-    }
-
-    private closestVisibleItem(): Item|null
-    {
-        let closestItem = null;
-        let closestDistance = this.scope * 100;
-        for (let index = 0; index < this.items.length(); index++) {
-            let item = this.items.get(index);
-            let distance = this.getPosition().distance(this.items.get(index).getPosition());
-            if (distance < this.scope && !item.hasBeenCollected() && distance < closestDistance) {
-                closestItem = item;
-                closestDistance = distance;
-            }
-        }
-
-        return closestItem;
-    }
-
-    private closestExploitableMine(): Item|null
-    {
-        let closestExploitableMine = null;
-        let closestDistance = this.scope * 100;
-        for (let index = 0; index < this.buildings.length(); index++) {
-            let building = this.buildings.get(index);
-            let distance = this.getPosition().distance(this.buildings.get(index).getPosition());
-            if (building instanceof Mine && (<Mine>building).isCollecting() && distance < closestDistance) {
-                closestExploitableMine = building;
-                closestDistance = distance;
-            }
-        }
-
-        return closestExploitableMine;
-    }
-
-    private closestBase(): Item|null
-    {
-        let closestBase = null;
-        let closestDistance = this.scope * 100;
-        for (let index = 0; index < this.buildings.length(); index++) {
-            let building = this.buildings.get(index);
-            let distance = this.getPosition().distance(this.buildings.get(index).getPosition());
-            if (building instanceof Base && distance < closestDistance) {
-                closestBase = building;
-                closestDistance = distance;
-            }
-        }
-
-        return closestBase;
     }
 
     public buildMine = (oil: Oil) =>
