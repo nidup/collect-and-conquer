@@ -10,6 +10,11 @@ export class ItemRepository
         this.items = [];
     }
 
+    public all(): Item[]
+    {
+        return this.items;
+    }
+
     public add(item: Item): void
     {
         this.items.push(item);

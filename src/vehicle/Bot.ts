@@ -12,20 +12,21 @@ export abstract class Bot extends Phaser.Sprite implements Boid
 
     public update ()
     {
-        if (this.isAlive()) {
-            this.brain.update();
-            this.behavior.compute();
-            this.updateAngle();
-            this.brainText.update();
-        } else {
-            this.brainText.destroy();
-            this.destroy();
-        }
+        this.brain.update();
+        this.behavior.compute();
+        this.updateAngle();
+        this.brainText.update();
     }
 
     public isAlive()
     {
         return this.health > 0;
+    }
+
+    destroy(destroyChildren?: boolean): void
+    {
+        this.brainText.destroy();
+        super.destroy(destroyChildren);
     }
 
     updateAngle()

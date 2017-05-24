@@ -166,10 +166,8 @@ export class Miner extends Bot
         this.health = 0;
 
         const position = oil.getPosition();
-        this.items.remove(oil);
-        oil.destroy();
+        oil.collect();
 
         this.buildings.add(new Mine(this.game, position.x, position.y, 'Mine', 0));
-        this.bots.remove(this);
     }
 }

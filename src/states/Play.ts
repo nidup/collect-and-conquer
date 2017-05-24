@@ -64,9 +64,8 @@ export default class Play extends Phaser.State
 
         this.buildings = new BuildingRepository();
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
-/*        this.buildings.add(new Mine(this.game, 800, 200, 'Mine', 0));
-        this.buildings.add(new Generator(this.game, 100, 200, 'Generator', 0));
-*/
+        this.buildings.add(new Generator(this.game, 400, 190, 'Generator', 0));
+
         this.bots = new BotRepository();
 /*        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
         this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));*/
@@ -83,9 +82,29 @@ export default class Play extends Phaser.State
 
     public update()
     {
+        const collectableItems = this.items;
+        collectableItems.all()
+            .filter(function(item: Item) {
+                return item.hasBeenCollected();
+            })
+            .map(function(item: Item) {
+                collectableItems.remove(item);
+                item.destroy();
+            });
+
+        const aliveBots = this.bots;
+        aliveBots.all()
+            .filter(function (bot: Bot) {
+                return !bot.isAlive();
+            })
+            .map(function (bot: Bot) {
+                aliveBots.remove(bot);
+                bot.destroy();
+            });
+
         if (this.game.input.mousePointer.isDown) {
             const game = this.game;
-            this.bots.all().map(function(bot: Bot) {
+            aliveBots.all().map(function(bot: Bot) {
                 if (bot instanceof Builder) {
                     (<Builder>bot).changePath(new Phaser.Point(game.input.x, game.input.y));
                 }
@@ -94,7 +113,7 @@ export default class Play extends Phaser.State
 
         const game = this.game;
         const layer = this.layer;
-        this.bots.all().map(function(bot: Bot) {
+        aliveBots.all().map(function(bot: Bot) {
             game.physics.arcade.collide(bot, layer);
             bot.update();
         });
@@ -104,11 +123,16 @@ export default class Play extends Phaser.State
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            //this.game.debug.body(this.bots.get(1));
-            //this.game.debug.bodyInfo(this.bots.get(1), 20, 20);
-            for (let i = 0; i < this.bots.length(); i++) {
-                this.game.debug.body(this.bots.get(i));
-            }
+            this.game.debug.body(this.bots.get(1));
+            this.game.debug.bodyInfo(this.bots.get(1), 240, 20);
+            const game = this.game;
+            this.bots.all().map(function(bot: Bot) {
+                game.debug.body(bot);
+            });
+
+            this.items.all().map(function(item: Item) {
+                game.debug.body(item);
+            });
 
             this.game.debug.text(
                 "FPS: "  + this.game.time.fps + " ",
