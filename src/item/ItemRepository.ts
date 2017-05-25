@@ -1,5 +1,6 @@
 
 import {Item} from "./Item";
+import {Oil} from "./Oil";
 
 export class ItemRepository
 {
@@ -13,6 +14,13 @@ export class ItemRepository
     public all(): Item[]
     {
         return this.items;
+    }
+
+    public oils(): Oil[]
+    {
+        return this.items.filter(function (item: Item) {
+            return item instanceof Oil;
+        });
     }
 
     public add(item: Item): void

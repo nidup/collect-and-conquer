@@ -6,6 +6,7 @@ import {BotRepository} from "../BotRepository";
 import {Oil} from "../../item/Oil";
 import {Mine} from "../../building/Mine";
 import {Base} from "../../building/Base";
+import {Item} from "../../item/Item";
 
 export class Radar
 {
@@ -22,50 +23,85 @@ export class Radar
 
     public closestVisibleOil(position: Phaser.Point, scope: number): Oil|null
     {
-        let closestOil = null;
-        let closestDistance = scope * 100;
-        for (let index = 0; index < this.items.length(); index++) {
-            let item = this.items.get(index);
-            let distance = position.distance(this.items.get(index).getPosition());
-            if (item instanceof Oil && distance < scope && !item.hasBeenCollected() && distance < closestDistance) {
-                closestOil = item;
-                closestDistance = distance;
+        class OilAndDistance {
+            public oil: Oil;
+            public distance: number;
+            constructor (oil: Oil, distance: number) {
+                this.oil = oil;
+                this.distance = distance;
             }
         }
+        const transfoAddDistance = function(oil: Oil) {
+            return new OilAndDistance(oil, position.distance(oil.getPosition()));
+        };
+        const closestOils = this.items.oils()
+            .reduce(function (oilsWithDistance, oil) {
+                oilsWithDistance.push(transfoAddDistance(oil));
+                return oilsWithDistance;
+            }, [])
+            .sort(function (oil1: OilAndDistance, oil2: OilAndDistance) {
+                return oil1.distance > oil2.distance ? 1 : -1;
+            })
+            .filter(function (oilAndDistance: OilAndDistance) {
+                    return oilAndDistance.distance < scope && !oilAndDistance.oil.hasBeenCollected()
+                }
+            );
 
-        return closestOil;
+        return closestOils.length > 0 ? closestOils[0].oil : null;
     }
 
-    public closestExploitableMine(position: Phaser.Point, scope: number): Mine|null
+    public closestExploitableMine(position: Phaser.Point): Mine|null
     {
-        let closestExploitableMine = null;
-        let closestDistance = scope * 100;
-        for (let index = 0; index < this.buildings.length(); index++) {
-            let building = this.buildings.get(index);
-            let distance = position.distance(this.buildings.get(index).getPosition());
-            if (building instanceof Mine && (<Mine>building).isCollecting() && distance < closestDistance) {
-                closestExploitableMine = building;
-                closestDistance = distance;
+        class MineAndDistance {
+            public mine: Mine;
+            public distance: number;
+            constructor (mine: Mine, distance: number) {
+                this.mine = mine;
+                this.distance = distance;
             }
         }
+        const transfoAddDistance = function(mine: Mine) {
+            return new MineAndDistance(mine, position.distance(mine.getPosition()));
+        };
+        const closestMines = this.buildings.mines()
+            .reduce(function (minesWithDistance, mine) {
+                minesWithDistance.push(transfoAddDistance(mine));
+                return minesWithDistance;
+            }, [])
+            .sort(function (mine1: MineAndDistance, mine2: MineAndDistance) {
+                return mine1.distance > mine2.distance ? 1 : -1;
+            })
+            .filter(function (mineAndDistance: MineAndDistance) {
+                    return mineAndDistance.mine.isCollecting()
+                }
+            );
 
-        return closestExploitableMine;
+        return closestMines.length > 0 ? closestMines[0].mine : null;
     }
 
 
-    public closestBase(position: Phaser.Point, scope: number): Base|null
+    public closestBase(position: Phaser.Point): Base|null
     {
-        let closestBase = null;
-        let closestDistance = scope * 100;
-        for (let index = 0; index < this.buildings.length(); index++) {
-            let building = this.buildings.get(index);
-            let distance = position.distance(this.buildings.get(index).getPosition());
-            if (building instanceof Base && distance < closestDistance) {
-                closestBase = building;
-                closestDistance = distance;
+        class BaseAndDistance {
+            public base: Base;
+            public distance: number;
+            constructor (base: Base, distance: number) {
+                this.base = base;
+                this.distance = distance;
             }
         }
+        const transfoAddDistance = function(base: Base) {
+            return new BaseAndDistance(base, position.distance(base.getPosition()));
+        };
+        const closestBases = this.buildings.bases()
+            .reduce(function (basesWithDistance, base) {
+                basesWithDistance.push(transfoAddDistance(base));
+                return basesWithDistance;
+            }, [])
+            .sort(function (base1: BaseAndDistance, base2: BaseAndDistance) {
+                return base1.distance > base2.distance ? 1 : -1;
+            });
 
-        return closestBase;
+        return closestBases.length > 0 ? closestBases[0].base : null;
     }
 }

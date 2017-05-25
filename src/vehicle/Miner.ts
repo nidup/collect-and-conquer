@@ -87,8 +87,8 @@ export class Miner extends Bot
     public wander = () =>
     {
         const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
-        const mine = this.radar.closestExploitableMine(this.getPosition(), this.scope);
-        const base = this.radar.closestBase(this.getPosition(), this.scope);
+        const mine = this.radar.closestExploitableMine(this.getPosition());
+        const base = this.radar.closestBase(this.getPosition());
         const knowBaseAndMine = mine != null && base != null;
         const knowMinePlaceholder = oil != null;
 

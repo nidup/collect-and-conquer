@@ -62,6 +62,7 @@ export default class Play extends Phaser.State
 
         this.items = new ItemRepository();
         this.items.add(new Oil(this.game, 370, 430, 'Icons', 0));
+        this.items.add(new Oil(this.game, 570, 430, 'Icons', 0));
 
         this.buildings = new BuildingRepository();
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
@@ -70,17 +71,17 @@ export default class Play extends Phaser.State
         const radar = new Radar(this.items, this.buildings, this.bots);
 
         this.bots = new BotRepository();
-/*        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
-        this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));*/
+        this.bots.add(new Scout(this.game, 300, 300, 'Scout1', 0, this.bots));
+        this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots));
         this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse));
         this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse));
         this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse));
-//        this.bots.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.bots));
+        this.bots.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.bots));
         this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
         this.bots.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, radar, this.buildings));
         this.bots.add(new Miner(this.game, 400, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
 
-        this.game.camera.follow(this.bots.get(5));
+        //TODO this.game.camera.follow(this.bots.get(5));
     }
 
     public update()
