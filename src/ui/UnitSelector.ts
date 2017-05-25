@@ -20,9 +20,11 @@ export class UnitSelector
     {
         const myself = this;
         bots.map(function (bot: Bot) {
-            bot.events.onInputDown.add(function() {
-                myself.selectUnit(bot);
-            }, this);
+            if (bot.events.onInputDown.getNumListeners() == 0) {
+                bot.events.onInputDown.add(function() {
+                    myself.selectUnit(bot);
+                }, this);
+            }
         });
     }
 
@@ -30,9 +32,11 @@ export class UnitSelector
     {
         const myself = this;
         buildings.map(function (building: Building) {
-            building.events.onInputDown.add(function() {
-                myself.selectUnit(building);
-            }, this);
+            if (building.events.onInputDown.getNumListeners() == 0) {
+                building.events.onInputDown.add(function () {
+                    myself.selectUnit(building);
+                }, this);
+            }
         });
     }
 
@@ -40,9 +44,11 @@ export class UnitSelector
     {
         const myself = this;
         items.map(function (item: Item) {
-            item.events.onInputDown.add(function() {
-                myself.selectUnit(item);
-            }, this);
+            if (item.events.onInputDown.getNumListeners() == 0) {
+                item.events.onInputDown.add(function () {
+                    myself.selectUnit(item);
+                }, this);
+            }
         });
     }
 }

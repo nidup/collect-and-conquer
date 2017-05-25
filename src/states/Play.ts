@@ -28,6 +28,7 @@ export default class Play extends Phaser.State
     private bots: BotRepository;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
+    private unitSelector: UnitSelector;
     private debug: boolean = false;
 
     public create()
@@ -78,13 +79,8 @@ export default class Play extends Phaser.State
         this.bots.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, radar, this.buildings));
         this.bots.add(new Miner(this.game, 400, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
 
-        const unitSelector = new UnitSelector();
-        unitSelector.listenBots(this.bots.all());
-        unitSelector.listenBuildings(this.buildings.all());
-        unitSelector.listenItems(this.items.all());
-        // TODO: how to handle created objects?
-
-        new CommandPanel(this.game, screenWidth, unitSelector);
+        this.unitSelector = new UnitSelector();
+        new CommandPanel(this.game, screenWidth, this.unitSelector);
 
     }
 
@@ -92,6 +88,7 @@ export default class Play extends Phaser.State
     {
         this.updateItems(this.items);
         this.updateBots(this.bots, this.game, this.layer);
+        this.updateUnitSelector(this.unitSelector, this.bots, this.buildings, this.items);
     }
 
     private updateItems(items: ItemRepository)
@@ -132,6 +129,13 @@ export default class Play extends Phaser.State
             game.physics.arcade.collide(bot, layer);
             bot.update();
         });
+    }
+
+    private updateUnitSelector(unitSelector: UnitSelector, bots: BotRepository, buildings: BuildingRepository, items: ItemRepository)
+    {
+        unitSelector.listenBots(bots.all());
+        unitSelector.listenBuildings(buildings.all());
+        unitSelector.listenItems(items.all());
     }
 
     public render()
