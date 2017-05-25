@@ -58,7 +58,7 @@ export class Builder extends Bot
 
     public pathFollowing = () =>
     {
-        if (this.path && this.getPosition().distance(this.path.lastNode()) > 20) {
+        if (this.path && this.path.lastNode() && this.getPosition().distance(this.path.lastNode()) > 20) {
             this.behavior.pathFollowing(this.path);
             this.behavior.reactToCollision(this.body);
         } else {
