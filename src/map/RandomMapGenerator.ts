@@ -28,8 +28,6 @@ const DECO = [
 
 export class RandomMapGenerator extends MapGenerator
 {
-    protected points: Array<Array<number>>;
-
     constructor(game: Phaser.Game, screenWidth: number, screenHeight: number)
     {
         super(game, screenWidth, screenHeight);
@@ -40,25 +38,27 @@ export class RandomMapGenerator extends MapGenerator
         const tileSize = 20;
         const tileSpacing = 20;
 
-        this.map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
+        const map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
 
-        this.map.removeAllLayers();
-        this.map.createBlankLayer('Tile Layer 1', this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
-        this.map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing, 31);
-        this.map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing, 132);
-        this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing, 177);
-        this.map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing, 180);
-        this.map.addTilesetImage('MntMisc', 'MntMisc', tileSize, tileSize, 0, tileSpacing, 200);
+        map.removeAllLayers();
+        map.createBlankLayer('Tile Layer 1', this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
+        map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing, 31);
+        map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing, 132);
+        map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing, 177);
+        map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing, 180);
+        map.addTilesetImage('MntMisc', 'MntMisc', tileSize, tileSize, 0, tileSpacing, 200);
 
-        this.fillRandom();
-        this.smooth();
-        this.fixMissingTextures();
-        this.putTiles();
+        const points = [];
+        this.fillRandom(points);
+        this.smooth(points);
+        this.fixMissingTextures(points);
+        this.putTiles(map, points);
 
-        return this.map;
+        return map;
     }
 
-    private static getDecoratedIndex(topLeft: number, topRight: number, bottomRight: number, bottomLeft: number): number {
+    private static getDecoratedIndex(topLeft: number, topRight: number, bottomRight: number, bottomLeft: number): number
+    {
         let undecorated = RandomMapGenerator.getIndex(topLeft, topRight, bottomRight, bottomLeft);
         for (let i = 0; i < DECO.length; i++) {
             let decorateds = DECO[i];
@@ -70,7 +70,8 @@ export class RandomMapGenerator extends MapGenerator
         return undecorated;
     }
 
-    private static getIndex(topLeft: number, topRight: number, bottomRight: number, bottomLeft: number): number {
+    private static getIndex(topLeft: number, topRight: number, bottomRight: number, bottomLeft: number): number
+    {
         for (let i = 0; i < TILES.length; i++) {
             if (TILES[i][1] === topLeft
                 && TILES[i][2] === topRight
@@ -83,52 +84,54 @@ export class RandomMapGenerator extends MapGenerator
         return null;
     }
 
-    private getPoint(x: any, y: number): number {
-        if (undefined === this.points[x]) {
+    private getPoint(points: Array<Array<number>>, x: any, y: number): number
+    {
+        if (undefined === points[x]) {
             return null;
         }
 
-        if (undefined === this.points[x][y]) {
+        if (undefined === points[x][y]) {
             return null;
         }
 
-        return this.points[x][y];
+        return points[x][y];
     }
 
-    private fillRandom() {
-        this.points = [];
-
+    private fillRandom(points: Array<Array<number>>)
+    {
         for (let x = 0; x <= this.screenWidth; x++) {
             let line = [];
             for (let y = 0; y <= this.screenHeight; y++) {
                 line.push(Math.random() > 0.5 ? GRASS : MNT);
             }
-            this.points.push(line);
+            points.push(line);
         }
     }
 
-    private smooth() {
+    private smooth(points: Array<Array<number>>)
+    {
         for (let x = 0; x <= this.screenWidth; x++) {
             for (let y = 0; y <= this.screenHeight; y++) {
                 let aroundPoints = [
-                    this.getPoint(x - 1, y - 1),
-                    this.getPoint(x, y - 1),
-                    this.getPoint(x + 1, y - 1),
-                    this.getPoint(x - 1, y),
-                    this.getPoint(x, y),
-                    this.getPoint(x + 1, y),
-                    this.getPoint(x - 1, y + 1),
-                    this.getPoint(x, y + 1),
-                    this.getPoint(x + 1, y + 1)
+                    this.getPoint(points, x - 1, y - 1),
+                    this.getPoint(points,x, y - 1),
+                    this.getPoint(points,x + 1, y - 1),
+                    this.getPoint(points,x - 1, y),
+                    this.getPoint(points,x, y),
+                    this.getPoint(points,x + 1, y),
+                    this.getPoint(points,x - 1, y + 1),
+                    this.getPoint(points,x, y + 1),
+                    this.getPoint(points,x + 1, y + 1)
                 ].filter(function (p) {
                     return null !== p;
                 }).sort();
-                this.points[x][y] = aroundPoints[Math.floor(aroundPoints.length / 2)];
+                points[x][y] = aroundPoints[Math.floor(aroundPoints.length / 2)];
             }
         }
     }
 
-    private fixMissingTextures() {
+    private fixMissingTextures(points: Array<Array<number>>)
+    {
         let maxLoops = 1000;
         let changes = true;
 
@@ -137,13 +140,13 @@ export class RandomMapGenerator extends MapGenerator
             for (let x = 0; x < this.screenWidth; x++) {
                 for (let y = 0; y < this.screenHeight; y++) {
                     if (null === RandomMapGenerator.getIndex(
-                            this.getPoint(x, y),
-                            this.getPoint(x + 1, y),
-                            this.getPoint(x + 1, y + 1),
-                            this.getPoint(x, y + 1)
+                            this.getPoint(points,x, y),
+                            this.getPoint(points,x + 1, y),
+                            this.getPoint(points,x + 1, y + 1),
+                            this.getPoint(points,x, y + 1)
                         )
                     ) {
-                        this.points[x][y] = this.points[x][y] === MNT ? GRASS : MNT;
+                        points[x][y] = points[x][y] === MNT ? GRASS : MNT;
                         changes = true;
                     }
                 }
@@ -152,14 +155,15 @@ export class RandomMapGenerator extends MapGenerator
         }
     }
 
-    private putTiles() {
+    private putTiles(map: Phaser.Tilemap, points: Array<Array<number>>)
+    {
         for (let x = 0; x < this.screenWidth; x++) {
             for (let y = 0; y <= this.screenHeight; y++) {
-                this.map.putTile(RandomMapGenerator.getDecoratedIndex(
-                    this.getPoint(x, y),
-                    this.getPoint(x + 1, y),
-                    this.getPoint(x + 1, y + 1),
-                    this.getPoint(x, y + 1)
+                map.putTile(RandomMapGenerator.getDecoratedIndex(
+                    this.getPoint(points, x, y),
+                    this.getPoint(points, x + 1, y),
+                    this.getPoint(points, x + 1, y + 1),
+                    this.getPoint(points, x, y + 1)
                 ), x, y);
             }
         }
