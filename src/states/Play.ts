@@ -39,7 +39,7 @@ export default class Play extends Phaser.State
         const screenHeight = 500;
         const tileSize = 20;
 
-        //const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
+        // const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
         const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
         this.map = mapGenerator.generate();
 
@@ -48,7 +48,7 @@ export default class Play extends Phaser.State
         const mapAnalyse = analyser.analyse();
         this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
 
-        this.layer = this.map.createLayer('Tile Layer 1'); // TODO: use a constant there!
+        this.layer = this.map.createLayer(MapGenerator.LAYER_NAME);
         if (this.debug) {
             this.layer.debug = true;
         }
