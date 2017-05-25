@@ -29,9 +29,6 @@ export class FileMapGenerator extends MapGenerator
         this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing);
         this.map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing);
 
-        var layer = this.map.createLayer('Tile Layer 1');
-        layer.resizeWorld();
-
         return this.map;
     }
 }

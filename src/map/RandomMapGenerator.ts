@@ -43,7 +43,7 @@ export class RandomMapGenerator extends MapGenerator
         this.map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
 
         this.map.removeAllLayers();
-        this.map.createBlankLayer('layername', this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
+        this.map.createBlankLayer('Tile Layer 1', this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
         this.map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing, 31);
         this.map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing, 132);
         this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing, 177);

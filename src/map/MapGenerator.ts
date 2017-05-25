@@ -1,4 +1,6 @@
-export abstract class MapGenerator {
+
+export abstract class MapGenerator
+{
     protected screenWidth: number;
     protected screenHeight: number;
     protected game: Phaser.Game;
