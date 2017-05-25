@@ -10,9 +10,20 @@ export class BotRepository
         this.bots = [];
     }
 
+    public all(): Bot[]
+    {
+        return this.bots;
+    }
+
     public add(bot: Bot): void
     {
         this.bots.push(bot);
+    }
+
+    public remove(bot: Bot): void
+    {
+        const index = this.bots.indexOf(bot);
+        this.bots.splice(index, 1);
     }
 
     public enemiesOf(myself: Bot) :Bot[]
@@ -34,5 +45,4 @@ export class BotRepository
     {
         return this.bots[index];
     }
-
 }

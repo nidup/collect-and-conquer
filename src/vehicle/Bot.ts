@@ -18,6 +18,17 @@ export abstract class Bot extends Phaser.Sprite implements Boid
         this.brainText.update();
     }
 
+    public isAlive()
+    {
+        return this.health > 0;
+    }
+
+    destroy(destroyChildren?: boolean): void
+    {
+        this.brainText.destroy();
+        super.destroy(destroyChildren);
+    }
+
     updateAngle()
     {
         this.angle = 180 + Phaser.Math.radToDeg(
