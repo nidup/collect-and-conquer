@@ -13,11 +13,16 @@ export class Generator extends Building
         this.body.allowGravity = false;
         this.inputEnabled = true;
 
-        this.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], 5, true);
+        this.animations.add('generating', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], 5, true);
         this.animations.add('destroyed', [15], 5, true);
 
-        this.animations.play('idle');
+        this.animations.play('generating');
 
         game.add.existing(this);
+    }
+
+    public getStatus()
+    {
+        return this.animations.currentAnim.name;
     }
 }

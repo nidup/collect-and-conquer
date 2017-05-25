@@ -54,7 +54,7 @@ export class CommandPanel extends Phaser.Sprite
             this.camera.follow(selectedUnit);
             this.copySelectedUnitImage(selectedUnit);
 
-            if (selectedUnit instanceof Bot) {
+            if (selectedUnit instanceof Bot || selectedUnit instanceof Building) {
                 this.unitStateText.setText(selectedUnit.getStatus());
                 const color = this.stateColors.getColor(selectedUnit.getStatus());
                 const style = {font: "11px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "top"};

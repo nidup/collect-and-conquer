@@ -33,4 +33,9 @@ export class Mine extends Building
     {
         return this.animations.currentAnim.name == "collecting";
     }
+
+    public getStatus()
+    {
+        return this.animations.currentAnim.name;
+    }
 }
