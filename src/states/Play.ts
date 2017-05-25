@@ -9,6 +9,9 @@ import {BuildingRepository} from "../building/BuildingRepository";
 import {Base} from "../building/Base";
 import {Mine} from "../building/Mine";
 import {Generator} from "../building/Generator";
+import {MapGenerator} from "../map/MapGenerator";
+import {RandomMapGenerator} from "../map/RandomMapGenerator";
+import {FileMapGenerator} from "../map/FileMapGenerator";
 import {ItemRepository} from "../item/ItemRepository";
 import {Item} from "../item/Item";
 import {Oil} from "../item/Oil";
@@ -29,34 +32,20 @@ export default class Play extends Phaser.State
         if (this.debug) {
             this.game.time.advancedTiming = true
         }
-        this.game.stage.backgroundColor = '#000000';
+        this.game.stage.backgroundColor = '#00ff00';
+        this.game.antialias = false;
 
+        const screenWidth = 1000;
+        const screenHeight = 500;
         const tileSize = 20;
-        const tileSpacing = 20;
-        this.map = this.game.add.tilemap('level1');
-        this.map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('Grass', 'Grass', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('Grass2', 'Grass2', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('GrasRoad', 'GrasRoad', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('GrassRDst', 'GrassRDst', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('Grs2CrtB', 'Grs2CrtB', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('Grs2Crtc', 'Grs2Crtc', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('Grs2Crtr', 'Grs2Crtr', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('Grs2Watr', 'Grs2Watr', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('Grss2Lav', 'Grss2Lav', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing);
-        this.map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing);
+
+        const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
+        // const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
+        this.map = mapGenerator.generate();
 
         const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
         const mapAnalyse = analyser.analyse();
         this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
-
-        this.layer = this.map.createLayer('Tile Layer 1');
-        if (this.debug) {
-            this.layer.debug = true;
-        }
-        this.layer.resizeWorld();
 
         this.game.physics.arcade.gravity.y = 350;
 
