@@ -10,6 +10,7 @@ export default class Preload extends Phaser.State {
         this.load.bitmapFont('carrier-command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml');
 
         this.load.image('CommandsPanel', 'assets/interface/CommandPanel.png');
+        this.load.image('UnitBackground', 'assets/interface/UnitSelectionBackground.png');
     }
 
     public create ()

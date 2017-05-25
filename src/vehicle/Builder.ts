@@ -30,6 +30,7 @@ export class Builder extends Bot
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);
+        this.inputEnabled = true;
 
         this.animations.add('right', [5], 10, true);
         this.animations.play('right');

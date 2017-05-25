@@ -11,9 +11,9 @@ export class Oil extends Item
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
         this.body.allowGravity = false;
+        this.inputEnabled = true;
 
         this.animations.add('idle', [33], 1, true);
-
         this.animations.play('idle');
 
         game.add.existing(this);

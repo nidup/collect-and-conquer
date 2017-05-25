@@ -18,9 +18,14 @@ export abstract class Bot extends Phaser.Sprite implements Boid
         this.brainText.update();
     }
 
-    public isAlive()
+    public isAlive() :boolean
     {
         return this.health > 0;
+    }
+
+    public getStatus() :string
+    {
+        return this.brain.getCurrentState().getName();
     }
 
     destroy(destroyChildren?: boolean): void

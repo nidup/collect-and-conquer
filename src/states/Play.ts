@@ -18,6 +18,8 @@ import {Oil} from "../item/Oil";
 import {Bot} from "../vehicle/Bot";
 import {Radar} from "../vehicle/sensor/Radar";
 import {CommandPanel} from "../ui/CommandPanel";
+import {UnitSelector} from "../ui/UnitSelector";
+import {Building} from "../building/Building";
 
 export default class Play extends Phaser.State
 {
@@ -26,7 +28,7 @@ export default class Play extends Phaser.State
     private bots: BotRepository;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
-    private debug: boolean = true;
+    private debug: boolean = false;
 
     public create()
     {
@@ -76,14 +78,25 @@ export default class Play extends Phaser.State
         this.bots.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, radar, this.buildings));
         this.bots.add(new Miner(this.game, 400, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
 
-        //this.game.camera.follow(this.bots.get(5));
+        const unitSelector = new UnitSelector();
+        unitSelector.listenBots(this.bots.all());
+        unitSelector.listenBuildings(this.buildings.all());
+        unitSelector.listenItems(this.items.all());
+        // TODO: how to handle created objects?
 
-        new CommandPanel(this.game, screenWidth);
+        new CommandPanel(this.game, screenWidth, unitSelector);
+
     }
 
     public update()
     {
-        const collectableItems = this.items;
+        this.updateItems(this.items);
+        this.updateBots(this.bots, this.game, this.layer);
+    }
+
+    private updateItems(items: ItemRepository)
+    {
+        const collectableItems = items;
         collectableItems.all()
             .filter(function(item: Item) {
                 return item.hasBeenCollected();
@@ -92,8 +105,11 @@ export default class Play extends Phaser.State
                 collectableItems.remove(item);
                 item.destroy();
             });
+    }
 
-        const aliveBots = this.bots;
+    private updateBots(bots: BotRepository, game: Phaser.Game, collisionLayer: Phaser.TilemapLayer)
+    {
+        const aliveBots = bots;
         aliveBots.all()
             .filter(function (bot: Bot) {
                 return !bot.isAlive();
@@ -103,8 +119,7 @@ export default class Play extends Phaser.State
                 bot.destroy();
             });
 
-        if (this.game.input.mousePointer.isDown) {
-            const game = this.game;
+        if (game.input.mousePointer.isDown) {
             aliveBots.all().map(function(bot: Bot) {
                 if (bot instanceof Builder) {
                     (<Builder>bot).changePath(new Phaser.Point(game.input.x, game.input.y));
@@ -112,8 +127,7 @@ export default class Play extends Phaser.State
             });
         }
 
-        const game = this.game;
-        const layer = this.layer;
+        const layer = collisionLayer;
         aliveBots.all().map(function(bot: Bot) {
             game.physics.arcade.collide(bot, layer);
             bot.update();

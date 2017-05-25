@@ -11,6 +11,7 @@ export class Generator extends Building
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
         this.body.allowGravity = false;
+        this.inputEnabled = true;
 
         this.animations.add('idle', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], 5, true);
         this.animations.add('destroyed', [15], 5, true);
