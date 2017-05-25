@@ -17,6 +17,7 @@ import {Item} from "../item/Item";
 import {Oil} from "../item/Oil";
 import {Bot} from "../vehicle/Bot";
 import {Radar} from "../vehicle/sensor/Radar";
+import {CommandPanel} from "../ui/CommandPanel";
 
 export default class Play extends Phaser.State
 {
@@ -75,7 +76,9 @@ export default class Play extends Phaser.State
         this.bots.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, radar, this.buildings));
         this.bots.add(new Miner(this.game, 400, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
 
-        //TODO this.game.camera.follow(this.bots.get(5));
+        //this.game.camera.follow(this.bots.get(5));
+
+        new CommandPanel(this.game, screenWidth);
     }
 
     public update()
@@ -122,7 +125,7 @@ export default class Play extends Phaser.State
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
             this.game.debug.body(this.bots.get(1));
-            this.game.debug.bodyInfo(this.bots.get(1), 240, 20);
+            this.game.debug.bodyInfo(this.bots.get(1), 240, 410);
             const game = this.game;
             this.bots.all().map(function(bot: Bot) {
                 game.debug.body(bot);
