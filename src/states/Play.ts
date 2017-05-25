@@ -25,29 +25,34 @@ export default class Play extends Phaser.State
     private bots: BotRepository;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
-    private debug: boolean = false;
+    private debug: boolean = true;
 
     public create()
     {
         if (this.debug) {
             this.game.time.advancedTiming = true
         }
-        this.game.stage.backgroundColor = '#00ff00';
+        this.game.stage.backgroundColor = '#000000';
         this.game.antialias = false;
 
         const screenWidth = 1000;
         const screenHeight = 500;
         const tileSize = 20;
 
-        const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
-        // const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
+        //const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
+        const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
         this.map = mapGenerator.generate();
 
+        // handle collisions
         const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
         const mapAnalyse = analyser.analyse();
         this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
 
-        this.game.physics.arcade.gravity.y = 350;
+        this.layer = this.map.createLayer('Tile Layer 1'); // TODO: use a constant there!
+        if (this.debug) {
+            this.layer.debug = true;
+        }
+        this.layer.resizeWorld();
 
         this.items = new ItemRepository();
         this.items.add(new Oil(this.game, 370, 430, 'Icons', 0));
