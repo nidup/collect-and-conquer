@@ -17,4 +17,6 @@ export abstract class Item extends Phaser.Sprite
     {
         return this.collected;
     }
+
+    abstract getStatus(): string;
 }

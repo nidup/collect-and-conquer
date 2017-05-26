@@ -30,6 +30,7 @@ export class Builder extends Bot
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);
+        this.inputEnabled = true;
 
         this.animations.add('right', [5], 10, true);
         this.animations.play('right');
@@ -58,7 +59,7 @@ export class Builder extends Bot
 
     public pathFollowing = () =>
     {
-        if (this.path && this.getPosition().distance(this.path.lastNode()) > 20) {
+        if (this.path && this.path.lastNode() && this.getPosition().distance(this.path.lastNode()) > 20) {
             this.behavior.pathFollowing(this.path);
             this.behavior.reactToCollision(this.body);
         } else {

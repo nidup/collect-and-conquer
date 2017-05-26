@@ -30,6 +30,9 @@ export class Miner extends Bot
 
     private buildings: BuildingRepository;
 
+    private oilLoad: number;
+    private oilCapacity: number;
+
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar, buildings: BuildingRepository)
     {
         super(game, x, y, key, frame);
@@ -41,6 +44,7 @@ export class Miner extends Bot
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);
+        this.inputEnabled = true;
 
         this.animations.add('right', [4, 34], 2, true);
         this.animations.play('right');
@@ -53,16 +57,45 @@ export class Miner extends Bot
 
         this.radar = radar;
 
+        /**
+         * Wander Collect -> Go to mine -> Load -> Go to base -> Unload -> Go to mine
+         * Wander Oil -> Go to oil -> Build mine (destroy)
+         */
         this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
 
         this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
 
-        // TODO how to remove / replace for the new mine building? a factory?
         this.buildings = buildings;
+        this.oilLoad = 0
+        this.oilCapacity = 10
     }
 
-    public pathFollowing = () =>
+    public wander = () =>
+    {
+        const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
+        const mine = this.radar.closestExploitableMine(this.getPosition());
+        const base = this.radar.closestBase(this.getPosition());
+        const knowBaseAndMine = mine != null && base != null;
+        const knowMinePlaceholder = oil != null;
+
+        if (knowBaseAndMine) {
+            this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), mine.getPosition().clone());
+            this.brain.popState();
+            this.brain.pushState(new State('go to mine', this.gotoMine));
+
+        } else if (knowMinePlaceholder) {
+            this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), oil.getPosition().clone());
+            this.brain.popState();
+            this.brain.pushState(new State('go to oil', this.gotoOil));
+
+        } else {
+            this.behavior.wander();
+            this.behavior.reactToCollision(this.body);
+        }
+    }
+
+    public gotoOil = () =>
     {
         const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
         const lookForOilPosition = !oil;
@@ -76,7 +109,9 @@ export class Miner extends Bot
             this.behavior.pathFollowing(this.path);
             this.behavior.reactToCollision(this.body);
         } else if (canBuildMine) {
-            this.buildMine(oil);
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('build mine', this.buildMine));
         } else {
             this.path = null;
             this.brain.popState();
@@ -84,43 +119,96 @@ export class Miner extends Bot
         }
     }
 
-    public wander = () =>
+    public buildMine = () =>
     {
         const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
-        const mine = this.radar.closestExploitableMine(this.getPosition());
-        const base = this.radar.closestBase(this.getPosition());
-        const knowBaseAndMine = mine != null && base != null;
-        const knowMinePlaceholder = oil != null;
+        if (oil) {
+            this.health = 0;
+            const position = oil.getPosition();
+            oil.collect();
+            this.buildings.add(new Mine(this.game, position.x, position.y, 'Mine', 0, oil.getQuantity()));
 
-        if (knowBaseAndMine) {
-            this.path = this.pathfinder.findPhaserPointPath(mine.getPosition().clone(), base.getPosition().clone());
             this.brain.popState();
-            this.brain.pushState(new State('collecting', this.collecting));
-
-        } else if (knowMinePlaceholder) {
-            this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), oil.getPosition().clone());
-            this.brain.popState();
-            this.brain.pushState(new State('path following', this.pathFollowing));
-
+            this.brain.pushState(new State('extracting', this.extracting));
         } else {
-            this.behavior.wander();
-            this.behavior.reactToCollision(this.body);
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('wander', this.wander));
         }
     }
 
-    public collecting = () =>
+    public extracting = () =>
     {
-        this.behavior.pathPatrolling(this.path);
-        this.behavior.reactToCollision(this.body);
+        // IDLE
     }
 
-    public buildMine = (oil: Oil) =>
+    public gotoMine = () =>
     {
-        this.health = 0;
+        const exploitableMine = this.radar.closestExploitableMine(this.getPosition());
+        const canLoadOil = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
 
-        const position = oil.getPosition();
-        oil.collect();
+        if (!exploitableMine) {
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('wander', this.wander));
+        } else if (!canLoadOil) {
+            this.behavior.pathFollowing(this.path);
+            this.behavior.reactToCollision(this.body);
+        } else {
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('load oil', this.loadOil));
+        }
+    }
 
-        this.buildings.add(new Mine(this.game, position.x, position.y, 'Mine', 0));
+    public loadOil = () =>
+    {
+        const exploitableMine = this.radar.closestExploitableMine(this.getPosition());
+
+        if (exploitableMine) {
+            const expectedQuantity = this.oilCapacity - this.oilLoad;
+            const collectedQuantity = exploitableMine.collect(expectedQuantity);
+            this.oilLoad = collectedQuantity;
+
+            const base = this.radar.closestBase(this.getPosition());
+            this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), base.getPosition().clone());
+            this.brain.popState();
+            this.brain.pushState(new State('goto base', this.gotoBase));
+        } else {
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('wander', this.wander));
+        }
+    }
+
+    public gotoBase = () =>
+    {
+        const canUnloadOil = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
+        if (!canUnloadOil) {
+            this.behavior.pathFollowing(this.path);
+            this.behavior.reactToCollision(this.body);
+        } else {
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('unload oil', this.unloadOil));
+        }
+    }
+
+    public unloadOil = () =>
+    {
+        const base = this.radar.closestBase(this.getPosition());
+        base.stock(this.oilLoad);
+        this.oilLoad = 0;
+
+        const exploitableMine = this.radar.closestExploitableMine(this.getPosition());
+        if (exploitableMine) {
+            this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), exploitableMine.getPosition().clone());
+            this.brain.popState();
+            this.brain.pushState(new State('go to mine', this.gotoMine));
+        } else {
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('wander', this.wander));
+        }
     }
 }

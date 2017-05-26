@@ -5,4 +5,6 @@ export abstract class Building extends Phaser.Sprite
     {
         return this.body.position;
     }
+
+    abstract getStatus() :string;
 }

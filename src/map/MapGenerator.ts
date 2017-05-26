@@ -1,6 +1,7 @@
 
 export abstract class MapGenerator
 {
+    public static LAYER_NAME: string = 'Tiles';
     protected screenWidth: number;
     protected screenHeight: number;
     protected game: Phaser.Game;
