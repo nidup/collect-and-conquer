@@ -57,6 +57,10 @@ export class Miner extends Bot
 
         this.radar = radar;
 
+        /**
+         * Wander Collect -> Go to mine -> Load -> Go to base -> Unload -> Go to mine
+         * Wander Oil -> Go to oil -> Build mine (destroy)
+         */
         this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
 
@@ -66,11 +70,6 @@ export class Miner extends Bot
         this.oilLoad = 0
         this.oilCapacity = 10
     }
-
-    /**
-     * Wander Collect -> Go to mine -> Collect -> Go to base -> Unload -> Go to mine
-     * Wander Oil -> Go to oil -> Build mine (destroy)
-     */
 
     public wander = () =>
     {
@@ -123,13 +122,19 @@ export class Miner extends Bot
     public buildMine = () =>
     {
         const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
-        this.health = 0;
-        const position = oil.getPosition();
-        oil.collect();
-        this.buildings.add(new Mine(this.game, position.x, position.y, 'Mine', 0, oil.getQuantity()));
+        if (oil) {
+            this.health = 0;
+            const position = oil.getPosition();
+            oil.collect();
+            this.buildings.add(new Mine(this.game, position.x, position.y, 'Mine', 0, oil.getQuantity()));
 
-        this.brain.popState();
-        this.brain.pushState(new State('extracting', this.extracting));
+            this.brain.popState();
+            this.brain.pushState(new State('extracting', this.extracting));
+        } else {
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('wander', this.wander));
+        }
     }
 
     public extracting = () =>
@@ -139,8 +144,14 @@ export class Miner extends Bot
 
     public gotoMine = () =>
     {
+        const exploitableMine = this.radar.closestExploitableMine(this.getPosition());
         const canLoadOil = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
-        if (!canLoadOil) {
+
+        if (!exploitableMine) {
+            this.path = null;
+            this.brain.popState();
+            this.brain.pushState(new State('wander', this.wander));
+        } else if (!canLoadOil) {
             this.behavior.pathFollowing(this.path);
             this.behavior.reactToCollision(this.body);
         } else {
