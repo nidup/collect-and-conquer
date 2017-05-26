@@ -30,6 +30,7 @@ export default class Play extends Phaser.State
     private layer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
     private debug: boolean = true;
+    private enableTileCollision = false;
 
     public create()
     {
@@ -59,8 +60,8 @@ export default class Play extends Phaser.State
         this.layer.resizeWorld();
 
         this.items = new ItemRepository();
-        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 30));
-        this.items.add(new Oil(this.game, 570, 430, 'Icons', 0, 50));
+        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 90));
+        this.items.add(new Oil(this.game, 570, 430, 'Icons', 0, 70));
 
         this.buildings = new BuildingRepository();
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
@@ -81,13 +82,14 @@ export default class Play extends Phaser.State
         this.bots.add(new Miner(this.game, 700, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
 
         this.unitSelector = new UnitSelector();
+        this.unitSelector.selectUnit(this.buildings.get(0));
         new CommandPanel(this.game, screenWidth, this.unitSelector);
     }
 
     public update()
     {
         this.updateItems(this.items);
-        this.updateBots(this.bots, this.buildings, this.game, this.layer);
+        this.updateBots(this.bots, this.game, this.layer);
         this.updateUnitSelector(this.unitSelector, this.bots, this.buildings, this.items);
     }
 
@@ -104,7 +106,7 @@ export default class Play extends Phaser.State
             });
     }
 
-    private updateBots(bots: BotRepository, buildings: BuildingRepository, game: Phaser.Game, collisionLayer: Phaser.TilemapLayer)
+    private updateBots(bots: BotRepository, game: Phaser.Game, collisionLayer: Phaser.TilemapLayer)
     {
         const aliveBots = bots;
         aliveBots.all()
@@ -123,12 +125,14 @@ export default class Play extends Phaser.State
                 }
             });
         }
-/*
-        const layer = collisionLayer;
-        aliveBots.all().map(function(bot: Bot) {
-            game.physics.arcade.collide(bot, layer);
-            bot.update();
-        });*/
+
+        if (this.enableTileCollision) {
+            const layer = collisionLayer;
+            aliveBots.all().map(function(bot: Bot) {
+                game.physics.arcade.collide(bot, layer);
+                bot.update();
+            });
+        }
     }
 
     private updateUnitSelector(unitSelector: UnitSelector, bots: BotRepository, buildings: BuildingRepository, items: ItemRepository)
