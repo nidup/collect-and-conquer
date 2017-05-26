@@ -10,7 +10,6 @@ import {BrainText} from "./BrainText";
 
 export class Builder extends Bot
 {
-    // TODO: should be changed by changing avoiding behavior
     public body: Phaser.Physics.Arcade.Body;
 
     private pathfinder: PathFinder;

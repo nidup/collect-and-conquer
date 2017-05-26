@@ -3,8 +3,6 @@ import {Building} from "./Building";
 
 export class Base extends Building
 {
-    public body: Phaser.Physics.Arcade.Body;
-
     private stockedQuantity: number = 0;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number)

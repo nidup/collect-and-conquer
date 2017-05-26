@@ -3,8 +3,6 @@ import {Building} from "./Building";
 
 export class Generator extends Building
 {
-    public body: Phaser.Physics.Arcade.Body;
-
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number)
     {
         super(game, x, y, key, frame);

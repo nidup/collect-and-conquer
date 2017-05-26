@@ -18,8 +18,6 @@ import {Radar} from "./sensor/Radar";
 
 export class Miner extends Bot
 {
-    public body: Phaser.Physics.Arcade.Body;
-
     private speed: number = 60;
     private scope: number = 200;
 

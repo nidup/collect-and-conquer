@@ -3,8 +3,6 @@ import {Building} from "./Building";
 
 export class Mine extends Building
 {
-    public body: Phaser.Physics.Arcade.Body;
-
     private remainingQuantity: number;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, quantity: number)

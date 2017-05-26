@@ -9,8 +9,6 @@ import {BrainText} from "./BrainText";
 
 export class Scout extends Bot
 {
-    public body: Phaser.Physics.Arcade.Body;
-
     private repository: BotRepository;
 
     private speed: number = 90;
