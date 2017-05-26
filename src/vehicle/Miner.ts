@@ -139,11 +139,13 @@ export class Miner extends Bot
 
     public extracting = () =>
     {
-        // IDLE
+        // IDLE : TODO: unbuild the mine?
     }
 
     public gotoMine = () =>
     {
+        // TODO: change path is a closer is built?
+
         const exploitableMine = this.radar.closestExploitableMine(this.getPosition());
         const canLoadOil = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
 

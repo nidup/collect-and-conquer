@@ -29,7 +29,7 @@ export default class Play extends Phaser.State
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
-    private debug: boolean = false;
+    private debug: boolean = true;
 
     public create()
     {
@@ -87,7 +87,7 @@ export default class Play extends Phaser.State
     public update()
     {
         this.updateItems(this.items);
-        this.updateBots(this.bots, this.game, this.layer);
+        this.updateBots(this.bots, this.buildings, this.game, this.layer);
         this.updateUnitSelector(this.unitSelector, this.bots, this.buildings, this.items);
     }
 
@@ -104,7 +104,7 @@ export default class Play extends Phaser.State
             });
     }
 
-    private updateBots(bots: BotRepository, game: Phaser.Game, collisionLayer: Phaser.TilemapLayer)
+    private updateBots(bots: BotRepository, buildings: BuildingRepository, game: Phaser.Game, collisionLayer: Phaser.TilemapLayer)
     {
         const aliveBots = bots;
         aliveBots.all()
@@ -123,12 +123,12 @@ export default class Play extends Phaser.State
                 }
             });
         }
-
+/*
         const layer = collisionLayer;
         aliveBots.all().map(function(bot: Bot) {
             game.physics.arcade.collide(bot, layer);
             bot.update();
-        });
+        });*/
     }
 
     private updateUnitSelector(unitSelector: UnitSelector, bots: BotRepository, buildings: BuildingRepository, items: ItemRepository)
@@ -148,7 +148,9 @@ export default class Play extends Phaser.State
             this.bots.all().map(function(bot: Bot) {
                 game.debug.body(bot);
             });
-
+            this.buildings.all().map(function(building: Building) {
+                game.debug.body(building);
+            });
             this.items.all().map(function(item: Item) {
                 game.debug.body(item);
             });

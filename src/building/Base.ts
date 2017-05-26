@@ -3,6 +3,8 @@ import {Building} from "./Building";
 
 export class Base extends Building
 {
+    public body: Phaser.Physics.Arcade.Body;
+
     private stockedQuantity: number = 0;
 
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number)
@@ -12,6 +14,7 @@ export class Base extends Building
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.allowGravity = false;
+        this.body.setCircle(28, -6, 6);
         this.inputEnabled = true;
 
         this.animations.add('idle', [0, 1, 2], 3, true);
