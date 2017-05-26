@@ -29,7 +29,7 @@ export default class Play extends Phaser.State
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
-    private debug: boolean = true;
+    private debug: boolean = false;
     private enableTileCollision = false;
 
     public create()
@@ -62,7 +62,7 @@ export default class Play extends Phaser.State
         this.layer.resizeWorld();
 
         this.items = new ItemRepository();
-        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 90));
+        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 30));
         this.items.add(new Oil(this.game, 570, 430, 'Icons', 0, 70));
 
         this.buildings = new BuildingRepository();
