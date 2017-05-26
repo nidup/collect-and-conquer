@@ -20,6 +20,7 @@ export class Miner extends Bot
 {
     private speed: number = 60;
     private scope: number = 200;
+    private buildingScope: number = 40;
 
     private pathfinder: PathFinder;
     private path: PhaserPointPath;
@@ -97,8 +98,8 @@ export class Miner extends Bot
     {
         const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
         const lookForOilPosition = !oil;
-        const canGoToMinePlaceholder = this.path && this.getPosition().distance(this.path.lastNode()) > 10;
-        const canBuildMine = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
+        const canGoToMinePlaceholder = this.path && this.getPosition().distance(this.path.lastNode()) > this.buildingScope;
+        const canBuildMine = this.path && this.getPosition().distance(this.path.lastNode()) < this.buildingScope;
         if (lookForOilPosition) {
             this.path = null;
             this.brain.popState();
@@ -124,7 +125,7 @@ export class Miner extends Bot
             this.health = 0;
             const position = oil.getPosition();
             oil.collect();
-            this.buildings.add(new Mine(this.game, position.x, position.y, 'Mine', 0, oil.getQuantity()));
+            this.buildings.add(new Mine(this.game, position.x, position.y - 20, 'Mine', 0, oil.getQuantity()));
 
             this.brain.popState();
             this.brain.pushState(new State('extracting', this.extracting));
@@ -145,7 +146,7 @@ export class Miner extends Bot
         // TODO: change path is a closer is built?
 
         const exploitableMine = this.radar.closestExploitableMine(this.getPosition());
-        const canLoadOil = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
+        const canLoadOil = this.path && this.getPosition().distance(this.path.lastNode()) < this.buildingScope;
 
         if (!exploitableMine) {
             this.path = null;
@@ -183,7 +184,7 @@ export class Miner extends Bot
 
     public gotoBase = () =>
     {
-        const canUnloadOil = this.path && this.getPosition().distance(this.path.lastNode()) < 10;
+        const canUnloadOil = this.path && this.getPosition().distance(this.path.lastNode()) < this.buildingScope;
         if (!canUnloadOil) {
             this.behavior.pathFollowing(this.path);
             this.behavior.reactToCollision(this.body);
