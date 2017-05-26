@@ -6,15 +6,17 @@ import {BotRepository} from "./BotRepository";
 import {StackFSM} from "../ai/fsm/StackFSM";
 import {State} from "../ai/fsm/State";
 import {BrainText} from "./BrainText";
+import {Radar} from "./sensor/Radar";
 
 export class Scout extends Bot
 {
+    private radar: Radar;
     private repository: BotRepository;
 
     private speed: number = 90;
     private scope: number = 100;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, bots: BotRepository) {
+    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, bots: BotRepository, radar: Radar) {
         super(game, x, y, key, frame);
 
         this.anchor.setTo(.5, .5);
@@ -32,6 +34,7 @@ export class Scout extends Bot
         game.add.existing(this);
 
         this.repository = bots;
+        this.radar = radar;
         this.behavior = new SteeringComputer(this);
         this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
@@ -47,7 +50,7 @@ export class Scout extends Bot
 
         } else {
             this.behavior.wander();
-            //this.behavior.avoidCollision(this.body);
+            this.behavior.avoidCollision(this.radar);
             this.behavior.reactToCollision(this.body);
         }
     }
@@ -60,6 +63,7 @@ export class Scout extends Bot
             // TODO: sometimes both bot and enemy does not move anymore!
             //this.behavior.evading(enemy);
             this.behavior.flee(enemy.getPosition());
+            this.behavior.avoidCollision(this.radar);
         } else {
             this.brain.popState();
         }

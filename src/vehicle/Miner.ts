@@ -80,9 +80,10 @@ export class Miner extends Bot
 
         if (knowBaseAndMine) {
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), mine.getPosition().clone());
-            this.brain.popState();
-            this.brain.pushState(new State('go to mine', this.gotoMine));
-
+            if (this.path) {
+                this.brain.popState();
+                this.brain.pushState(new State('go to mine', this.gotoMine));
+            }
         } else if (knowMinePlaceholder) {
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), oil.getPosition().clone());
             this.brain.popState();
@@ -91,6 +92,7 @@ export class Miner extends Bot
         } else {
             this.behavior.wander();
             this.behavior.reactToCollision(this.body);
+            this.behavior.avoidCollision(this.radar);
         }
     }
 

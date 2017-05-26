@@ -10,6 +10,7 @@ import {PhaserPointPath} from "../path/PhaserPointPath";
 import {PathPatrollingBehavior} from "./behavior/PathPatrollingBehavior";
 import {CollisionReactionBehavior} from "./behavior/CollisionReactionBehavior";
 import {CollisionAvoidanceBehavior} from "./behavior/CollisionAvoidanceBehavior";
+import {Radar} from "../../vehicle/sensor/Radar";
 
 /**
  * Inspired by following posts
@@ -95,9 +96,9 @@ export class SteeringComputer
         this.steering.add(force.x, force.y);
     }
 
-    public avoidCollision(body: Phaser.Physics.Arcade.Body) :void
+    public avoidCollision(radar: Radar) :void
     {
-        const force = this.collisionAvoidanceBehavior.avoidCollision();
+        const force = this.collisionAvoidanceBehavior.avoidCollision(radar);
         this.steering.add(force.x, force.y);
     }
 
