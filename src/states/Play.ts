@@ -59,8 +59,8 @@ export default class Play extends Phaser.State
         this.layer.resizeWorld();
 
         this.items = new ItemRepository();
-        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 20));
-        this.items.add(new Oil(this.game, 570, 430, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 30));
+        this.items.add(new Oil(this.game, 570, 430, 'Icons', 0, 50));
 
         this.buildings = new BuildingRepository();
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
@@ -82,7 +82,6 @@ export default class Play extends Phaser.State
 
         this.unitSelector = new UnitSelector();
         new CommandPanel(this.game, screenWidth, this.unitSelector);
-
     }
 
     public update()
