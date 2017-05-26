@@ -18,7 +18,7 @@ export class ItemRepository
 
     public oils(): Oil[]
     {
-        return this.items.filter(function (item: Item) {
+        return <Oil[]>this.items.filter(function (item: Item) {
             return item instanceof Oil;
         });
     }

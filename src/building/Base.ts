@@ -3,6 +3,8 @@ import {Building} from "./Building";
 
 export class Base extends Building
 {
+    private stockedQuantity: number = 0;
+
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number)
     {
         super(game, x, y, key, frame);
@@ -22,6 +24,11 @@ export class Base extends Building
 
     public getStatus()
     {
-        return this.animations.currentAnim.name;
+        return this.animations.currentAnim.name+ ' (oil: ' + this.stockedQuantity +')';
+    }
+
+    public stock(quantity: number)
+    {
+        this.stockedQuantity += quantity;
     }
 }

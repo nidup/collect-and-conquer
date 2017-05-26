@@ -52,16 +52,18 @@ export class CommandPanel extends Phaser.Sprite
         const selectedUnit = this.unitSelector.getSelectedUnit();
         if (selectedUnit) {
             this.camera.follow(selectedUnit);
+            this.displayUnitStatus(selectedUnit);
             this.copySelectedUnitImage(selectedUnit);
+        }
+    }
 
-            if (selectedUnit instanceof Bot || selectedUnit instanceof Building) {
-                this.unitStateText.setText(selectedUnit.getStatus());
-                const color = this.stateColors.getColor(selectedUnit.getStatus());
-                const style = {font: "11px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "top"};
-                this.unitStateText.setStyle(style);
-            } else {
-                this.unitStateText.setText('');
-            }
+    private displayUnitStatus(selectedUnit: Phaser.Sprite)
+    {
+        if (selectedUnit instanceof Building || selectedUnit instanceof Bot || selectedUnit instanceof Item) {
+            this.unitStateText.setText(selectedUnit.getStatus());
+            const color = this.stateColors.getColor(selectedUnit.getStatus());
+            const style = {font: "11px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "top"};
+            this.unitStateText.setStyle(style);
         }
     }
 

@@ -30,6 +30,8 @@ export class Miner extends Bot
 
     private buildings: BuildingRepository;
 
+    private quantity: number;
+
     constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar, buildings: BuildingRepository)
     {
         super(game, x, y, key, frame);
@@ -59,8 +61,8 @@ export class Miner extends Bot
 
         this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
 
-        // TODO how to remove / replace for the new mine building? a factory?
         this.buildings = buildings;
+        this.quantity = 0
     }
 
     public pathFollowing = () =>
@@ -122,6 +124,6 @@ export class Miner extends Bot
         const position = oil.getPosition();
         oil.collect();
 
-        this.buildings.add(new Mine(this.game, position.x, position.y, 'Mine', 0));
+        this.buildings.add(new Mine(this.game, position.x, position.y, 'Mine', 0, oil.getQuantity()));
     }
 }

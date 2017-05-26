@@ -72,7 +72,7 @@ export class Radar
                 return mine1.distance > mine2.distance ? 1 : -1;
             })
             .filter(function (mineAndDistance: MineAndDistance) {
-                    return mineAndDistance.mine.isCollecting()
+                    return mineAndDistance.mine.isExtracting()
                 }
             );
 
