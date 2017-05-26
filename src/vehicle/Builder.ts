@@ -7,19 +7,20 @@ import {PathFinder} from "../ai/path/PathFinder";
 import {PhaserPointPath} from "../ai/path/PhaserPointPath";
 import {State} from "../ai/fsm/State";
 import {BrainText} from "./BrainText";
+import {Radar} from "./sensor/Radar";
 
 export class Builder extends Bot
 {
-    // TODO: should be changed by changing avoiding behavior
     public body: Phaser.Physics.Arcade.Body;
 
+    private radar: Radar;
     private pathfinder: PathFinder;
 
     private speed: number = 60;
 
     private path: PhaserPointPath;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse)
+    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar)
     {
         super(game, x, y, key, frame);
 
@@ -38,6 +39,7 @@ export class Builder extends Bot
         game.add.existing(this);
 
         this.behavior = new SteeringComputer(this);
+        this.radar = radar;
 
         this.pathfinder = new PathFinder(mapAnalyse);
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
@@ -73,6 +75,7 @@ export class Builder extends Bot
     {
         if (this.path == null) {
             this.behavior.wander();
+            this.behavior.avoidCollision(this.radar);
             this.behavior.reactToCollision(this.body);
         } else {
             this.brain.popState();

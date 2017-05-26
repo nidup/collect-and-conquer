@@ -10,8 +10,6 @@ import {PhaserPointPath} from "../ai/path/PhaserPointPath";
 
 export class Tank extends Bot
 {
-    public body: Phaser.Physics.Arcade.Body;
-
     private repository: BotRepository;
 
     private speed: number = 50;

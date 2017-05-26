@@ -7,6 +7,7 @@ import {Oil} from "../../item/Oil";
 import {Mine} from "../../building/Mine";
 import {Base} from "../../building/Base";
 import {Item} from "../../item/Item";
+import {Building} from "../../building/Building";
 
 export class Radar
 {
@@ -103,5 +104,33 @@ export class Radar
             });
 
         return closestBases.length > 0 ? closestBases[0].base : null;
+    }
+
+    public closestObstacle(position: Phaser.Point, visibilityScope: number): Building
+    {
+        class BuildingAndDistance {
+            public building: Building;
+            public distance: number;
+            constructor (building: Building, distance: number) {
+                this.building = building;
+                this.distance = distance;
+            }
+        }
+        const transfoAddDistance = function(building: Building) {
+            return new BuildingAndDistance(building, position.distance(building.getPosition()));
+        };
+        const closestBuildings = this.buildings.all()
+            .reduce(function (buildingsWithDistance, building) {
+                buildingsWithDistance.push(transfoAddDistance(building));
+                return buildingsWithDistance;
+            }, [])
+            .filter(function (building: BuildingAndDistance) {
+                return building.distance < visibilityScope;
+            })
+            .sort(function (building1: BuildingAndDistance, building2: BuildingAndDistance) {
+                return building1.distance > building2.distance ? 1 : -1;
+            });
+
+        return closestBuildings.length > 0 ? closestBuildings[0].building : null;
     }
 }

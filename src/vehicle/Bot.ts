@@ -6,6 +6,7 @@ import {BrainText} from "./BrainText";
 
 export abstract class Bot extends Phaser.Sprite implements Boid
 {
+    public body: Phaser.Physics.Arcade.Body;
     protected behavior: SteeringComputer;
     protected brain: StackFSM;
     protected brainText: BrainText;
@@ -59,7 +60,7 @@ export abstract class Bot extends Phaser.Sprite implements Boid
 
     getPosition(): Phaser.Point
     {
-        return this.body.position;
+        return this.body.center;
     }
 
     getMass(): number {
