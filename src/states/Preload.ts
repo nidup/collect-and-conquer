@@ -20,7 +20,7 @@ export default class Preload extends Phaser.State {
 
     private loadTilemap()
     {
-        this.load.tilemap('level1', 'assets/tilemap/level-no-collision.json', null, Phaser.Tilemap.TILED_JSON);
+        this.load.tilemap('level1', 'assets/tilemap/level1.json', null, Phaser.Tilemap.TILED_JSON);
     }
 
     private loadTileImages()
