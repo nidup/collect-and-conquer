@@ -44,7 +44,7 @@ export default class Play extends Phaser.State
         this.game.antialias = false;
 
         const screenWidth = 1000;
-        const screenHeight = 500;
+        const screenHeight = 800;
         const tileSize = 20;
 
         const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
@@ -76,22 +76,23 @@ export default class Play extends Phaser.State
         const armyRed = new Army(0xff6771, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
         this.players.push(new Player(armyRed));
 
-        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 40));
-        this.items.add(new Oil(this.game, 570, 450, 'Icons', 0, 70));
-        this.items.add(new Oil(this.game, 770, 150, 'Icons', 0, 70));
+        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 40));
+        this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 120));
+        this.items.add(new Oil(this.game, 550, 650, 'Icons', 0, 70));
+        this.items.add(new Oil(this.game, 150, 650, 'Icons', 0, 70));
+        this.items.add(new Oil(this.game, 500, 400, 'Icons', 0, 70));
 
-        armyBlue.buildBase(150, 200);
-        armyBlue.buildGenerator(400, 190);
+        armyBlue.buildBase(150, 150);
         armyBlue.recruitMiner(70, 100);
         armyBlue.recruitMiner(100, 400);
         armyBlue.recruitMiner(400, 100);
-        armyBlue.recruitMiner(700, 100);
+        armyBlue.recruitMiner(100, 600);
         armyBlue.recruitScout(250, 200);
         armyBlue.recruitScout(50, 400);
         armyBlue.recruitBuilder(330, 370);
         armyBlue.recruitTank(400, 360);
 
-        armyRed.buildBase(800, 450);
+        armyRed.buildBase(850, 650);
         armyRed.recruitMiner(850, 300);
         armyRed.recruitMiner(800, 400);
         armyRed.recruitMiner(700, 500);

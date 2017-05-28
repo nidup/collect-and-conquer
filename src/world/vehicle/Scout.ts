@@ -1,7 +1,6 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
-import {VehicleRepository} from "./VehicleRepository";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
