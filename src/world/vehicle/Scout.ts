@@ -1,10 +1,10 @@
 
-import {Boid} from "../ai/steering/Boid";
-import {SteeringComputer} from "../ai/steering/SteeringComputer";
+import {Boid} from "../../ai/steering/Boid";
+import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
 import {BotRepository} from "./BotRepository";
-import {StackFSM} from "../ai/fsm/StackFSM";
-import {State} from "../ai/fsm/State";
+import {StackFSM} from "../../ai/fsm/StackFSM";
+import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
 import {Radar} from "./sensor/Radar";
 

@@ -1,9 +1,9 @@
 
 import {UnitSelector} from "./UnitSelector";
-import {Bot} from "../vehicle/Bot";
-import {Building} from "../building/Building";
-import {Item} from "../item/Item";
-import {StateColors} from "../vehicle/StateColor";
+import {Bot} from "../world/vehicle/Bot";
+import {Building} from "../world/building/Building";
+import {Item} from "../world/item/Item";
+import {StateColors} from "../world/vehicle/StateColor";
 import BoardFX from "../fx/BoardFX";
 const SCALE_RATIO = 1.5;
 const PANEL_WIDTH = 82;

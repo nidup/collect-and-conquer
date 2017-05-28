@@ -1,7 +1,7 @@
 
 import {Boid} from "../Boid";
-import {Radar} from "../../../vehicle/sensor/Radar";
-import {Generator} from "../../../building/Generator";
+import {Radar} from "../../../world/vehicle/sensor/Radar";
+import {Generator} from "../../../world/building/Generator";
 
 /**
  * @see https://gamedevelopment.tutsplus.com/tutorials/understanding-steering-behaviors-collision-avoidance--gamedev-7777
@@ -15,6 +15,7 @@ export class CollisionAvoidanceBehavior
         this.host = host;
     }
 
+    // TODO ai steering behavior should not now game objects
     public avoidCollision(radar: Radar)
     {
         const maxSeeAhead = 80;

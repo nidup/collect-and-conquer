@@ -10,7 +10,7 @@ import {PhaserPointPath} from "../path/PhaserPointPath";
 import {PathPatrollingBehavior} from "./behavior/PathPatrollingBehavior";
 import {CollisionReactionBehavior} from "./behavior/CollisionReactionBehavior";
 import {CollisionAvoidanceBehavior} from "./behavior/CollisionAvoidanceBehavior";
-import {Radar} from "../../vehicle/sensor/Radar";
+import {Radar} from "../../world/vehicle/sensor/Radar";
 
 /**
  * Inspired by following posts
@@ -96,6 +96,7 @@ export class SteeringComputer
         this.steering.add(force.x, force.y);
     }
 
+    // TODO ai steering behavior should not now game objects
     public avoidCollision(radar: Radar) :void
     {
         const force = this.collisionAvoidanceBehavior.avoidCollision(radar);

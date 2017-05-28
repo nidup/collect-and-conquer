@@ -1,5 +1,4 @@
 
-
 export class StateColors
 {
     private stateColors: {} = {
