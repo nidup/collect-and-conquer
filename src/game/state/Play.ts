@@ -70,14 +70,15 @@ export default class Play extends Phaser.State
 
         this.players = [];
 
-        const armyBlue = new Army('#0000ff', this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
+        const armyBlue = new Army(0x8cd6ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
         this.players.push(new Player(armyBlue));
 
-        const armyRed = new Army('#ff0000', this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
+        const armyRed = new Army(0xff6771, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
         this.players.push(new Player(armyRed));
 
         this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 40));
         this.items.add(new Oil(this.game, 570, 450, 'Icons', 0, 70));
+        this.items.add(new Oil(this.game, 770, 150, 'Icons', 0, 70));
 
         armyBlue.buildBase(150, 200);
         armyBlue.buildGenerator(400, 190);

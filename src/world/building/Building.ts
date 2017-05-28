@@ -10,6 +10,7 @@ export abstract class Building extends Phaser.Sprite
     {
         super(game, x, y, key, frame);
         this.army = army;
+        this.tint = army.getColor();
     }
 
     getPosition(): Phaser.Point

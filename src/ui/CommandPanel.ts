@@ -93,6 +93,7 @@ export class CommandPanel extends Phaser.Sprite
         this.unitStateImage = this.game.add.sprite(positionX, positionY, selectedUnit.key, selectedUnit.frame);
         this.unitStateImage.fixedToCamera = true;
         this.unitStateImage.animations = selectedUnit.animations;
+        this.unitStateImage.tint = selectedUnit.tint;
         if (selectedUnit.animations.currentAnim) {
             this.unitStateImage.animations.play(selectedUnit.animations.currentAnim.name);
         }

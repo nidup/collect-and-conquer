@@ -17,6 +17,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
     {
         super(game, x, y, key, frame);
         this.army = army;
+        this.tint = army.getColor();
     }
 
     public update ()

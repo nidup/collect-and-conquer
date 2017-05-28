@@ -16,7 +16,7 @@ import {Oil} from "./item/Oil";
 
 export class Army
 {
-    private color: string;
+    private color: number;
     private vehicles: VehicleRepository;
     private buildings: BuildingRepository;
     private items: ItemRepository;
@@ -24,7 +24,7 @@ export class Army
     private mapAnalyse: MapAnalyse;
     private game: Phaser.Game;
 
-    constructor(color: string, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, mapAnalyse: MapAnalyse, game: Phaser.Game)
+    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, mapAnalyse: MapAnalyse, game: Phaser.Game)
     {
         this.color = color;
         this.vehicles = vehicles;
@@ -87,5 +87,15 @@ export class Army
     public getColor()
     {
         return this.color;
+    }
+
+    public getColorString()
+    {
+        return this.color.toString(16);
+
+//        console.log(0xff0000);
+//        console.log(0xff0000.toString(16));
+//        console.log(parseInt(0xff0000.toString(16), 16));
+
     }
 }
