@@ -66,6 +66,8 @@ export class Tank extends Vehicle
             this.brain.pushState(new State('pursuing', this.pursuing));
         } else {
             this.behavior.wander();
+            this.behavior.avoidCollision(this.radar);
+            this.behavior.reactToCollision(this.body);
         }
     }
 
