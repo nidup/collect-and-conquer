@@ -48,7 +48,7 @@ export default class Play extends Phaser.State
         const tileSize = 20;
 
         const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
-        // const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
+        //const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
         this.map = mapGenerator.generate();
 
         // handle collisions
@@ -93,12 +93,12 @@ export default class Play extends Phaser.State
         armyBlue.recruitTank(400, 360);
 
         armyRed.buildBase(850, 650);
-        armyRed.recruitMiner(850, 300);
-        armyRed.recruitMiner(800, 400);
-        armyRed.recruitMiner(700, 500);
-        armyRed.recruitMiner(100, 500);
-        armyRed.recruitScout(450, 600);
-        armyRed.recruitScout(300, 400);
+        armyRed.recruitMiner(850, 500);
+        armyRed.recruitMiner(800, 600);
+        armyRed.recruitMiner(700, 700);
+        armyRed.recruitMiner(100, 700);
+        armyRed.recruitScout(450, 800);
+        armyRed.recruitScout(300, 600);
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);

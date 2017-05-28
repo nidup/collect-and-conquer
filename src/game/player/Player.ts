@@ -12,6 +12,6 @@ export class Player
 
     public play()
     {
-
+        // TODO extract Play state logic
     }
 }
