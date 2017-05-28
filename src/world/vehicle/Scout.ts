@@ -60,7 +60,7 @@ export class Scout extends Vehicle
         const enemy = this.closestEnemy();
         if (enemy !== null) {
             // TODO: flee makes something more natural when pursuing!
-            // TODO: sometimes both bot and enemy does not move anymore!
+            // TODO: sometimes both vehicle and enemy does not move anymore!
             //this.behavior.evading(enemy);
             this.behavior.flee(enemy.getPosition());
             this.behavior.avoidCollision(this.radar);

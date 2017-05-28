@@ -128,27 +128,27 @@ export default class Play extends Phaser.State
     {
         const aliveVehicles = vehicles;
         aliveVehicles.all()
-            .filter(function (bot: Vehicle) {
-                return !bot.isAlive();
+            .filter(function (vehicle: Vehicle) {
+                return !vehicle.isAlive();
             })
-            .map(function (bot: Vehicle) {
-                aliveVehicles.remove(bot);
-                bot.destroy();
+            .map(function (vehicle: Vehicle) {
+                aliveVehicles.remove(vehicle);
+                vehicle.destroy();
             });
 
         if (game.input.mousePointer.isDown) {
-            aliveVehicles.all().map(function(bot: Vehicle) {
-                if (bot instanceof Builder) {
-                    (<Builder>bot).changePath(new Phaser.Point(game.input.x, game.input.y));
+            aliveVehicles.all().map(function(vehicle: Vehicle) {
+                if (vehicle instanceof Builder) {
+                    (<Builder>vehicle).changePath(new Phaser.Point(game.input.x, game.input.y));
                 }
             });
         }
 
         if (this.enableTileCollision) {
             const layer = collisionLayer;
-            aliveVehicles.all().map(function(bot: Vehicle) {
-                game.physics.arcade.collide(bot, layer);
-                bot.update();
+            aliveVehicles.all().map(function(vehicle: Vehicle) {
+                game.physics.arcade.collide(vehicle, layer);
+                vehicle.update();
             });
         }
     }
@@ -167,8 +167,8 @@ export default class Play extends Phaser.State
             // this.game.debug.body(this.vehicles.get(1));
             // this.game.debug.bodyInfo(this.vehicles.get(1), 240, 410);
             const game = this.game;
-            this.vehicles.all().map(function(bot: Vehicle) {
-                game.debug.body(bot);
+            this.vehicles.all().map(function(vehicle: Vehicle) {
+                game.debug.body(vehicle);
             });
             this.buildings.all().map(function(building: Building) {
                 game.debug.body(building);

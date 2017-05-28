@@ -15,20 +15,20 @@ export class VehicleRepository
         return this.vehicles;
     }
 
-    public add(bot: Vehicle): void
+    public add(vehicle: Vehicle): void
     {
-        this.vehicles.push(bot);
+        this.vehicles.push(vehicle);
     }
 
-    public remove(bot: Vehicle): void
+    public remove(vehicle: Vehicle): void
     {
-        const index = this.vehicles.indexOf(bot);
+        const index = this.vehicles.indexOf(vehicle);
         this.vehicles.splice(index, 1);
     }
 
     public enemiesOf(myself: Vehicle) :Vehicle[]
     {
-        return this.vehicles.filter(function (bot: Vehicle) { return bot != myself; });
+        return this.vehicles.filter(function (vehicle: Vehicle) { return vehicle != myself; });
     }
 
     public first(): Vehicle

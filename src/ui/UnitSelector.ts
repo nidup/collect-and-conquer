@@ -2,6 +2,7 @@
 import {Vehicle} from "../world/vehicle/Vehicle";
 import {Building} from "../world/building/Building";
 import {Item} from "../world/item/Item";
+
 export class UnitSelector
 {
     private selectedUnit: Phaser.Sprite;
@@ -19,10 +20,10 @@ export class UnitSelector
     public listenVehicles(vehicles: Vehicle[])
     {
         const myself = this;
-        vehicles.map(function (bot: Vehicle) {
-            if (bot.events.onInputDown.getNumListeners() == 0) {
-                bot.events.onInputDown.add(function() {
-                    myself.selectUnit(bot);
+        vehicles.map(function (vehicle: Vehicle) {
+            if (vehicle.events.onInputDown.getNumListeners() == 0) {
+                vehicle.events.onInputDown.add(function() {
+                    myself.selectUnit(vehicle);
                 }, this);
             }
         });
