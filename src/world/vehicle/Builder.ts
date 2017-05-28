@@ -1,11 +1,11 @@
 
-import {SteeringComputer} from "../ai/steering/SteeringComputer";
+import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Bot} from "./Bot";
-import {StackFSM} from "../ai/fsm/StackFSM";
-import {MapAnalyse} from "../ai/map/MapAnalyse";
-import {PathFinder} from "../ai/path/PathFinder";
-import {PhaserPointPath} from "../ai/path/PhaserPointPath";
-import {State} from "../ai/fsm/State";
+import {StackFSM} from "../../ai/fsm/StackFSM";
+import {MapAnalyse} from "../../ai/map/MapAnalyse";
+import {PathFinder} from "../../ai/path/PathFinder";
+import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
+import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
 import {Radar} from "./sensor/Radar";
 

@@ -1,6 +1,6 @@
 
 import {Bot} from "./Bot";
-import {StackFSM} from "../ai/fsm/StackFSM";
+import {StackFSM} from "../../ai/fsm/StackFSM";
 import {StateColors} from "./StateColor";
 
 export class BrainText extends Phaser.Text

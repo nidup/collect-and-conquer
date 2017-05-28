@@ -1,7 +1,7 @@
 
-import {Bot} from "../vehicle/Bot";
-import {Building} from "../building/Building";
-import {Item} from "../item/Item";
+import {Bot} from "../world/vehicle/Bot";
+import {Building} from "../world/building/Building";
+import {Item} from "../world/item/Item";
 export class UnitSelector
 {
     private selectedUnit: Phaser.Sprite;
