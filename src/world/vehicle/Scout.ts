@@ -9,19 +9,17 @@ import {Army} from "../Army";
 
 export class Scout extends Vehicle
 {
-    private speed: number = 90;
-    private visibilityScope: number = 100;
-
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number) {
         super(game, x, y, army, radar, key, frame);
 
         this.maxHealth = 30;
-        this.heal(this.maxHealth);
+        this.health = this.maxHealth;
+        this.maxVelocity = 90;
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
-        this.body.maxVelocity.set(this.speed, this.speed);
+        this.body.maxVelocity.set(this.maxVelocity, this.maxVelocity);
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);

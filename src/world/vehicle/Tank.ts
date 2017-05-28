@@ -10,21 +10,19 @@ import {Radar} from "./sensor/Radar";
 
 export class Tank extends Vehicle
 {
-    private speed: number = 50;
-    private visibilityScope: number = 200;
-
     private path: PhaserPointPath;
 
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number) {
         super(game, x, y, army, radar, key, frame);
 
         this.maxHealth = 150;
-        this.heal(this.maxHealth);
+        this.health = this.maxHealth;
+        this.maxVelocity = 40;
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
-        this.body.maxVelocity.set(this.speed, this.speed);
+        this.body.maxVelocity.set(this.maxVelocity, this.maxVelocity);
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);

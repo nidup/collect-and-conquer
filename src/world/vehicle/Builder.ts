@@ -14,9 +14,6 @@ export class Builder extends Vehicle
 {
     public body: Phaser.Physics.Arcade.Body;
     private pathfinder: PathFinder;
-
-    private speed: number = 60;
-
     private path: PhaserPointPath;
 
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
@@ -24,12 +21,13 @@ export class Builder extends Vehicle
         super(game, x, y, army, radar, key, frame);
 
         this.maxHealth = 80;
-        this.heal(this.maxHealth);
+        this.health = this.maxHealth;
+        this.maxVelocity = 60;
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
-        this.body.maxVelocity.set(this.speed, this.speed);
+        this.body.maxVelocity.set(this.maxVelocity, this.maxVelocity);
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);
