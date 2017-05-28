@@ -31,18 +31,8 @@ export class VehicleRepository
         return this.vehicles.filter(function (vehicle: Vehicle) { return vehicle != myself; });
     }
 
-    public first(): Vehicle
-    {
-        return this.get(0);
-    }
-
     public length(): number
     {
         return this.vehicles.length;
-    }
-
-    public get(index: number) :Vehicle
-    {
-        return this.vehicles[index];
     }
 }
