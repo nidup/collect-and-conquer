@@ -1,10 +1,8 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
-import {StackFSM} from "../../ai/fsm/StackFSM";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {State} from "../../ai/fsm/State";
-import {BrainText} from "./BrainText";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {MapAnalyse} from "../../ai/map/MapAnalyse";;
 import {Radar} from "./sensor/Radar";
@@ -12,8 +10,6 @@ import {Army} from "../Army";
 
 export class Miner extends Vehicle
 {
-    private speed: number = 60;
-    private scope: number = 200;
     private buildingScope: number = 40;
 
     private pathfinder: PathFinder;
@@ -26,10 +22,14 @@ export class Miner extends Vehicle
     {
         super(game, x, y, army, radar, key, frame);
 
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
+        this.maxVelocity = 60;
+
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
-        this.body.maxVelocity.set(this.speed, this.speed);
+        this.body.maxVelocity.set(this.maxVelocity, this.maxVelocity);
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);
@@ -48,10 +48,7 @@ export class Miner extends Vehicle
          * Wander Collect -> Go to mine -> Load -> Go to base -> Unload -> Go to mine
          * Wander Oil -> Go to oil -> Build mine (destroy)
          */
-        this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
-
-        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
 
         this.oilLoad = 0
         this.oilCapacity = 10
@@ -59,7 +56,7 @@ export class Miner extends Vehicle
 
     public wander = () =>
     {
-        const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
+        const oil = this.radar.closestVisibleOil(this.getPosition(), this.visibilityScope);
         const mine = this.radar.closestExploitableMine(this.getPosition());
         const base = this.radar.closestBase(this.getPosition());
         const knowBaseAndMine = mine != null && base != null;
@@ -85,7 +82,7 @@ export class Miner extends Vehicle
 
     public gotoOil = () =>
     {
-        const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
+        const oil = this.radar.closestVisibleOil(this.getPosition(), this.visibilityScope);
         const lookForOilPosition = !oil;
         const canGoToMinePlaceholder = this.path && this.getPosition().distance(this.path.lastNode()) > this.buildingScope;
         const canBuildMine = this.path && this.getPosition().distance(this.path.lastNode()) < this.buildingScope;
@@ -109,7 +106,7 @@ export class Miner extends Vehicle
 
     public buildMine = () =>
     {
-        const oil = this.radar.closestVisibleOil(this.getPosition(), this.scope);
+        const oil = this.radar.closestVisibleOil(this.getPosition(), this.visibilityScope);
         if (oil) {
             this.health = 0;
             const position = oil.getPosition();

@@ -25,7 +25,6 @@ export default class Preload extends Phaser.State {
 
     private loadTileImages()
     {
-
         this.load.image('GrasClif', 'assets/terrain/GrasClif.png');
         this.load.image('Grass', 'assets/terrain/Grass.png');
         this.load.image('Grass2', 'assets/terrain/Grass2.png');
@@ -55,5 +54,11 @@ export default class Preload extends Phaser.State {
 
         this.load.spritesheet('Icons', 'assets/misc/Icons.png', 20, 20);
         this.load.spritesheet('Markers', 'assets/misc/Markers.png', 10, 10);
+
+        this.load.spritesheet('SmallExplosion', 'assets/explosion/Small.png', 20, 20);
+        this.load.spritesheet('MediumExplosion', 'assets/explosion/Medium.png', 20, 20);
+        this.load.spritesheet('BigExplosion', 'assets/explosion/Big.png', 40, 40);
+
+        this.load.spritesheet('Bullet', 'assets/bullet/Bullet3.png', 10, 10);
     }
 }

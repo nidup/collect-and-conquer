@@ -8,6 +8,10 @@ export class Generator extends Building
     {
         super(game, x, y, army, key, frame);
 
+        this.maxHealth = 300;
+        this.heal(this.maxHealth);
+
+
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.allowGravity = false;

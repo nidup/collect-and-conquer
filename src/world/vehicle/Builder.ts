@@ -6,7 +6,7 @@ import {MapAnalyse} from "../../ai/map/MapAnalyse";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {State} from "../../ai/fsm/State";
-import {BrainText} from "./BrainText";
+import {BrainText} from "./info/BrainText";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 
@@ -14,19 +14,20 @@ export class Builder extends Vehicle
 {
     public body: Phaser.Physics.Arcade.Body;
     private pathfinder: PathFinder;
-
-    private speed: number = 60;
-
     private path: PhaserPointPath;
 
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
         super(game, x, y, army, radar, key, frame);
 
+        this.maxHealth = 80;
+        this.health = this.maxHealth;
+        this.maxVelocity = 60;
+
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
 
-        this.body.maxVelocity.set(this.speed, this.speed);
+        this.body.maxVelocity.set(this.maxVelocity, this.maxVelocity);
         this.body.allowGravity = false;
         this.body.collideWorldBounds = true;
         this.body.setCircle(10, 0, 0);
@@ -42,10 +43,7 @@ export class Builder extends Vehicle
         this.pathfinder = new PathFinder(mapAnalyse);
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
 
-        this.brain = new StackFSM();
         this.brain.pushState(new State('path following', this.pathFollowing));
-
-        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     // TODO: for debug purpose

@@ -155,6 +155,40 @@ export class Radar
         return closestBases.length > 0 ? closestBases[0].base : null;
     }
 
+    public closestTeamate(position: Phaser.Point, type): Vehicle|null
+    {
+        class VehicleAndDistance {
+            public vehicle: Vehicle;
+            public distance: number;
+            constructor (vehicle: Vehicle, distance: number) {
+                this.vehicle = vehicle;
+                this.distance = distance;
+            }
+        }
+        const transfoAddDistance = function(vehicle: Vehicle) {
+            return new VehicleAndDistance(vehicle, position.distance(vehicle.getPosition()));
+        };
+        const myArmy = this.army;
+        const closestTeamates = this.vehicles.all()
+            .filter(function (vehicle: Vehicle) {
+                    return vehicle.getArmy() == myArmy;
+                }
+            )
+            .filter(function (vehicle: Vehicle) {
+                    return vehicle instanceof type;
+                }
+            )
+            .reduce(function (vehiclesWithDistance, vehicle) {
+                vehiclesWithDistance.push(transfoAddDistance(vehicle));
+                return vehiclesWithDistance;
+            }, [])
+            .sort(function (vehicle1: VehicleAndDistance, vehicle2: VehicleAndDistance) {
+                return vehicle1.distance > vehicle2.distance ? 1 : -1;
+            });
+
+        return closestTeamates.length > 0 ? closestTeamates[0].vehicle : null;
+    }
+
     public closestObstacle(position: Phaser.Point, visibilityScope: number): Building
     {
         class BuildingAndDistance {

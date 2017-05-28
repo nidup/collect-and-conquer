@@ -50,7 +50,7 @@ export class Army
 
     public recruitTank(x: number, y: number): Tank
     {
-        const vehicle = new Tank(this.game, x, y, this, this.radar, 'Tank5', 0);
+        const vehicle = new Tank(this.game, x, y, this, this.radar, 'Tank5', 0, this.mapAnalyse);
         this.vehicles.add(vehicle);
         return vehicle;
     }

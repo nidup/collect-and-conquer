@@ -9,6 +9,10 @@ export class Mine extends Building
     constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, quantity: number)
     {
         super(game, x, y, army, key, frame);
+
+        this.maxHealth = 200;
+        this.health = this.maxHealth;
+
         this.remainingQuantity = quantity;
 
         this.anchor.setTo(.5,.5);
@@ -30,6 +34,7 @@ export class Mine extends Building
 
     public update ()
     {
+        super.update();
         if (this.animations.currentAnim.name == "build" && this.animations.currentAnim.isFinished) {
             this.animations.play("extracting");
         }
@@ -46,7 +51,7 @@ export class Mine extends Building
 
     public getStatus()
     {
-        return this.animations.currentAnim.name + ' (oil: ' + this.remainingQuantity +')';
+        return this.animations.currentAnim.name + ' (oil: ' + this.remainingQuantity +') ';
     }
 
     public collect(quantity: number)

@@ -76,7 +76,7 @@ export default class Play extends Phaser.State
         const armyRed = new Army(0xff6771, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
         this.players.push(new Player(armyRed));
 
-        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 40));
+        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 230));
         this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 120));
         this.items.add(new Oil(this.game, 550, 650, 'Icons', 0, 70));
         this.items.add(new Oil(this.game, 150, 650, 'Icons', 0, 70));
@@ -84,13 +84,14 @@ export default class Play extends Phaser.State
 
         armyBlue.buildBase(150, 150);
         armyBlue.recruitMiner(70, 100);
+
         armyBlue.recruitMiner(100, 400);
         armyBlue.recruitMiner(400, 100);
         armyBlue.recruitMiner(100, 600);
         armyBlue.recruitScout(250, 200);
         armyBlue.recruitScout(50, 400);
         armyBlue.recruitBuilder(330, 370);
-        armyBlue.recruitTank(400, 360);
+        armyBlue.recruitTank(300, 260);
 
         armyRed.buildBase(850, 650);
         armyRed.recruitMiner(850, 500);
@@ -99,6 +100,7 @@ export default class Play extends Phaser.State
         armyRed.recruitMiner(100, 700);
         armyRed.recruitScout(450, 800);
         armyRed.recruitScout(300, 600);
+        armyRed.recruitTank(600, 760);
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
@@ -149,7 +151,6 @@ export default class Play extends Phaser.State
             const layer = collisionLayer;
             aliveVehicles.all().map(function(vehicle: Vehicle) {
                 game.physics.arcade.collide(vehicle, layer);
-                vehicle.update();
             });
         }
     }
