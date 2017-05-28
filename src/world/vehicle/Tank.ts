@@ -8,6 +8,7 @@ import {Radar} from "./sensor/Radar";
 import {Miner} from "./Miner";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {MapAnalyse} from "../../ai/map/MapAnalyse";
+import Weapon = Phaser.Weapon;
 
 export class Tank extends Vehicle
 {
@@ -15,6 +16,7 @@ export class Tank extends Vehicle
     private path: PhaserPointPath;
     protected attackScope: number;
     protected attackDamage: number;
+    protected weapon: Weapon;
 
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse) {
         super(game, x, y, army, radar, key, frame);
@@ -42,6 +44,12 @@ export class Tank extends Vehicle
         this.pathfinder = new PathFinder(mapAnalyse);
 
         this.behavior = new SteeringComputer(this);
+
+        this.weapon = game.add.weapon(30, 'Bullet', 14);
+        this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+        this.weapon.bulletSpeed = 600;
+        this.weapon.fireRate = 500;
+        this.weapon.trackSprite(this, 0, 0, true);
 
         /**
          * Wander Attack -> Pursuing + Attack
@@ -122,7 +130,19 @@ export class Tank extends Vehicle
     {
         const distance = this.getPosition().distance(enemy.getPosition());
         if (distance <= this.attackScope) {
-            enemy.hit(this.attackDamage);
+
+            const attackDamage = this.attackDamage;
+            const bullets = this.weapon.bullets;
+
+            this.game.physics.arcade.collide(
+                bullets,
+                enemy,
+                function (touchedEnemy, firedBullet) {
+                    touchedEnemy.hit(attackDamage);
+                    firedBullet.destroy();
+                }
+            );
+            this.weapon.fireAtSprite(enemy)
         }
     }
 }
