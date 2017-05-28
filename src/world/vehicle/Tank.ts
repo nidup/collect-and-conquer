@@ -1,25 +1,22 @@
 
-import {Boid} from "../../ai/steering/Boid";
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
-import {VehicleRepository} from "./VehicleRepository";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {Army} from "../Army";
+import {Radar} from "./sensor/Radar";
 
 export class Tank extends Vehicle
 {
-    private repository: VehicleRepository;
-
     private speed: number = 50;
-    private scope: number = 200;
+    private visibilityScope: number = 200;
 
     private path: PhaserPointPath;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, vehicles: VehicleRepository) {
-        super(game, x, y, army, key, frame);
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number) {
+        super(game, x, y, army, radar, key, frame);
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -43,7 +40,6 @@ export class Tank extends Vehicle
                 new Phaser.Point(400, 200)
             ]);
 
-        this.repository = vehicles;
         this.behavior = new SteeringComputer(this);
         this.brain = new StackFSM();
         this.brain.pushState(new State('patrolling', this.pathPatrolling));
@@ -53,7 +49,7 @@ export class Tank extends Vehicle
 
     public pathPatrolling = () =>
     {
-        const enemy = this.closestEnemy();
+        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         if (enemy !== null) {
             this.brain.popState();
             this.brain.pushState(new State('pursuing', this.pursuing));
@@ -67,7 +63,7 @@ export class Tank extends Vehicle
 
     public wander = () =>
     {
-        const enemy = this.closestEnemy();
+        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         if (enemy !== null) {
             this.brain.pushState(new State('pursuing', this.pursuing));
         } else {
@@ -77,29 +73,12 @@ export class Tank extends Vehicle
 
     public pursuing = () =>
     {
-        const enemy = this.closestEnemy();
+        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         if (enemy !== null) {
             this.behavior.pursuing(enemy);
         } else {
             this.brain.popState();
             this.brain.pushState(new State('wander', this.wander));
         }
-    }
-
-    private closestEnemy(): Boid|null
-    {
-        const enemies = this.repository.enemiesOf(this);
-        let closestEnemy = null;
-        let closestDistance = this.scope * 10;
-        for (let index = 0; index < enemies.length; index++) {
-            let enemy = enemies[index];
-            let distance = this.getPosition().distance(enemies[index].getPosition());
-            if (distance < this.scope && distance < closestDistance) {
-                closestEnemy = enemy;
-                closestDistance = distance;
-            }
-        }
-
-        return <Boid>closestEnemy;
     }
 }

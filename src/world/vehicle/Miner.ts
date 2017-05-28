@@ -5,15 +5,8 @@ import {StackFSM} from "../../ai/fsm/StackFSM";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
-import {ItemRepository} from "../item/ItemRepository";
-import {Item} from "../item/Item";
 import {PathFinder} from "../../ai/path/PathFinder";
-import {MapAnalyse} from "../../ai/map/MapAnalyse";
-import {BuildingRepository} from "../building/BuildingRepository";
-import {VehicleRepository} from "./VehicleRepository";
-import {Mine} from "../building/Mine";
-import {Oil} from "../item/Oil";
-import {Base} from "../building/Base";
+import {MapAnalyse} from "../../ai/map/MapAnalyse";;
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 
@@ -26,14 +19,12 @@ export class Miner extends Vehicle
     private pathfinder: PathFinder;
     private path: PhaserPointPath;
 
-    private radar: Radar;
-
     private oilLoad: number;
     private oilCapacity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
-        super(game, x, y, army, key, frame);
+        super(game, x, y, army, radar, key, frame);
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -52,8 +43,6 @@ export class Miner extends Vehicle
         this.pathfinder = new PathFinder(mapAnalyse);
 
         this.behavior = new SteeringComputer(this);
-
-        this.radar = radar;
 
         /**
          * Wander Collect -> Go to mine -> Load -> Go to base -> Unload -> Go to mine

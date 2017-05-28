@@ -7,21 +7,61 @@ import {Mine} from "../../building/Mine";
 import {Base} from "../../building/Base";
 import {Item} from "../../item/Item";
 import {Building} from "../../building/Building";
+import {Vehicle} from "../Vehicle";
+import {Army} from "../../Army";
 
 export class Radar
 {
+    private army: Army;
     private items: ItemRepository;
     private buildings: BuildingRepository;
     private vehicles: VehicleRepository;
 
-    constructor(items: ItemRepository, buildings: BuildingRepository, vehicles: VehicleRepository)
+    constructor(items: ItemRepository, buildings: BuildingRepository, vehicles: VehicleRepository, army: Army)
     {
         this.items = items;
         this.buildings = buildings;
         this.vehicles = vehicles;
+        this.army = army;
     }
 
-    public closestVisibleOil(position: Phaser.Point, scope: number): Oil|null
+    // TODO split known / visible -> radio to communicate?
+
+    public closestVisibleEnemy(position: Phaser.Point, visibilityScope: number): Vehicle|null
+    {
+        class VehicleAndDistance {
+            public vehicle: Vehicle;
+            public distance: number;
+            constructor (vehicle: Vehicle, distance: number) {
+                this.vehicle = vehicle;
+                this.distance = distance;
+            }
+        }
+        const transfoAddDistance = function(vehicle: Vehicle) {
+            return new VehicleAndDistance(vehicle, position.distance(vehicle.getPosition()));
+        };
+        const myArmy = this.army;
+        const closestEnemies = this.vehicles.all()
+            .filter(function (vehicle: Vehicle) {
+                    return vehicle.getArmy() != myArmy;
+                }
+            )
+            .reduce(function (vehiclesWithDistance, vehicle) {
+                vehiclesWithDistance.push(transfoAddDistance(vehicle));
+                return vehiclesWithDistance;
+            }, [])
+            .sort(function (vehicle1: VehicleAndDistance, vehicle2: VehicleAndDistance) {
+                return vehicle1.distance > vehicle2.distance ? 1 : -1;
+            })
+            .filter(function (vehicleAndDistance: VehicleAndDistance) {
+                    return vehicleAndDistance.distance < visibilityScope
+                }
+            );
+
+        return closestEnemies.length > 0 ? closestEnemies[0].vehicle : null;
+    }
+
+    public closestVisibleOil(position: Phaser.Point, visibilityScope: number): Oil|null
     {
         class OilAndDistance {
             public oil: Oil;
@@ -43,7 +83,7 @@ export class Radar
                 return oil1.distance > oil2.distance ? 1 : -1;
             })
             .filter(function (oilAndDistance: OilAndDistance) {
-                    return oilAndDistance.distance < scope && !oilAndDistance.oil.hasBeenCollected()
+                    return oilAndDistance.distance < visibilityScope && !oilAndDistance.oil.hasBeenCollected()
                 }
             );
 
@@ -63,7 +103,12 @@ export class Radar
         const transfoAddDistance = function(mine: Mine) {
             return new MineAndDistance(mine, position.distance(mine.getPosition()));
         };
+        const myArmy = this.army;
         const closestMines = this.buildings.mines()
+            .filter(function (mine: Mine) {
+                    return mine.getArmy() == myArmy;
+                }
+            )
             .reduce(function (minesWithDistance, mine) {
                 minesWithDistance.push(transfoAddDistance(mine));
                 return minesWithDistance;
@@ -93,7 +138,12 @@ export class Radar
         const transfoAddDistance = function(base: Base) {
             return new BaseAndDistance(base, position.distance(base.getPosition()));
         };
+        const myArmy = this.army;
         const closestBases = this.buildings.bases()
+            .filter(function (base: Base) {
+                    return base.getArmy() == myArmy;
+                }
+            )
             .reduce(function (basesWithDistance, base) {
                 basesWithDistance.push(transfoAddDistance(base));
                 return basesWithDistance;

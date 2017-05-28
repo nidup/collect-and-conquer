@@ -86,11 +86,7 @@ export default class Play extends Phaser.State
         armyBlue.recruitMiner(100, 400);
         armyBlue.recruitMiner(400, 100);
         armyBlue.recruitMiner(700, 100);
-
-        /*
         armyBlue.recruitScout(250, 200);
-        armyBlue.recruitScout(50, 600);
-        armyBlue.recruitScout(200, 400);*/
         armyBlue.recruitScout(50, 400);
         armyBlue.recruitBuilder(330, 370);
         armyBlue.recruitTank(400, 360);
@@ -98,7 +94,10 @@ export default class Play extends Phaser.State
         armyRed.buildBase(800, 450);
         armyRed.recruitMiner(850, 300);
         armyRed.recruitMiner(800, 400);
-
+        armyRed.recruitMiner(700, 500);
+        armyRed.recruitMiner(100, 500);
+        armyRed.recruitScout(450, 600);
+        armyRed.recruitScout(300, 400);
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);

@@ -13,17 +13,15 @@ import {Army} from "../Army";
 export class Builder extends Vehicle
 {
     public body: Phaser.Physics.Arcade.Body;
-
-    private radar: Radar;
     private pathfinder: PathFinder;
 
     private speed: number = 60;
 
     private path: PhaserPointPath;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
-        super(game, x, y, army, key, frame);
+        super(game, x, y, army, radar, key, frame);
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -40,7 +38,6 @@ export class Builder extends Vehicle
         game.add.existing(this);
 
         this.behavior = new SteeringComputer(this);
-        this.radar = radar;
 
         this.pathfinder = new PathFinder(mapAnalyse);
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));

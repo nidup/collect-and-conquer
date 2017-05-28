@@ -18,5 +18,10 @@ export abstract class Building extends Phaser.Sprite
         return this.body.center;
     }
 
+    public getArmy() :Army
+    {
+        return this.army;
+    }
+
     abstract getStatus() :string;
 }

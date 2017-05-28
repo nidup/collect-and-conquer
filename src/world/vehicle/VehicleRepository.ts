@@ -26,11 +26,6 @@ export class VehicleRepository
         this.vehicles.splice(index, 1);
     }
 
-    public enemiesOf(myself: Vehicle) :Vehicle[]
-    {
-        return this.vehicles.filter(function (vehicle: Vehicle) { return vehicle != myself; });
-    }
-
     public length(): number
     {
         return this.vehicles.length;
