@@ -7,7 +7,7 @@ const tileSize = 20;
 const tileSpacing = 20;
 
 const MIN_POWER = 2;
-const MAX_POWER = 4;
+const MAX_POWER = 3;
 
 export class CloudMapGenerator extends MapGenerator
 {
@@ -29,9 +29,9 @@ export class CloudMapGenerator extends MapGenerator
 
         this.addTileSets(map);
 
-        let mapSizeY = 4 * Math.pow(2, MAX_POWER);
-        let mapSizeX = 4 * Math.pow(2, MAX_POWER);
-        let cloudMaps = this.generateCloudMaps(mapSizeY, mapSizeX);
+        let mapHeight = 3 * Math.pow(2, MAX_POWER);
+        let mapWidth = 6 * Math.pow(2, MAX_POWER);
+        let cloudMaps = this.generateCloudMaps(mapWidth, mapHeight);
         let points = this.mixCloudMaps(cloudMaps);
         let grounds = this.getGrounds(points);
 
@@ -95,22 +95,22 @@ export class CloudMapGenerator extends MapGenerator
         this.tileRegistry.addTile(new Tile(266, Tile.SNOW, Tile.SNOW, Tile.MNT, Tile.SNOW));
     }
 
-    private generateCloudMaps(mapSizeY: number, mapSizeX: number): Array<Array<Array<number>>> {
+    private generateCloudMaps(mapWidth: number, mapHeight: number): Array<Array<Array<number>>> {
         let cloudMaps = [];
 
         for (let power = MIN_POWER; power < MAX_POWER; power++) {
-            cloudMaps[power] = this.smoothMap(power, this.generateRandomSquares(power, mapSizeY, mapSizeX));
+            cloudMaps[power] = this.smoothMap(power, this.generateRandomSquares(power, mapWidth, mapHeight));
         }
 
         return cloudMaps;
     }
 
-    private generateRandomSquares(power: number, mapSizeY: number, mapSizeX: number): Array<Array<number>> {
+    private generateRandomSquares(power: number, mapWidth: number, mapHeight: number): Array<Array<number>> {
         let squaresMap = [];
         let blockSize = Math.pow(2, power);
 
-        for (let y = 0; y < mapSizeY; y += blockSize) {
-            for (let x = 0; x < mapSizeX; x += blockSize) {
+        for (let y = 0; y < mapHeight; y += blockSize) {
+            for (let x = 0; x < mapWidth; x += blockSize) {
                 let random = Math.round(Math.random());
                 for (let yi = 0; yi < blockSize; yi++) {
                     for (let xi = 0; xi < blockSize; xi++) {
@@ -164,7 +164,7 @@ export class CloudMapGenerator extends MapGenerator
                 let sum = 0;
                 let count = 0;
                 for (let size = MIN_POWER; size < MAX_POWER; size++) {
-                    sum += (size + 1) * cloudMaps[size][x][y];
+                    sum += (size + 1) * cloudMaps[size][y][x];
                     count += (size + 1);
                 }
                 points[y][x] = sum / count;
