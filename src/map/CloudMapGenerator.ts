@@ -4,6 +4,9 @@ import {MapGenerator} from "./MapGenerator";
 const tileSize = 20;
 const tileSpacing = 20;
 
+const MIN_POWER = 1;
+const MAX_POWER = 5;
+
 export class CloudMapGenerator extends MapGenerator
 {
     generate(): Phaser.Tilemap
@@ -12,74 +15,14 @@ export class CloudMapGenerator extends MapGenerator
 
         map.removeAllLayers();
         map.createBlankLayer(MapGenerator.LAYER_NAME, this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
+
         this.addTileSets(map);
 
-        let points = [];
-        let minSize = 1;
-        let maxSize = 5;
-        let countX = 4;
-        let countY = 4;
-        let matrixs = [];
-        let maxY = countY * Math.pow(2, maxSize);
-        let maxX = countX * Math.pow(2, maxSize);
+        let mapSizeY = 4 * Math.pow(2, MAX_POWER);
+        let mapSizeX = 4 * Math.pow(2, MAX_POWER);
+        let cloudMaps = this.generateCloudMaps(mapSizeY, mapSizeX);
+        let points = this.mixCloudMaps(cloudMaps);
 
-        for (let size = minSize; size < maxSize; size++) {
-            let rudePoints = [];
-            let blockSize = Math.pow(2, size);
-
-            for (let y = 0; y < maxY; y += blockSize) {
-                for (let x = 0; x < maxX; x += blockSize) {
-                    let random = Math.round(Math.random());
-                    for (let yi = 0; yi < blockSize; yi++) {
-                        for (let xi = 0; xi < blockSize; xi++) {
-                            if (undefined === rudePoints[y + yi]) {
-                                rudePoints[y + yi] = [];
-                            }
-                            rudePoints[y + yi][x + xi] = random;
-                        }
-                    }
-                }
-            }
-
-            let smooth = [];
-            for (let y = 0; y < maxY; y++) {
-                for (let x = 0; x < maxX; x++) {
-                    let diff = Math.ceil(Math.pow(2, size) / 2);
-                    let sum = 0;
-                    let count = 0;
-                    for (let yi = -diff; yi <= diff; yi++) {
-                        for (let xi = -diff; xi <= diff; xi++) {
-                            if (undefined !== rudePoints[y + yi] && undefined !== rudePoints[y + yi][x + xi]) {
-                                sum += rudePoints[y + yi][x + xi];
-                                count += 1;
-                            }
-                        }
-                    }
-                    if (undefined === smooth[y]) {
-                        smooth[y] = [];
-                    }
-                    smooth[y][x] = sum / count;
-                }
-            }
-            matrixs[size] = smooth;
-        }
-
-        for (let y = 0; y < maxY; y++) {
-            for (let x = 0; x < maxX; x ++) {
-                if (undefined === points[y]) {
-                    points[y] = [];
-                }
-                let sum = 0;
-                let count = 0;
-                for (let size = minSize; size < maxSize; size++) {
-                    sum += (size + 1) * matrixs[size][x][y];
-                    count += (size + 1);
-                }
-                points[y][x] = sum / count;
-            }
-        }
-
-        //this.draw(map, matrixs[4]);
         this.draw(map, points);
 
         return map;
@@ -106,5 +49,84 @@ export class CloudMapGenerator extends MapGenerator
                 map.putTile(decoratedIndex, x, y);
             }.bind(this))
         }.bind(this));
+    }
+
+    private generateCloudMaps(mapSizeY: number, mapSizeX: number): Array<Array<Array<number>>> {
+        let cloudMaps = [];
+
+        for (let power = MIN_POWER; power < MAX_POWER; power++) {
+            cloudMaps[power] = this.smoothMap(power, this.generateRandomSquares(power, mapSizeY, mapSizeX));
+        }
+
+        return cloudMaps;
+    }
+
+    private generateRandomSquares(power: number, mapSizeY: number, mapSizeX: number): Array<Array<number>> {
+        let squaresMap = [];
+        let blockSize = Math.pow(2, power);
+
+        for (let y = 0; y < mapSizeY; y += blockSize) {
+            for (let x = 0; x < mapSizeX; x += blockSize) {
+                let random = Math.round(Math.random());
+                for (let yi = 0; yi < blockSize; yi++) {
+                    for (let xi = 0; xi < blockSize; xi++) {
+                        if (undefined === squaresMap[y + yi]) {
+                            squaresMap[y + yi] = [];
+                        }
+                        squaresMap[y + yi][x + xi] = random;
+                    }
+                }
+            }
+        }
+
+        return squaresMap;
+    }
+
+    private smoothMap(power: number, rudePoints: Array<Array<number>>): Array<Array<number>> {
+        let diff = Math.ceil(Math.pow(2, power) / 2);
+
+        let smooth = [];
+        for (let y = 0; y < rudePoints.length; y++) {
+            for (let x = 0; x < rudePoints[y].length; x++) {
+                let sum = 0;
+                let count = 0;
+                for (let yi = -diff; yi <= diff; yi++) {
+                    for (let xi = -diff; xi <= diff; xi++) {
+                        if (undefined !== rudePoints[y + yi] && undefined !== rudePoints[y + yi][x + xi]) {
+                            sum += rudePoints[y + yi][x + xi];
+                            count += 1;
+                        }
+                    }
+                }
+                if (undefined === smooth[y]) {
+                    smooth[y] = [];
+                }
+                smooth[y][x] = sum / count;
+            }
+        }
+
+        return smooth;
+    }
+
+    private mixCloudMaps(cloudMaps: Array<Array<Array<number>>>): Array<Array<number>> {
+        let points = [];
+
+        for (let y = 0; y < cloudMaps[MIN_POWER].length; y++) {
+            for (let x = 0; x < cloudMaps[MIN_POWER][0].length; x ++) {
+                if (undefined === points[y]) {
+                    points[y] = [];
+                }
+
+                let sum = 0;
+                let count = 0;
+                for (let size = MIN_POWER; size < MAX_POWER; size++) {
+                    sum += (size + 1) * cloudMaps[size][x][y];
+                    count += (size + 1);
+                }
+                points[y][x] = sum / count;
+            }
+        }
+
+        return points;
     }
 }
