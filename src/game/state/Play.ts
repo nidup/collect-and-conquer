@@ -84,6 +84,7 @@ export default class Play extends Phaser.State
 
         armyBlue.buildBase(150, 150);
         armyBlue.recruitMiner(70, 100);
+
         armyBlue.recruitMiner(100, 400);
         armyBlue.recruitMiner(400, 100);
         armyBlue.recruitMiner(100, 600);
@@ -149,7 +150,6 @@ export default class Play extends Phaser.State
             const layer = collisionLayer;
             aliveVehicles.all().map(function(vehicle: Vehicle) {
                 game.physics.arcade.collide(vehicle, layer);
-                vehicle.update();
             });
         }
     }

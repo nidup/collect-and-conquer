@@ -3,7 +3,7 @@ import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {State} from "../../ai/fsm/State";
-import {BrainText} from "./BrainText";
+import {BrainText} from "./info/BrainText";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 
@@ -14,6 +14,9 @@ export class Scout extends Vehicle
 
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number) {
         super(game, x, y, army, radar, key, frame);
+
+        this.maxHealth = 30;
+        this.heal(this.maxHealth);
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

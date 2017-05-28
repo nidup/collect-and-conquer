@@ -1,7 +1,7 @@
 
-import {Vehicle} from "./Vehicle";
-import {StackFSM} from "../../ai/fsm/StackFSM";
-import {StateColors} from "./StateColor";
+import {Vehicle} from "../Vehicle";
+import {StackFSM} from "../../../ai/fsm/StackFSM";
+import {StateColors} from "../StateColor";
 
 export class BrainText extends Phaser.Text
 {

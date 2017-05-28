@@ -6,7 +6,7 @@ import {MapAnalyse} from "../../ai/map/MapAnalyse";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {State} from "../../ai/fsm/State";
-import {BrainText} from "./BrainText";
+import {BrainText} from "./info/BrainText";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 
@@ -22,6 +22,9 @@ export class Builder extends Vehicle
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
         super(game, x, y, army, radar, key, frame);
+
+        this.maxHealth = 80;
+        this.heal(this.maxHealth);
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

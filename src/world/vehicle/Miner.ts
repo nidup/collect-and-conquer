@@ -4,7 +4,7 @@ import {Vehicle} from "./Vehicle";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {State} from "../../ai/fsm/State";
-import {BrainText} from "./BrainText";
+import {BrainText} from "./info/BrainText";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {MapAnalyse} from "../../ai/map/MapAnalyse";;
 import {Radar} from "./sensor/Radar";
@@ -25,6 +25,9 @@ export class Miner extends Vehicle
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
         super(game, x, y, army, radar, key, frame);
+
+        this.maxHealth = 100;
+        this.health = this.maxHealth;
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

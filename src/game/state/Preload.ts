@@ -25,7 +25,6 @@ export default class Preload extends Phaser.State {
 
     private loadTileImages()
     {
-
         this.load.image('GrasClif', 'assets/terrain/GrasClif.png');
         this.load.image('Grass', 'assets/terrain/Grass.png');
         this.load.image('Grass2', 'assets/terrain/Grass2.png');

@@ -3,7 +3,7 @@ import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {State} from "../../ai/fsm/State";
-import {BrainText} from "./BrainText";
+import {BrainText} from "./info/BrainText";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {Army} from "../Army";
 import {Radar} from "./sensor/Radar";
@@ -17,6 +17,9 @@ export class Tank extends Vehicle
 
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number) {
         super(game, x, y, army, radar, key, frame);
+
+        this.maxHealth = 150;
+        this.heal(this.maxHealth);
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
