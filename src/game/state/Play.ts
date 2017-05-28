@@ -20,6 +20,8 @@ import {Radar} from "../../world/vehicle/sensor/Radar";
 import {CommandPanel} from "../../ui/CommandPanel";
 import {UnitSelector} from "../../ui/UnitSelector";
 import {Building} from "../../world/building/Building";
+import {Player} from "../player/Player";
+import {Army} from "../../world/Army";
 
 export default class Play extends Phaser.State
 {
@@ -31,6 +33,7 @@ export default class Play extends Phaser.State
     private unitSelector: UnitSelector;
     private debug: boolean = false;
     private enableTileCollision = true;
+    private players: Player[];
 
     public create()
     {
@@ -65,7 +68,15 @@ export default class Play extends Phaser.State
         this.buildings = new BuildingRepository();
         this.vehicles = new VehicleRepository();
 
-        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 30));
+        this.players = [];
+
+        const armyBlue = new Army('#0000ff', this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
+        this.players.push(new Player(armyBlue));
+
+        const armyRed = new Army('#ff0000', this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
+        this.players.push(new Player(armyRed));
+
+        this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 40));
         this.items.add(new Oil(this.game, 570, 450, 'Icons', 0, 70));
 
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
@@ -77,27 +88,17 @@ export default class Play extends Phaser.State
         this.buildings.add(new Generator(this.game, 600, 460, 'Generator', 0));
         this.buildings.add(new Generator(this.game, 400, 120, 'Generator', 0));
         */
-        const radar = new Radar(this.items, this.buildings, this.vehicles);
 
-
-        this.vehicles.add(new Scout(this.game, 250, 200, 'Scout1', 0, this.vehicles, radar));
-
-        this.vehicles.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.vehicles, radar));
-        this.vehicles.add(new Scout(this.game, 200, 400, 'Scout1', 0, this.vehicles, radar));
-        this.vehicles.add(new Scout(this.game, 50, 400, 'Scout1', 0, this.vehicles, radar));
-
-
-        this.vehicles.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse, radar));
-        /*
-        this.vehicles.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse, radar));
-        this.vehicles.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse, radar));
-        */
-        this.vehicles.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.vehicles));
-
-        this.vehicles.add(new Miner(this.game, 70, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
-        this.vehicles.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, radar, this.buildings));
-        this.vehicles.add(new Miner(this.game, 400, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
-        this.vehicles.add(new Miner(this.game, 700, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
+        armyBlue.recruitScout(250, 200);
+        armyBlue.recruitScout(50, 600);
+        armyBlue.recruitScout(200, 400);
+        armyBlue.recruitScout(50, 400);
+        armyBlue.recruitBuilder(330, 370);
+        armyBlue.recruitTank(400, 360);
+        armyBlue.recruitMiner(70, 100);
+        armyBlue.recruitMiner(100, 400);
+        armyBlue.recruitMiner(400, 100);
+        armyBlue.recruitMiner(700, 100);
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.get(0));

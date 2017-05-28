@@ -8,6 +8,7 @@ import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
 import {Radar} from "./sensor/Radar";
+import {Army} from "../Army";
 
 export class Builder extends Vehicle
 {
@@ -20,9 +21,9 @@ export class Builder extends Vehicle
 
     private path: PhaserPointPath;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar)
     {
-        super(game, x, y, key, frame);
+        super(game, x, y, army, key, frame);
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

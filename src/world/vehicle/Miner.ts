@@ -15,6 +15,7 @@ import {Mine} from "../building/Mine";
 import {Oil} from "../item/Oil";
 import {Base} from "../building/Base";
 import {Radar} from "./sensor/Radar";
+import {Army} from "../Army";
 
 export class Miner extends Vehicle
 {
@@ -32,9 +33,9 @@ export class Miner extends Vehicle
     private oilLoad: number;
     private oilCapacity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar, buildings: BuildingRepository)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar, buildings: BuildingRepository)
     {
-        super(game, x, y, key, frame);
+        super(game, x, y, army, key, frame);
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

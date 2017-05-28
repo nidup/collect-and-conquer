@@ -7,6 +7,7 @@ import {StackFSM} from "../../ai/fsm/StackFSM";
 import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
+import {Army} from "../Army";
 
 export class Tank extends Vehicle
 {
@@ -17,8 +18,8 @@ export class Tank extends Vehicle
 
     private path: PhaserPointPath;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, vehicles: VehicleRepository) {
-        super(game, x, y, key, frame);
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, vehicles: VehicleRepository) {
+        super(game, x, y, army, key, frame);
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

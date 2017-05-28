@@ -3,13 +3,21 @@ import {Boid} from "../../ai/steering/Boid";
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {BrainText} from "./BrainText";
+import {Army} from "../Army";
 
 export abstract class Vehicle extends Phaser.Sprite implements Boid
 {
     public body: Phaser.Physics.Arcade.Body;
+    protected army: Army;
     protected behavior: SteeringComputer;
     protected brain: StackFSM;
     protected brainText: BrainText;
+
+    constructor (game: Phaser.Game, x: number, y: number, army: Army, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number)
+    {
+        super(game, x, y, key, frame);
+        this.army = army;
+    }
 
     public update ()
     {
