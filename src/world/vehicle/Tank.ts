@@ -64,10 +64,12 @@ export class Tank extends Vehicle
         const visibleEnemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         const closestMiner = this.radar.closestTeamate(this.getPosition().clone(), Miner);
         const closestMine = this.radar.closestExploitableMine(this.getPosition());
+        const closestBase = this.radar.closestBase(this.getPosition());
         if (visibleEnemy) {
             this.brain.popState();
             this.brain.pushState(new State('attack', this.attackEnemy));
         } else if (closestMine) {
+            this.path = this.pathfinder.findPhaserPointPath(closestMine.getPosition().clone(), closestBase.getPosition().clone());
             this.brain.pushState(new State('protect mine', this.protectingMine));
         } else if (closestMiner) {
             this.brain.pushState(new State('escorting', this.escortingMiner));
@@ -104,11 +106,13 @@ export class Tank extends Vehicle
         const visibleEnemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         const closestMine = this.radar.closestExploitableMine(this.getPosition());
         if (visibleEnemy) {
+            this.path = null;
             this.brain.popState();
             this.brain.pushState(new State('attack', this.attackEnemy));
         } else if (closestMine && this.path) {
             this.behavior.pathPatrolling(this.path);
         } else {
+            this.path = null;
             this.brain.popState();
             this.brain.pushState(new State('wander', this.wander));
         }

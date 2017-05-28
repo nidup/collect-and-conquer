@@ -49,7 +49,16 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
 
     public hit(damage: number)
     {
-        this.damage(damage);
+        this.damage(damage)
+        if (this.isAlive()) {
+            const hitSprite = this.game.add.sprite(this.x - this.width, this.y - this.height, 'SmallExplosion');
+            hitSprite.animations.add('hit');
+            hitSprite.animations.play('hit', 20, false, true);
+        } else {
+            const dieSprite = this.game.add.sprite(this.x - this.width, this.y - this.height, 'MediumExplosion');
+            dieSprite.animations.add('die');
+            dieSprite.animations.play('die', 20, false, true);
+        }
     }
 
     public getArmy() :Army
