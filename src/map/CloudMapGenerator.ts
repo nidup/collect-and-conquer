@@ -1,14 +1,25 @@
 
 import {MapGenerator} from "./MapGenerator";
+import {Tile} from "./Tile";
+import {TileRegistry} from "./TilesRegistry";
 
 const tileSize = 20;
 const tileSpacing = 20;
 
-const MIN_POWER = 1;
-const MAX_POWER = 5;
+const MIN_POWER = 2;
+const MAX_POWER = 4;
 
 export class CloudMapGenerator extends MapGenerator
 {
+    private tileRegistry: TileRegistry;
+
+    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number)
+    {
+        super(game, screenWidth, screenHeight);
+
+        this.tileRegistry = new TileRegistry();
+    }
+
     generate(): Phaser.Tilemap
     {
         const map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
@@ -22,8 +33,9 @@ export class CloudMapGenerator extends MapGenerator
         let mapSizeX = 4 * Math.pow(2, MAX_POWER);
         let cloudMaps = this.generateCloudMaps(mapSizeY, mapSizeX);
         let points = this.mixCloudMaps(cloudMaps);
+        let grounds = this.getGrounds(points);
 
-        this.draw(map, points);
+        this.draw(map, grounds);
 
         return map;
     }
@@ -35,20 +47,52 @@ export class CloudMapGenerator extends MapGenerator
      */
     private addTileSets(map: Phaser.Tilemap) {
         map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing, 31);
-        map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing, 132);
-        map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing, 177);
-        map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing, 180);
-        map.addTilesetImage('MntMisc', 'MntMisc', tileSize, tileSize, 0, tileSpacing, 200);
-    }
+        this.tileRegistry.addTile(new Tile(35, Tile.GRASS, Tile.GRASS, Tile.GRASS, Tile.GRASS));
 
-    private draw(map: Phaser.Tilemap, points: Array<Array<number>>)
-    {
-        points.forEach(function (line, y) {
-            line.forEach(function (cell, x) {
-                let decoratedIndex = cell > 0.25 ? (cell > 0.5 ? (cell > 0.75 ? 132 : 177) : 179) : 35;
-                map.putTile(decoratedIndex, x, y);
-            }.bind(this))
-        }.bind(this));
+        map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing, 132);
+        this.tileRegistry.addTile(new Tile(132, Tile.MNT, Tile.MNT, Tile.GRASS, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(133, Tile.MNT, Tile.MNT, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(134, Tile.MNT, Tile.MNT, Tile.MNT, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(135, Tile.MNT, Tile.GRASS, Tile.GRASS, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(136, Tile.MNT, Tile.MNT, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(137, Tile.GRASS, Tile.MNT, Tile.MNT, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(138, Tile.MNT, Tile.GRASS, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(139, Tile.GRASS, Tile.GRASS, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(140, Tile.GRASS, Tile.MNT, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(142, Tile.MNT, Tile.GRASS, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(143, Tile.GRASS, Tile.MNT, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(145, Tile.GRASS, Tile.GRASS, Tile.GRASS, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(146, Tile.GRASS, Tile.GRASS, Tile.MNT, Tile.GRASS));
+
+        map.addTilesetImage('Grss2Lav', 'Grss2Lav', tileSize, tileSize, 0, tileSpacing, 162);
+        this.tileRegistry.addTile(new Tile(162, Tile.GRASS, Tile.GRASS, Tile.LAVA, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(163, Tile.GRASS, Tile.GRASS, Tile.LAVA, Tile.LAVA));
+        this.tileRegistry.addTile(new Tile(164, Tile.GRASS, Tile.GRASS, Tile.GRASS, Tile.LAVA));
+        this.tileRegistry.addTile(new Tile(165, Tile.GRASS, Tile.LAVA, Tile.LAVA, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(166, Tile.LAVA, Tile.LAVA, Tile.LAVA, Tile.LAVA));
+        this.tileRegistry.addTile(new Tile(167, Tile.LAVA, Tile.GRASS, Tile.GRASS, Tile.LAVA));
+        this.tileRegistry.addTile(new Tile(168, Tile.GRASS, Tile.LAVA, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(169, Tile.LAVA, Tile.LAVA, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(170, Tile.LAVA, Tile.GRASS, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(172, Tile.GRASS, Tile.LAVA, Tile.LAVA, Tile.LAVA));
+        this.tileRegistry.addTile(new Tile(173, Tile.LAVA, Tile.GRASS, Tile.LAVA, Tile.LAVA));
+        this.tileRegistry.addTile(new Tile(175, Tile.LAVA, Tile.LAVA, Tile.LAVA, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(176, Tile.LAVA, Tile.LAVA, Tile.GRASS, Tile.LAVA));
+
+        map.addTilesetImage('Snw2Mnt', 'Snw2Mnt', tileSize, tileSize, 0, tileSpacing, 252);
+        this.tileRegistry.addTile(new Tile(252, Tile.MNT, Tile.MNT, Tile.SNOW, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(253, Tile.MNT, Tile.MNT, Tile.SNOW, Tile.SNOW));
+        this.tileRegistry.addTile(new Tile(254, Tile.MNT, Tile.MNT, Tile.MNT, Tile.SNOW));
+        this.tileRegistry.addTile(new Tile(255, Tile.MNT, Tile.SNOW, Tile.SNOW, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(256, Tile.SNOW, Tile.SNOW, Tile.SNOW, Tile.SNOW));
+        this.tileRegistry.addTile(new Tile(257, Tile.SNOW, Tile.MNT, Tile.MNT, Tile.SNOW));
+        this.tileRegistry.addTile(new Tile(258, Tile.MNT, Tile.SNOW, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(259, Tile.SNOW, Tile.SNOW, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(260, Tile.SNOW, Tile.MNT, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(262, Tile.MNT, Tile.SNOW, Tile.SNOW, Tile.SNOW));
+        this.tileRegistry.addTile(new Tile(263, Tile.SNOW, Tile.MNT, Tile.SNOW, Tile.SNOW));
+        this.tileRegistry.addTile(new Tile(265, Tile.SNOW, Tile.SNOW, Tile.SNOW, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(266, Tile.SNOW, Tile.SNOW, Tile.MNT, Tile.SNOW));
     }
 
     private generateCloudMaps(mapSizeY: number, mapSizeX: number): Array<Array<Array<number>>> {
@@ -83,7 +127,7 @@ export class CloudMapGenerator extends MapGenerator
     }
 
     private smoothMap(power: number, rudePoints: Array<Array<number>>): Array<Array<number>> {
-        let diff = Math.ceil(Math.pow(2, power) / 2);
+        let diff = Math.ceil(Math.pow(2, power) / 1.1);
 
         let smooth = [];
         for (let y = 0; y < rudePoints.length; y++) {
@@ -128,5 +172,60 @@ export class CloudMapGenerator extends MapGenerator
         }
 
         return points;
+    }
+
+    private getGrounds(points: Array<Array<number>>): Array<Array<number>> {
+        let result = [];
+        points.forEach(function (line) {
+            let groudLine = [];
+            line.forEach(function (cell) {
+                groudLine.push(this.getGroud(cell));
+            }.bind(this));
+            result.push(groudLine);
+        }.bind(this));
+
+        return result;
+    }
+
+    private getGroud(cell: number): number|null {
+        const probabilities = [
+            [Tile.LAVA, 1],
+            [Tile.GRASS, 1],
+            [Tile.MNT, 2],
+            [Tile.SNOW, 1]
+        ];
+        const sumProbabilities = probabilities.reduce(function (s, probability) {
+            return s + probability[1];
+        }, 0);
+
+        let counter = 0;
+        for (let i = 0; i < probabilities.length; i++) {
+            counter += probabilities[i][1] / sumProbabilities;
+            if (cell <= counter) {
+                return probabilities[i][0];
+            }
+        }
+
+        return null;
+    }
+
+    private draw(map: Phaser.Tilemap, points: Array<Array<number>>)
+    {
+        points.slice(0, -1).forEach(function (line, y) {
+            line.slice(0, -1).forEach(function (cell, x) {
+                let tile = this.tileRegistry.find({
+                    topLeft: points[y][x],
+                    topRight: points[y][x + 1],
+                    bottomRight: points[y + 1][x + 1],
+                    bottomLeft: points[y + 1][x]
+                });
+
+                if (null !== tile) {
+                    map.putTile(tile.index, x, y);
+                }
+
+
+            }.bind(this))
+        }.bind(this));
     }
 }
