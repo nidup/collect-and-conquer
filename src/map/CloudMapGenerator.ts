@@ -8,7 +8,7 @@ const tileSpacing = 20;
 
 const MIN_POWER = 2;
 const MAX_POWER = 3;
-const RADIUS = 0.5; // Specify the smooth. 0.001 = big smooth, infinite = no smooth.
+const RADIUS = 1; // Specify the smooth. 0.001 = big smooth, infinite = no smooth.
 
 export class CloudMapGenerator extends MapGenerator
 {
@@ -191,7 +191,7 @@ export class CloudMapGenerator extends MapGenerator
     private getGroud(cell: number): number|null {
         const probabilities = [
             [Tile.LAVA, 1],
-            [Tile.GRASS, 1],
+            [Tile.GRASS, 2],
             [Tile.MNT, 1],
             [Tile.SNOW, 2]
         ];
