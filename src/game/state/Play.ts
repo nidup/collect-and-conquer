@@ -1,25 +1,25 @@
 
-import {Builder} from "../world/vehicle/Builder";
-import {MapAnalyser} from "../ai/map/MapAnalyser";
-import {Scout} from "../world/vehicle/Scout";
-import {BotRepository} from "../world/vehicle/BotRepository";
-import {Tank} from "../world/vehicle/Tank";
-import {Miner} from "../world/vehicle/Miner";
-import {BuildingRepository} from "../world/building/BuildingRepository";
-import {Base} from "../world/building/Base";
-import {Mine} from "../world/building/Mine";
-import {Generator} from "../world/building/Generator";
-import {MapGenerator} from "../map/MapGenerator";
-import {RandomMapGenerator} from "../map/RandomMapGenerator";
-import {FileMapGenerator} from "../map/FileMapGenerator";
-import {ItemRepository} from "../world/item/ItemRepository";
-import {Item} from "../world/item/Item";
-import {Oil} from "../world/item/Oil";
-import {Bot} from "../world/vehicle/Bot";
-import {Radar} from "../world/vehicle/sensor/Radar";
-import {CommandPanel} from "../ui/CommandPanel";
-import {UnitSelector} from "../ui/UnitSelector";
-import {Building} from "../world/building/Building";
+import {Builder} from "../../world/vehicle/Builder";
+import {MapAnalyser} from "../../ai/map/MapAnalyser";
+import {Scout} from "../../world/vehicle/Scout";
+import {BotRepository} from "../../world/vehicle/BotRepository";
+import {Tank} from "../../world/vehicle/Tank";
+import {Miner} from "../../world/vehicle/Miner";
+import {BuildingRepository} from "../../world/building/BuildingRepository";
+import {Base} from "../../world/building/Base";
+import {Mine} from "../../world/building/Mine";
+import {Generator} from "../../world/building/Generator";
+import {MapGenerator} from "../../map/MapGenerator";
+import {RandomMapGenerator} from "../../map/RandomMapGenerator";
+import {FileMapGenerator} from "../../map/FileMapGenerator";
+import {ItemRepository} from "../../world/item/ItemRepository";
+import {Item} from "../../world/item/Item";
+import {Oil} from "../../world/item/Oil";
+import {Bot} from "../../world/vehicle/Bot";
+import {Radar} from "../../world/vehicle/sensor/Radar";
+import {CommandPanel} from "../../ui/CommandPanel";
+import {UnitSelector} from "../../ui/UnitSelector";
+import {Building} from "../../world/building/Building";
 
 export default class Play extends Phaser.State
 {
@@ -67,7 +67,7 @@ export default class Play extends Phaser.State
 
         this.buildings = new BuildingRepository();
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
-        this.buildings.add(new Generator(this.game, 400, 190, 'Generator', 0));
+        //this.buildings.add(new Generator(this.game, 400, 190, 'Generator', 0));
         /*
         this.buildings.add(new Generator(this.game, 450, 430, 'Generator', 0));
         this.buildings.add(new Generator(this.game, 300, 410, 'Generator', 0));
