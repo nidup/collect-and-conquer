@@ -6,7 +6,8 @@ export class StateColors
         'path following': '#00cd00',
         'patrolling': '#eedb13',
         'pursuing': '#ee8400',
-        'evading': '#ff4040'
+        'evading': '#ff4040',
+        'attack': '#ff4040'
     };
 
     public getColor(state: string): string

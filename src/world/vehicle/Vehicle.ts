@@ -47,6 +47,11 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         return this.health > 0;
     }
 
+    public hit(damage: number)
+    {
+        this.damage(damage);
+    }
+
     public getArmy() :Army
     {
         return this.army;

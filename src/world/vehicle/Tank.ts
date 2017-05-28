@@ -1,23 +1,29 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
-import {StackFSM} from "../../ai/fsm/StackFSM";
 import {State} from "../../ai/fsm/State";
-import {BrainText} from "./info/BrainText";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {Army} from "../Army";
 import {Radar} from "./sensor/Radar";
+import {Miner} from "./Miner";
+import {PathFinder} from "../../ai/path/PathFinder";
+import {MapAnalyse} from "../../ai/map/MapAnalyse";
 
 export class Tank extends Vehicle
 {
+    private pathfinder: PathFinder;
     private path: PhaserPointPath;
+    protected attackScope: number;
+    protected attackDamage: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number) {
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse) {
         super(game, x, y, army, radar, key, frame);
 
         this.maxHealth = 150;
         this.health = this.maxHealth;
         this.maxVelocity = 40;
+        this.attackScope = 100;
+        this.attackDamage = 8;
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -33,37 +39,30 @@ export class Tank extends Vehicle
 
         game.add.existing(this);
 
-        this.path = new PhaserPointPath(
-            [
-                this.getPosition().clone(),
-                new Phaser.Point(600, 470),
-                new Phaser.Point(830, 200),
-                new Phaser.Point(400, 200)
-            ]);
+        this.pathfinder = new PathFinder(mapAnalyse);
 
         this.behavior = new SteeringComputer(this);
-        this.brain.pushState(new State('patrolling', this.pathPatrolling));
-    }
 
-    public pathPatrolling = () =>
-    {
-        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
-        if (enemy !== null) {
-            this.brain.popState();
-            this.brain.pushState(new State('pursuing', this.pursuing));
-        } else if (this.path) {
-            this.behavior.pathPatrolling(this.path);
-        } else {
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
-        }
+        /**
+         * Wander Attack -> Pursuing + Attack
+         * Wander Defend Unit (no Mine) -> escorting Miner
+         * Wander Defend Mine -> patrol Mine to Base
+         */
+        this.brain.pushState(new State('wander', this.wander));
     }
 
     public wander = () =>
     {
-        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
-        if (enemy !== null) {
-            this.brain.pushState(new State('pursuing', this.pursuing));
+        const visibleEnemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
+        const closestMiner = this.radar.closestTeamate(this.getPosition().clone(), Miner);
+        const closestMine = this.radar.closestExploitableMine(this.getPosition());
+        if (visibleEnemy) {
+            this.brain.popState();
+            this.brain.pushState(new State('attack', this.attackEnemy));
+        } else if (closestMine) {
+            this.brain.pushState(new State('protect mine', this.protectingMine));
+        } else if (closestMiner) {
+            this.brain.pushState(new State('escorting', this.escortingMiner));
         } else {
             this.behavior.wander();
             this.behavior.avoidCollision(this.radar);
@@ -71,14 +70,59 @@ export class Tank extends Vehicle
         }
     }
 
-    public pursuing = () =>
+    public escortingMiner = () =>
+    {
+        const visibleEnemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
+        const closestMiner = this.radar.closestTeamate(this.getPosition().clone(), Miner);
+        const closestBase = this.radar.closestBase(this.getPosition());
+        const closestMine = this.radar.closestExploitableMine(this.getPosition());
+        if (visibleEnemy) {
+            this.brain.popState();
+            this.brain.pushState(new State('attack', this.attackEnemy));
+        } else if (closestMine) {
+            this.path = this.pathfinder.findPhaserPointPath(closestMine.getPosition().clone(), closestBase.getPosition().clone());
+            this.brain.popState();
+            this.brain.pushState(new State('protect mine', this.protectingMine));
+        } else if (closestMiner !== null) {
+            this.behavior.pursuing(closestMiner);
+        } else {
+            this.brain.popState();
+            this.brain.pushState(new State('wander', this.wander));
+        }
+    }
+
+    public protectingMine = () =>
+    {
+        const visibleEnemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
+        const closestMine = this.radar.closestExploitableMine(this.getPosition());
+        if (visibleEnemy) {
+            this.brain.popState();
+            this.brain.pushState(new State('attack', this.attackEnemy));
+        } else if (closestMine && this.path) {
+            this.behavior.pathPatrolling(this.path);
+        } else {
+            this.brain.popState();
+            this.brain.pushState(new State('wander', this.wander));
+        }
+    }
+
+    public attackEnemy = () =>
     {
         const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         if (enemy !== null) {
             this.behavior.pursuing(enemy);
+            this.attack(enemy);
         } else {
             this.brain.popState();
             this.brain.pushState(new State('wander', this.wander));
+        }
+    }
+
+    public attack(enemy: Vehicle)
+    {
+        const distance = this.getPosition().distance(enemy.getPosition());
+        if (distance <= this.attackScope) {
+            enemy.hit(this.attackDamage);
         }
     }
 }
