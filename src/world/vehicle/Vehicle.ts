@@ -4,7 +4,7 @@ import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {BrainText} from "./BrainText";
 
-export abstract class Bot extends Phaser.Sprite implements Boid
+export abstract class Vehicle extends Phaser.Sprite implements Boid
 {
     public body: Phaser.Physics.Arcade.Body;
     protected behavior: SteeringComputer;

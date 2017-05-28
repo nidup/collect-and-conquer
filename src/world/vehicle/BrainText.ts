@@ -1,15 +1,15 @@
 
-import {Bot} from "./Bot";
+import {Vehicle} from "./Vehicle";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {StateColors} from "./StateColor";
 
 export class BrainText extends Phaser.Text
 {
-    private bot: Bot;
+    private bot: Vehicle;
     private brain: StackFSM;
     private stateColors: StateColors;
 
-    constructor(game: Phaser.Game, x: number, y: number, text: string, style, bot: Bot, brain: StackFSM)
+    constructor(game: Phaser.Game, x: number, y: number, text: string, style, bot: Vehicle, brain: StackFSM)
     {
         super(game, x, y, text, style);
         this.bot = bot;

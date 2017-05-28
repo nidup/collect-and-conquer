@@ -1,22 +1,22 @@
 
 import {Boid} from "../../ai/steering/Boid";
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
-import {Bot} from "./Bot";
-import {BotRepository} from "./BotRepository";
+import {Vehicle} from "./Vehicle";
+import {VehicleRepository} from "./VehicleRepository";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
 import {Radar} from "./sensor/Radar";
 
-export class Scout extends Bot
+export class Scout extends Vehicle
 {
     private radar: Radar;
-    private repository: BotRepository;
+    private repository: VehicleRepository;
 
     private speed: number = 90;
     private scope: number = 100;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, bots: BotRepository, radar: Radar) {
+    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, vehicles: VehicleRepository, radar: Radar) {
         super(game, x, y, key, frame);
 
         this.anchor.setTo(.5, .5);
@@ -33,7 +33,7 @@ export class Scout extends Bot
 
         game.add.existing(this);
 
-        this.repository = bots;
+        this.repository = vehicles;
         this.radar = radar;
         this.behavior = new SteeringComputer(this);
         this.brain = new StackFSM();

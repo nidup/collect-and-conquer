@@ -2,7 +2,7 @@
 import {Builder} from "../../world/vehicle/Builder";
 import {MapAnalyser} from "../../ai/map/MapAnalyser";
 import {Scout} from "../../world/vehicle/Scout";
-import {BotRepository} from "../../world/vehicle/BotRepository";
+import {VehicleRepository} from "../../world/vehicle/VehicleRepository";
 import {Tank} from "../../world/vehicle/Tank";
 import {Miner} from "../../world/vehicle/Miner";
 import {BuildingRepository} from "../../world/building/BuildingRepository";
@@ -15,7 +15,7 @@ import {FileMapGenerator} from "../../map/FileMapGenerator";
 import {ItemRepository} from "../../world/item/ItemRepository";
 import {Item} from "../../world/item/Item";
 import {Oil} from "../../world/item/Oil";
-import {Bot} from "../../world/vehicle/Bot";
+import {Vehicle} from "../../world/vehicle/Vehicle";
 import {Radar} from "../../world/vehicle/sensor/Radar";
 import {CommandPanel} from "../../ui/CommandPanel";
 import {UnitSelector} from "../../ui/UnitSelector";
@@ -25,7 +25,7 @@ export default class Play extends Phaser.State
 {
     private items: ItemRepository;
     private buildings: BuildingRepository;
-    private bots: BotRepository;
+    private vehicles: VehicleRepository;
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
@@ -62,10 +62,12 @@ export default class Play extends Phaser.State
         this.layer.resizeWorld();
 
         this.items = new ItemRepository();
+        this.buildings = new BuildingRepository();
+        this.vehicles = new VehicleRepository();
+
         this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 30));
         this.items.add(new Oil(this.game, 570, 450, 'Icons', 0, 70));
 
-        this.buildings = new BuildingRepository();
         this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
         //this.buildings.add(new Generator(this.game, 400, 190, 'Generator', 0));
         /*
@@ -75,27 +77,27 @@ export default class Play extends Phaser.State
         this.buildings.add(new Generator(this.game, 600, 460, 'Generator', 0));
         this.buildings.add(new Generator(this.game, 400, 120, 'Generator', 0));
         */
-        const radar = new Radar(this.items, this.buildings, this.bots);
-
-        this.bots = new BotRepository();
-        this.bots.add(new Scout(this.game, 250, 200, 'Scout1', 0, this.bots, radar));
-
-        this.bots.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.bots, radar));
-        this.bots.add(new Scout(this.game, 200, 400, 'Scout1', 0, this.bots, radar));
-        this.bots.add(new Scout(this.game, 50, 400, 'Scout1', 0, this.bots, radar));
+        const radar = new Radar(this.items, this.buildings, this.vehicles);
 
 
-        this.bots.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse, radar));
+        this.vehicles.add(new Scout(this.game, 250, 200, 'Scout1', 0, this.vehicles, radar));
+
+        this.vehicles.add(new Scout(this.game, 50, 600, 'Scout1', 0, this.vehicles, radar));
+        this.vehicles.add(new Scout(this.game, 200, 400, 'Scout1', 0, this.vehicles, radar));
+        this.vehicles.add(new Scout(this.game, 50, 400, 'Scout1', 0, this.vehicles, radar));
+
+
+        this.vehicles.add(new Builder(this.game, 330, 370, 'Builder1', 0, mapAnalyse, radar));
         /*
-        this.bots.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse, radar));
-        this.bots.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse, radar));
+        this.vehicles.add(new Builder(this.game, 130, 170, 'Builder1', 0, mapAnalyse, radar));
+        this.vehicles.add(new Builder(this.game, 700, 370, 'Builder1', 0, mapAnalyse, radar));
         */
-        this.bots.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.bots));
+        this.vehicles.add(new Tank(this.game, 400, 360, 'Tank5', 0, this.vehicles));
 
-        this.bots.add(new Miner(this.game, 70, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
-        this.bots.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, radar, this.buildings));
-        this.bots.add(new Miner(this.game, 400, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
-        this.bots.add(new Miner(this.game, 700, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
+        this.vehicles.add(new Miner(this.game, 70, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
+        this.vehicles.add(new Miner(this.game, 100, 400, 'Miner', 0, mapAnalyse, radar, this.buildings));
+        this.vehicles.add(new Miner(this.game, 400, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
+        this.vehicles.add(new Miner(this.game, 700, 100, 'Miner', 0, mapAnalyse, radar, this.buildings));
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.get(0));
@@ -105,8 +107,8 @@ export default class Play extends Phaser.State
     public update()
     {
         this.updateItems(this.items);
-        this.updateBots(this.bots, this.game, this.layer);
-        this.updateUnitSelector(this.unitSelector, this.bots, this.buildings, this.items);
+        this.updateVehicles(this.vehicles, this.game, this.layer);
+        this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
     }
 
     private updateItems(items: ItemRepository)
@@ -122,20 +124,20 @@ export default class Play extends Phaser.State
             });
     }
 
-    private updateBots(bots: BotRepository, game: Phaser.Game, collisionLayer: Phaser.TilemapLayer)
+    private updateVehicles(vehicles: VehicleRepository, game: Phaser.Game, collisionLayer: Phaser.TilemapLayer)
     {
-        const aliveBots = bots;
-        aliveBots.all()
-            .filter(function (bot: Bot) {
+        const aliveVehicles = vehicles;
+        aliveVehicles.all()
+            .filter(function (bot: Vehicle) {
                 return !bot.isAlive();
             })
-            .map(function (bot: Bot) {
-                aliveBots.remove(bot);
+            .map(function (bot: Vehicle) {
+                aliveVehicles.remove(bot);
                 bot.destroy();
             });
 
         if (game.input.mousePointer.isDown) {
-            aliveBots.all().map(function(bot: Bot) {
+            aliveVehicles.all().map(function(bot: Vehicle) {
                 if (bot instanceof Builder) {
                     (<Builder>bot).changePath(new Phaser.Point(game.input.x, game.input.y));
                 }
@@ -144,16 +146,16 @@ export default class Play extends Phaser.State
 
         if (this.enableTileCollision) {
             const layer = collisionLayer;
-            aliveBots.all().map(function(bot: Bot) {
+            aliveVehicles.all().map(function(bot: Vehicle) {
                 game.physics.arcade.collide(bot, layer);
                 bot.update();
             });
         }
     }
 
-    private updateUnitSelector(unitSelector: UnitSelector, bots: BotRepository, buildings: BuildingRepository, items: ItemRepository)
+    private updateUnitSelector(unitSelector: UnitSelector, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository)
     {
-        unitSelector.listenBots(bots.all());
+        unitSelector.listenVehicles(vehicles.all());
         unitSelector.listenBuildings(buildings.all());
         unitSelector.listenItems(items.all());
     }
@@ -162,10 +164,10 @@ export default class Play extends Phaser.State
     {
         if (this.debug) {
             // TODO: try https://github.com/samme/phaser-plugin-debug-arcade-physics ?
-            // this.game.debug.body(this.bots.get(1));
-            // this.game.debug.bodyInfo(this.bots.get(1), 240, 410);
+            // this.game.debug.body(this.vehicles.get(1));
+            // this.game.debug.bodyInfo(this.vehicles.get(1), 240, 410);
             const game = this.game;
-            this.bots.all().map(function(bot: Bot) {
+            this.vehicles.all().map(function(bot: Vehicle) {
                 game.debug.body(bot);
             });
             this.buildings.all().map(function(building: Building) {

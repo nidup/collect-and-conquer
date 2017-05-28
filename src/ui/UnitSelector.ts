@@ -1,5 +1,5 @@
 
-import {Bot} from "../world/vehicle/Bot";
+import {Vehicle} from "../world/vehicle/Vehicle";
 import {Building} from "../world/building/Building";
 import {Item} from "../world/item/Item";
 export class UnitSelector
@@ -16,10 +16,10 @@ export class UnitSelector
         return this.selectedUnit;
     }
 
-    public listenBots(bots: Bot[])
+    public listenVehicles(vehicles: Vehicle[])
     {
         const myself = this;
-        bots.map(function (bot: Bot) {
+        vehicles.map(function (bot: Vehicle) {
             if (bot.events.onInputDown.getNumListeners() == 0) {
                 bot.events.onInputDown.add(function() {
                     myself.selectUnit(bot);

@@ -1,6 +1,6 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
-import {Bot} from "./Bot";
+import {Vehicle} from "./Vehicle";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {MapAnalyse} from "../../ai/map/MapAnalyse";
 import {PathFinder} from "../../ai/path/PathFinder";
@@ -9,7 +9,7 @@ import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
 import {Radar} from "./sensor/Radar";
 
-export class Builder extends Bot
+export class Builder extends Vehicle
 {
     public body: Phaser.Physics.Arcade.Body;
 

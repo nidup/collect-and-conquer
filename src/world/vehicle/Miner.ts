@@ -1,6 +1,6 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
-import {Bot} from "./Bot";
+import {Vehicle} from "./Vehicle";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {State} from "../../ai/fsm/State";
@@ -10,13 +10,13 @@ import {Item} from "../item/Item";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {MapAnalyse} from "../../ai/map/MapAnalyse";
 import {BuildingRepository} from "../building/BuildingRepository";
-import {BotRepository} from "./BotRepository";
+import {VehicleRepository} from "./VehicleRepository";
 import {Mine} from "../building/Mine";
 import {Oil} from "../item/Oil";
 import {Base} from "../building/Base";
 import {Radar} from "./sensor/Radar";
 
-export class Miner extends Bot
+export class Miner extends Vehicle
 {
     private speed: number = 60;
     private scope: number = 200;

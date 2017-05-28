@@ -1,7 +1,7 @@
 
 import {ItemRepository} from "../../item/ItemRepository";
 import {BuildingRepository} from "../../building/BuildingRepository";
-import {BotRepository} from "../BotRepository";
+import {VehicleRepository} from "../VehicleRepository";
 import {Oil} from "../../item/Oil";
 import {Mine} from "../../building/Mine";
 import {Base} from "../../building/Base";
@@ -12,13 +12,13 @@ export class Radar
 {
     private items: ItemRepository;
     private buildings: BuildingRepository;
-    private bots: BotRepository;
+    private vehicles: VehicleRepository;
 
-    constructor(items: ItemRepository, buildings: BuildingRepository, bots: BotRepository)
+    constructor(items: ItemRepository, buildings: BuildingRepository, vehicles: VehicleRepository)
     {
         this.items = items;
         this.buildings = buildings;
-        this.bots = bots;
+        this.vehicles = vehicles;
     }
 
     public closestVisibleOil(position: Phaser.Point, scope: number): Oil|null
