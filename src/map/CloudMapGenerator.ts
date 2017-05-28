@@ -8,6 +8,7 @@ const tileSpacing = 20;
 
 const MIN_POWER = 2;
 const MAX_POWER = 3;
+const RADIUS = 0.5; // Specify the smooth. 0.001 = big smooth, infinite = no smooth.
 
 export class CloudMapGenerator extends MapGenerator
 {
@@ -29,8 +30,8 @@ export class CloudMapGenerator extends MapGenerator
 
         this.addTileSets(map);
 
-        let mapHeight = 3 * Math.pow(2, MAX_POWER);
-        let mapWidth = 6 * Math.pow(2, MAX_POWER);
+        let mapHeight = Math.floor(this.screenHeight / Math.pow(2, MAX_POWER));
+        let mapWidth = Math.floor(this.screenWidth / Math.pow(2, MAX_POWER));
         let cloudMaps = this.generateCloudMaps(mapWidth, mapHeight);
         let points = this.mixCloudMaps(cloudMaps);
         let grounds = this.getGrounds(points);
@@ -127,7 +128,7 @@ export class CloudMapGenerator extends MapGenerator
     }
 
     private smoothMap(power: number, rudePoints: Array<Array<number>>): Array<Array<number>> {
-        let diff = Math.ceil(Math.pow(2, power) / 1.1);
+        let diff = Math.ceil(Math.pow(2, power) / RADIUS);
 
         let smooth = [];
         for (let y = 0; y < rudePoints.length; y++) {
@@ -191,8 +192,8 @@ export class CloudMapGenerator extends MapGenerator
         const probabilities = [
             [Tile.LAVA, 1],
             [Tile.GRASS, 1],
-            [Tile.MNT, 2],
-            [Tile.SNOW, 1]
+            [Tile.MNT, 1],
+            [Tile.SNOW, 2]
         ];
         const sumProbabilities = probabilities.reduce(function (s, probability) {
             return s + probability[1];
@@ -223,7 +224,6 @@ export class CloudMapGenerator extends MapGenerator
                 if (null !== tile) {
                     map.putTile(tile.index, x, y);
                 }
-
 
             }.bind(this))
         }.bind(this));

@@ -11,6 +11,7 @@ import {Mine} from "../../world/building/Mine";
 import {Generator} from "../../world/building/Generator";
 import {MapGenerator} from "../../map/MapGenerator";
 import {RandomMapGenerator} from "../../map/RandomMapGenerator";
+import {CloudMapGenerator} from "../../map/CloudMapGenerator";
 import {FileMapGenerator} from "../../map/FileMapGenerator";
 import {ItemRepository} from "../../world/item/ItemRepository";
 import {Item} from "../../world/item/Item";
@@ -47,7 +48,8 @@ export default class Play extends Phaser.State
         const screenHeight = 800;
         const tileSize = 20;
 
-        const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
+        const mapGenerator = new CloudMapGenerator(this.game, screenWidth, screenHeight);
+        //const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
         //const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
         this.map = mapGenerator.generate();
 
