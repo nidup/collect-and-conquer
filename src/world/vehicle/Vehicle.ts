@@ -26,6 +26,8 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.maxHealth = 100;
         this.health = 100;
         this.healthBar = new HealthBar(this.game, this);
+        this.brain = new StackFSM();
+        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
     }
 
     public update ()

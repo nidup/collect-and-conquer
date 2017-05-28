@@ -45,10 +45,7 @@ export class Builder extends Vehicle
         this.pathfinder = new PathFinder(mapAnalyse);
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
 
-        this.brain = new StackFSM();
         this.brain.pushState(new State('path following', this.pathFollowing));
-
-        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     // TODO: for debug purpose

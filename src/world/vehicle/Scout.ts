@@ -33,10 +33,7 @@ export class Scout extends Vehicle
         game.add.existing(this);
 
         this.behavior = new SteeringComputer(this);
-        this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
-
-        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     public wander = () =>

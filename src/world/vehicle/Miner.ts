@@ -51,10 +51,7 @@ export class Miner extends Vehicle
          * Wander Collect -> Go to mine -> Load -> Go to base -> Unload -> Go to mine
          * Wander Oil -> Go to oil -> Build mine (destroy)
          */
-        this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
-
-        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
 
         this.oilLoad = 0
         this.oilCapacity = 10

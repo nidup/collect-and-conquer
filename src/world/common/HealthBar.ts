@@ -38,8 +38,8 @@ export class HealthBar
         this.foreground.width = this.getHealthBarWidth();
 
         if (this.host instanceof Vehicle) {
-            this.game.physics.arcade.moveToObject(this.background, this.host);
-            this.game.physics.arcade.moveToObject(this.foreground, this.host);
+            this.game.physics.arcade.moveToObject(this.background, this.host, this.host.body.speed);
+            this.game.physics.arcade.moveToObject(this.foreground, this.host, this.host.body.speed);
         }
     }
 

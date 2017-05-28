@@ -44,10 +44,7 @@ export class Tank extends Vehicle
             ]);
 
         this.behavior = new SteeringComputer(this);
-        this.brain = new StackFSM();
         this.brain.pushState(new State('patrolling', this.pathPatrolling));
-
-        this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
     }
 
     public pathPatrolling = () =>
