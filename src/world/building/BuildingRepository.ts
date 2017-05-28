@@ -36,9 +36,4 @@ export class BuildingRepository
     {
         return this.buildings.length;
     }
-
-    public get(index: number) :Building
-    {
-        return this.buildings[index];
-    }
 }

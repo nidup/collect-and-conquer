@@ -1,6 +1,6 @@
 
 import {UnitSelector} from "./UnitSelector";
-import {Bot} from "../world/vehicle/Bot";
+import {Vehicle} from "../world/vehicle/Vehicle";
 import {Building} from "../world/building/Building";
 import {Item} from "../world/item/Item";
 import {StateColors} from "../world/vehicle/StateColor";
@@ -59,7 +59,7 @@ export class CommandPanel extends Phaser.Sprite
 
     private displayUnitStatus(selectedUnit: Phaser.Sprite)
     {
-        if (selectedUnit instanceof Building || selectedUnit instanceof Bot || selectedUnit instanceof Item) {
+        if (selectedUnit instanceof Building || selectedUnit instanceof Vehicle || selectedUnit instanceof Item) {
             this.unitStateText.setText(selectedUnit.getStatus());
             const color = this.stateColors.getColor(selectedUnit.getStatus());
             const style = {font: "11px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "top"};
@@ -81,18 +81,19 @@ export class CommandPanel extends Phaser.Sprite
         );
 
         let positionX = this.screenWidth - 103;
-        positionX += (selectedUnit instanceof Bot) ? 30 : 0;
+        positionX += (selectedUnit instanceof Vehicle) ? 30 : 0;
         positionX += (selectedUnit instanceof Building) ? 20 : 0;
         positionX += (selectedUnit instanceof Item) ? 30 : 0;
 
         let positionY = 14;
-        positionY += (selectedUnit instanceof Bot) ? 40 : 0;
+        positionY += (selectedUnit instanceof Vehicle) ? 40 : 0;
         positionY += (selectedUnit instanceof Building) ? 10 : 0;
         positionY += (selectedUnit instanceof Item) ? 35 : 0;
 
         this.unitStateImage = this.game.add.sprite(positionX, positionY, selectedUnit.key, selectedUnit.frame);
         this.unitStateImage.fixedToCamera = true;
         this.unitStateImage.animations = selectedUnit.animations;
+        this.unitStateImage.tint = selectedUnit.tint;
         if (selectedUnit.animations.currentAnim) {
             this.unitStateImage.animations.play(selectedUnit.animations.currentAnim.name);
         }
@@ -100,7 +101,7 @@ export class CommandPanel extends Phaser.Sprite
 
         // TODO: issue when following a miner that build a mine and destroy itself
         /*
-        if (selectedUnit instanceof Bot) {
+        if (selectedUnit instanceof Vehicle) {
             this.unitStateImage.angle = 180 + Phaser.Math.radToDeg(
                 Phaser.Point.angle(
                     selectedUnit.getPosition(),

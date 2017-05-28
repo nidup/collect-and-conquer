@@ -1,22 +1,16 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
-import {Bot} from "./Bot";
+import {Vehicle} from "./Vehicle";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
-import {ItemRepository} from "../item/ItemRepository";
-import {Item} from "../item/Item";
 import {PathFinder} from "../../ai/path/PathFinder";
-import {MapAnalyse} from "../../ai/map/MapAnalyse";
-import {BuildingRepository} from "../building/BuildingRepository";
-import {BotRepository} from "./BotRepository";
-import {Mine} from "../building/Mine";
-import {Oil} from "../item/Oil";
-import {Base} from "../building/Base";
+import {MapAnalyse} from "../../ai/map/MapAnalyse";;
 import {Radar} from "./sensor/Radar";
+import {Army} from "../Army";
 
-export class Miner extends Bot
+export class Miner extends Vehicle
 {
     private speed: number = 60;
     private scope: number = 200;
@@ -25,16 +19,12 @@ export class Miner extends Bot
     private pathfinder: PathFinder;
     private path: PhaserPointPath;
 
-    private radar: Radar;
-
-    private buildings: BuildingRepository;
-
     private oilLoad: number;
     private oilCapacity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar, buildings: BuildingRepository)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
-        super(game, x, y, key, frame);
+        super(game, x, y, army, radar, key, frame);
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -54,8 +44,6 @@ export class Miner extends Bot
 
         this.behavior = new SteeringComputer(this);
 
-        this.radar = radar;
-
         /**
          * Wander Collect -> Go to mine -> Load -> Go to base -> Unload -> Go to mine
          * Wander Oil -> Go to oil -> Build mine (destroy)
@@ -65,7 +53,6 @@ export class Miner extends Bot
 
         this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
 
-        this.buildings = buildings;
         this.oilLoad = 0
         this.oilCapacity = 10
     }
@@ -127,8 +114,7 @@ export class Miner extends Bot
             this.health = 0;
             const position = oil.getPosition();
             oil.collect();
-            this.buildings.add(new Mine(this.game, position.x, position.y - 20, 'Mine', 0, oil.getQuantity()));
-
+            this.army.buildMine(position.x, position.y - 20, oil);
             this.brain.popState();
             this.brain.pushState(new State('extracting', this.extracting));
         } else {
@@ -176,7 +162,7 @@ export class Miner extends Bot
             const base = this.radar.closestBase(this.getPosition());
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), base.getPosition().clone());
             this.brain.popState();
-            this.brain.pushState(new State('goto base', this.gotoBase));
+            this.brain.pushState(new State('go to base', this.gotoBase));
         } else {
             this.path = null;
             this.brain.popState();

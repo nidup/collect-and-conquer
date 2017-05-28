@@ -1,23 +1,19 @@
 
-import {Boid} from "../../ai/steering/Boid";
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
-import {Bot} from "./Bot";
-import {BotRepository} from "./BotRepository";
+import {Vehicle} from "./Vehicle";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {State} from "../../ai/fsm/State";
 import {BrainText} from "./BrainText";
 import {Radar} from "./sensor/Radar";
+import {Army} from "../Army";
 
-export class Scout extends Bot
+export class Scout extends Vehicle
 {
-    private radar: Radar;
-    private repository: BotRepository;
-
     private speed: number = 90;
-    private scope: number = 100;
+    private visibilityScope: number = 100;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, bots: BotRepository, radar: Radar) {
-        super(game, x, y, key, frame);
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number) {
+        super(game, x, y, army, radar, key, frame);
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
@@ -33,8 +29,6 @@ export class Scout extends Bot
 
         game.add.existing(this);
 
-        this.repository = bots;
-        this.radar = radar;
         this.behavior = new SteeringComputer(this);
         this.brain = new StackFSM();
         this.brain.pushState(new State('wander', this.wander));
@@ -44,7 +38,7 @@ export class Scout extends Bot
 
     public wander = () =>
     {
-        const enemy = this.closestEnemy();
+        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         if (enemy !== null) {
             this.brain.pushState(new State('evading', this.evading));
 
@@ -57,32 +51,15 @@ export class Scout extends Bot
 
     public evading = () =>
     {
-        const enemy = this.closestEnemy();
+        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         if (enemy !== null) {
             // TODO: flee makes something more natural when pursuing!
-            // TODO: sometimes both bot and enemy does not move anymore!
+            // TODO: sometimes both vehicle and enemy does not move anymore!
             //this.behavior.evading(enemy);
             this.behavior.flee(enemy.getPosition());
             this.behavior.avoidCollision(this.radar);
         } else {
             this.brain.popState();
         }
-    }
-
-    private closestEnemy(): Boid|null
-    {
-        const enemies = this.repository.enemiesOf(this);
-        let closestEnemy = null;
-        let closestDistance = this.scope * 10;
-        for (let index = 0; index < enemies.length; index++) {
-            let enemy = enemies[index];
-            let distance = this.getPosition().distance(enemies[index].getPosition());
-            if (distance < this.scope && distance < closestDistance) {
-                closestEnemy = enemy;
-                closestDistance = distance;
-            }
-        }
-
-        return <Boid>closestEnemy;
     }
 }

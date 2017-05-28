@@ -1,7 +1,8 @@
 
-import {Bot} from "../world/vehicle/Bot";
+import {Vehicle} from "../world/vehicle/Vehicle";
 import {Building} from "../world/building/Building";
 import {Item} from "../world/item/Item";
+
 export class UnitSelector
 {
     private selectedUnit: Phaser.Sprite;
@@ -16,13 +17,13 @@ export class UnitSelector
         return this.selectedUnit;
     }
 
-    public listenBots(bots: Bot[])
+    public listenVehicles(vehicles: Vehicle[])
     {
         const myself = this;
-        bots.map(function (bot: Bot) {
-            if (bot.events.onInputDown.getNumListeners() == 0) {
-                bot.events.onInputDown.add(function() {
-                    myself.selectUnit(bot);
+        vehicles.map(function (vehicle: Vehicle) {
+            if (vehicle.events.onInputDown.getNumListeners() == 0) {
+                vehicle.events.onInputDown.add(function() {
+                    myself.selectUnit(vehicle);
                 }, this);
             }
         });

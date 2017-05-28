@@ -3,13 +3,25 @@ import {Boid} from "../../ai/steering/Boid";
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {StackFSM} from "../../ai/fsm/StackFSM";
 import {BrainText} from "./BrainText";
+import {Army} from "../Army";
+import {Radar} from "./sensor/Radar";
 
-export abstract class Bot extends Phaser.Sprite implements Boid
+export abstract class Vehicle extends Phaser.Sprite implements Boid
 {
     public body: Phaser.Physics.Arcade.Body;
+    protected army: Army;
+    protected radar: Radar;
     protected behavior: SteeringComputer;
     protected brain: StackFSM;
     protected brainText: BrainText;
+
+    constructor (game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number)
+    {
+        super(game, x, y, key, frame);
+        this.army = army;
+        this.radar = radar;
+        this.tint = army.getColor();
+    }
 
     public update ()
     {
@@ -22,6 +34,11 @@ export abstract class Bot extends Phaser.Sprite implements Boid
     public isAlive() :boolean
     {
         return this.health > 0;
+    }
+
+    public getArmy() :Army
+    {
+        return this.army;
     }
 
     public getStatus() :string
