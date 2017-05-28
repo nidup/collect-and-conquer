@@ -1,13 +1,14 @@
 
 import {Building} from "./Building";
+import {Army} from "../Army";
 
 export class Base extends Building
 {
     private stockedQuantity: number = 0;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number)
     {
-        super(game, x, y, key, frame);
+        super(game, x, y, army, key, frame);
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

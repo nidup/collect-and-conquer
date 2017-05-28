@@ -1,13 +1,14 @@
 
 import {Building} from "./Building";
+import {Army} from "../Army";
 
 export class Mine extends Building
 {
     private remainingQuantity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, quantity: number)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, quantity: number)
     {
-        super(game, x, y, key, frame);
+        super(game, x, y, army, key, frame);
         this.remainingQuantity = quantity;
 
         this.anchor.setTo(.5,.5);

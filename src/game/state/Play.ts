@@ -79,15 +79,8 @@ export default class Play extends Phaser.State
         this.items.add(new Oil(this.game, 370, 430, 'Icons', 0, 40));
         this.items.add(new Oil(this.game, 570, 450, 'Icons', 0, 70));
 
-        this.buildings.add(new Base(this.game, 150, 200, 'Base', 0));
-        //this.buildings.add(new Generator(this.game, 400, 190, 'Generator', 0));
-        /*
-        this.buildings.add(new Generator(this.game, 450, 430, 'Generator', 0));
-        this.buildings.add(new Generator(this.game, 300, 410, 'Generator', 0));
-        this.buildings.add(new Generator(this.game, 450, 280, 'Generator', 0));
-        this.buildings.add(new Generator(this.game, 600, 460, 'Generator', 0));
-        this.buildings.add(new Generator(this.game, 400, 120, 'Generator', 0));
-        */
+        armyBlue.buildBase(150, 200);
+        armyBlue.buildGenerator(400, 190);
 
         armyBlue.recruitScout(250, 200);
         armyBlue.recruitScout(50, 600);

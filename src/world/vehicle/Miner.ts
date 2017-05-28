@@ -28,12 +28,10 @@ export class Miner extends Vehicle
 
     private radar: Radar;
 
-    private buildings: BuildingRepository;
-
     private oilLoad: number;
     private oilCapacity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar, buildings: BuildingRepository)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, mapAnalyse: MapAnalyse, radar: Radar)
     {
         super(game, x, y, army, key, frame);
 
@@ -66,7 +64,6 @@ export class Miner extends Vehicle
 
         this.brainText = new BrainText(this.game, this.x, this.y - 20, '', {}, this, this.brain);
 
-        this.buildings = buildings;
         this.oilLoad = 0
         this.oilCapacity = 10
     }
@@ -128,8 +125,7 @@ export class Miner extends Vehicle
             this.health = 0;
             const position = oil.getPosition();
             oil.collect();
-            this.buildings.add(new Mine(this.game, position.x, position.y - 20, 'Mine', 0, oil.getQuantity()));
-
+            this.army.buildMine(position.x, position.y - 20, oil);
             this.brain.popState();
             this.brain.pushState(new State('extracting', this.extracting));
         } else {
@@ -177,7 +173,7 @@ export class Miner extends Vehicle
             const base = this.radar.closestBase(this.getPosition());
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), base.getPosition().clone());
             this.brain.popState();
-            this.brain.pushState(new State('goto base', this.gotoBase));
+            this.brain.pushState(new State('go to base', this.gotoBase));
         } else {
             this.path = null;
             this.brain.popState();

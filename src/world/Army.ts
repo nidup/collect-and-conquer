@@ -9,6 +9,10 @@ import {Vehicle} from "./vehicle/Vehicle";
 import {Scout} from "./vehicle/Scout";
 import {Tank} from "./vehicle/Tank";
 import {Builder} from "./vehicle/Builder";
+import {Base} from "./building/Base";
+import {Generator} from "./building/Generator";
+import {Mine} from "./building/Mine";
+import {Oil} from "./item/Oil";
 
 export class Army
 {
@@ -33,7 +37,7 @@ export class Army
 
     public recruitMiner(x: number, y: number): Miner
     {
-        const vehicle = new Miner(this.game, x, y, this, 'Miner', 0, this.mapAnalyse, this.radar, this.buildings);
+        const vehicle = new Miner(this.game, x, y, this, 'Miner', 0, this.mapAnalyse, this.radar);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -57,6 +61,27 @@ export class Army
         const vehicle = new Builder(this.game, x, y, this, 'Builder1', 0, this.mapAnalyse, this.radar);
         this.vehicles.add(vehicle);
         return vehicle;
+    }
+
+    public buildBase(x: number, y:number): Base
+    {
+        const building = new Base(this.game, x, y, this, 'Base', 0);
+        this.buildings.add(building);
+        return building;
+    }
+
+    public buildGenerator(x: number, y:number): Generator
+    {
+        const building = new Generator(this.game, x, y, this, 'Generator', 0);
+        this.buildings.add(building);
+        return building;
+    }
+
+    public buildMine(x: number, y:number, oil: Oil): Mine
+    {
+        const building = new Mine(this.game, x, y, this, 'Mine', 0, oil.getQuantity())
+        this.buildings.add(building);
+        return building;
     }
 
     public getColor()
