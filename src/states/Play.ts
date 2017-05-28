@@ -44,8 +44,8 @@ export default class Play extends Phaser.State
         const screenHeight = 500;
         const tileSize = 20;
 
-        // const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
-        const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
+        const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
+        // const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
         this.map = mapGenerator.generate();
 
         // handle collisions

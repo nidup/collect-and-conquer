@@ -1,171 +1,246 @@
 
 import {MapGenerator} from "./MapGenerator";
+import {Tile} from "./Tile";
+import {TileRegistry} from "./TilesRegistry";
 
-const GRASS = 35;
-const MNT = 136;
+const DECORATION_RANDOM = 0.05;
+const SMOOTH_LOOPS = 3;
 
-const TILES = [
-    [132, MNT, MNT, GRASS, MNT],
-    [133, MNT, MNT, GRASS, GRASS],
-    [134, MNT, MNT, MNT, GRASS],
-    [135, MNT, GRASS, GRASS, MNT],
-    [136, MNT, MNT, MNT, MNT],
-    [137, GRASS, MNT, MNT, GRASS],
-    [138, MNT, GRASS, MNT, MNT],
-    [139, GRASS, GRASS, MNT, MNT],
-    [140, GRASS, MNT, MNT, MNT],
-    [142, MNT, GRASS, GRASS, GRASS],
-    [143, GRASS, MNT, GRASS, GRASS],
-    [145, GRASS, GRASS, GRASS, MNT],
-    [146, GRASS, GRASS, MNT, GRASS],
-    [35, GRASS, GRASS, GRASS, GRASS]
-];
-
+// TODO move this
 const DECO = [
-    [GRASS, 177, 178, 179, 185, 186, 188, 189, 190],
-    [MNT, 200, 201, 202, 203, 204, 205]
+    [Tile.GRASS, 177, 178, 179, 185, 186, 188, 189, 190],
+    [Tile.MNT, 200, 201, 202, 203, 204, 205]
 ];
+
+const tileSize = 20;
+const tileSpacing = 20;
 
 export class RandomMapGenerator extends MapGenerator
 {
+    private tileRegistry: TileRegistry;
+
     constructor(game: Phaser.Game, screenWidth: number, screenHeight: number)
     {
         super(game, screenWidth, screenHeight);
+
+        this.tileRegistry = new TileRegistry();
     }
 
     generate(): Phaser.Tilemap
     {
-        const tileSize = 20;
-        const tileSpacing = 20;
-
         const map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
 
         map.removeAllLayers();
         map.createBlankLayer(MapGenerator.LAYER_NAME, this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
-        map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing, 31);
-        map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing, 132);
-        map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing, 177);
-        map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing, 180);
-        map.addTilesetImage('MntMisc', 'MntMisc', tileSize, tileSize, 0, tileSpacing, 200);
+        this.addTileSets(map);
 
-        const points = [];
+        let points = [];
         this.fillRandom(points);
-        this.smooth(points);
-        this.fixMissingTextures(points);
-        this.putTiles(map, points);
+        for (let loops = SMOOTH_LOOPS; loops > 0; loops--) {
+            points = this.smooth(points);
+        }
+        points = this.fixMissingTextures(points);
+        this.draw(map, points);
 
         return map;
     }
 
-    private static getDecoratedIndex(topLeft: number, topRight: number, bottomRight: number, bottomLeft: number): number
-    {
-        let undecorated = RandomMapGenerator.getIndex(topLeft, topRight, bottomRight, bottomLeft);
-        for (let i = 0; i < DECO.length; i++) {
-            let decorateds = DECO[i];
-            if (decorateds[0] === undecorated && Math.random() < 0.05) {
-                return decorateds[1 + Math.floor(Math.random() * (decorateds.length - 1))];
-            }
-        }
+    /**
+     * Adds the tilesets used for this map generation, and the associated tiles for the tiles registry.
+     *
+     * @param map
+     */
+    private addTileSets(map: Phaser.Tilemap) {
+        map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing, 31);
+        this.tileRegistry.addTile(new Tile(35, Tile.GRASS, Tile.GRASS, Tile.GRASS, Tile.GRASS));
 
-        return undecorated;
+        map.addTilesetImage('Grs2Mnt', 'Grs2Mnt', tileSize, tileSize, 0, tileSpacing, 132);
+        this.tileRegistry.addTile(new Tile(132, Tile.MNT, Tile.MNT, Tile.GRASS, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(133, Tile.MNT, Tile.MNT, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(134, Tile.MNT, Tile.MNT, Tile.MNT, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(135, Tile.MNT, Tile.GRASS, Tile.GRASS, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(136, Tile.MNT, Tile.MNT, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(137, Tile.GRASS, Tile.MNT, Tile.MNT, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(138, Tile.MNT, Tile.GRASS, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(139, Tile.GRASS, Tile.GRASS, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(140, Tile.GRASS, Tile.MNT, Tile.MNT, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(142, Tile.MNT, Tile.GRASS, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(143, Tile.GRASS, Tile.MNT, Tile.GRASS, Tile.GRASS));
+        this.tileRegistry.addTile(new Tile(145, Tile.GRASS, Tile.GRASS, Tile.GRASS, Tile.MNT));
+        this.tileRegistry.addTile(new Tile(146, Tile.GRASS, Tile.GRASS, Tile.MNT, Tile.GRASS));
+
+        map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing, 177);
+        map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing, 180);
+        map.addTilesetImage('MntMisc', 'MntMisc', tileSize, tileSize, 0, tileSpacing, 200);
     }
 
-    private static getIndex(topLeft: number, topRight: number, bottomRight: number, bottomLeft: number): number
+    /**
+     * Returns the current ground at this position.
+     * If there is no ground (out of bounds), returns null.
+     *
+     * @param points {Array<Array<number>>}
+     * @param x {number}
+     * @param y {number}
+     * @returns {number|null}
+     */
+    private static getGround(points: Array<Array<number>>, x: any, y: number): number|null
     {
-        for (let i = 0; i < TILES.length; i++) {
-            if (TILES[i][1] === topLeft
-                && TILES[i][2] === topRight
-                && TILES[i][3] === bottomRight
-                && TILES[i][4] === bottomLeft) {
-                return TILES[i][0];
-            }
-        }
-
-        return null;
-    }
-
-    private getPoint(points: Array<Array<number>>, x: any, y: number): number
-    {
-        if (undefined === points[x]) {
+        if (undefined === points[y]) {
             return null;
         }
 
-        if (undefined === points[x][y]) {
-            return null;
-        }
-
-        return points[x][y];
+        return (undefined === points[y][x]) ? null : points[y][x];
     }
 
+    /**
+     * Fills the points with random grounds.
+     *
+     * @param points
+     */
     private fillRandom(points: Array<Array<number>>)
     {
-        for (let x = 0; x <= this.screenWidth; x++) {
+        for (let y = 0; y <= this.screenHeight / tileSize + 1; y++) {
             let line = [];
-            for (let y = 0; y <= this.screenHeight; y++) {
-                line.push(Math.random() > 0.5 ? GRASS : MNT);
+            for (let x = 0; x < this.screenWidth / tileSize + 1; x++) {
+                line.push(Math.random() > 0.4 ? Tile.GRASS : Tile.MNT);
             }
             points.push(line);
         }
     }
 
-    private smooth(points: Array<Array<number>>)
+    /**
+     * Smooths the current points from their neighbors.
+     *
+     * @param points
+     * @returns Array<Array<number>>
+     */
+    private smooth(points: Array<Array<number>>): Array<Array<number>>
     {
-        for (let x = 0; x <= this.screenWidth; x++) {
-            for (let y = 0; y <= this.screenHeight; y++) {
-                let aroundPoints = [
-                    this.getPoint(points, x - 1, y - 1),
-                    this.getPoint(points,x, y - 1),
-                    this.getPoint(points,x + 1, y - 1),
-                    this.getPoint(points,x - 1, y),
-                    this.getPoint(points,x, y),
-                    this.getPoint(points,x + 1, y),
-                    this.getPoint(points,x - 1, y + 1),
-                    this.getPoint(points,x, y + 1),
-                    this.getPoint(points,x + 1, y + 1)
-                ].filter(function (p) {
-                    return null !== p;
-                }).sort();
-                points[x][y] = aroundPoints[Math.floor(aroundPoints.length / 2)];
-            }
-        }
+        const smoothCell = function(index: number, x: number, y: number): number {
+            const gaps = [-1, 0, 1];
+
+            let aroundPoints = gaps.reduce(function (lines, gapLine) {
+                return lines.concat(gaps.reduce(function (cells, gapCell) {
+                    cells.push(RandomMapGenerator.getGround(points, x  + gapCell, y  + gapLine));
+
+                    return cells;
+                }, []));
+            }, []).filter(function (p) {
+                return null !== p;
+            }).sort();
+
+            return aroundPoints[Math.floor(aroundPoints.length / 2)];
+        };
+
+        return points.map(function (line, y) {
+            return line.map(function (cell, x) {
+                return smoothCell(cell, x, y);
+            });
+        });
     }
 
-    private fixMissingTextures(points: Array<Array<number>>)
+    /**
+     * This function will prevent usage of non existing textures. For example, there is no texture with grass on the
+     * top left corner and the bottom right corner plus mountain on the top right corner and bottom left corner.
+     * This function will execute passes as needed to update grounds at single points, until there is no more
+     * non existing textures.
+     *
+     * @param points
+     * @returns {Array<Array<number>>}
+     */
+    private fixMissingTextures(points: Array<Array<number>>): Array<Array<number>>
     {
         let maxLoops = 1000;
         let changes = true;
+        let result = points;
+
+        // TODO I didn't found any other way to do this with `bind` methods...
+        let zthis = this;
+
+        const switchCell = function (cell, x, y) {
+            let topLeft = RandomMapGenerator.getGround(result, x, y);
+            let topRight = RandomMapGenerator.getGround(result, x + 1, y);
+            let bottomRight = RandomMapGenerator.getGround(result, x + 1, y + 1);
+            let bottomLeft = RandomMapGenerator.getGround(result, x, y + 1);
+
+            if (null !== topRight
+                && null !== bottomLeft
+                && null === zthis.tileRegistry.find({
+                    topLeft: topLeft,
+                    topRight: topRight,
+                    bottomRight: bottomRight,
+                    bottomLeft: bottomLeft
+                })
+            ) {
+                changes = true;
+
+                return zthis.tileRegistry.getClosestTileIndex(topLeft, topRight, bottomRight, bottomLeft);
+            } else {
+                return cell;
+            }
+        };
 
         while (maxLoops > 0 && changes) {
             changes = false;
-            for (let x = 0; x < this.screenWidth; x++) {
-                for (let y = 0; y < this.screenHeight; y++) {
-                    if (null === RandomMapGenerator.getIndex(
-                            this.getPoint(points,x, y),
-                            this.getPoint(points,x + 1, y),
-                            this.getPoint(points,x + 1, y + 1),
-                            this.getPoint(points,x, y + 1)
-                        )
-                    ) {
-                        points[x][y] = points[x][y] === MNT ? GRASS : MNT;
-                        changes = true;
-                    }
-                }
-            }
+            result = result.map(function (line, y) {
+                return line.map(function (cell, x) {
+                    return switchCell(cell, x, y);
+                });
+            });
             maxLoops--;
         }
+
+        return result;
     }
 
-    private putTiles(map: Phaser.Tilemap, points: Array<Array<number>>)
+    /**
+     * Draws the final render, using indexes of the tiles.
+     *
+     * @param map
+     * @param points
+     */
+    private draw(map: Phaser.Tilemap, points: Array<Array<number>>)
     {
-        for (let x = 0; x < this.screenWidth; x++) {
-            for (let y = 0; y <= this.screenHeight; y++) {
-                map.putTile(RandomMapGenerator.getDecoratedIndex(
-                    this.getPoint(points, x, y),
-                    this.getPoint(points, x + 1, y),
-                    this.getPoint(points, x + 1, y + 1),
-                    this.getPoint(points, x, y + 1)
-                ), x, y);
+        points.forEach(function (line, y) {
+            line.forEach(function (cell, x) {
+                let decoratedIndex = this.getDecoratedIndex(
+                    RandomMapGenerator.getGround(points, x, y),
+                    RandomMapGenerator.getGround(points, x + 1, y),
+                    RandomMapGenerator.getGround(points, x + 1, y + 1),
+                    RandomMapGenerator.getGround(points, x, y + 1)
+                );
+                map.putTile(decoratedIndex, x, y);
+            }.bind(this))
+        }.bind(this));
+    }
+
+    /**
+     * Returns the index of the tile to display
+     * This tile is "decorated", i.e. it can randomly contains a decoration.
+     *
+     * @param topLeft     The type of ground of the topLeft
+     * @param topRight    The type of ground of the topRight
+     * @param bottomRight The type of ground of the bottomRight
+     * @param bottomLeft  The type of ground of the bottomLeft
+     *
+     * @returns {number}
+     */
+    private getDecoratedIndex(topLeft: number, topRight: number, bottomRight: number, bottomLeft: number): number
+    {
+        let undecoratedGround = this.tileRegistry.find({
+            topLeft: topLeft,
+            topRight: topRight,
+            bottomRight: bottomRight,
+            bottomLeft: bottomLeft
+        }).index;
+
+        for (let i = 0; i < DECO.length; i++) {
+            let decoratedGrounds = DECO[i];
+            if (decoratedGrounds[0] === undecoratedGround && Math.random() < DECORATION_RANDOM) {
+                return decoratedGrounds[1 + Math.floor(Math.random() * (decoratedGrounds.length - 1))];
             }
         }
+
+        return undecoratedGround;
     }
 }
