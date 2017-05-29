@@ -26,6 +26,7 @@ export class Tank extends Vehicle
         this.maxVelocity = 40;
         this.attackScope = 100;
         this.attackDamage = 8;
+        this.cost = 180;
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

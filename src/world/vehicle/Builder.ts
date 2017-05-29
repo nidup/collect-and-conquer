@@ -23,6 +23,7 @@ export class Builder extends Vehicle
         this.maxHealth = 80;
         this.health = this.maxHealth;
         this.maxVelocity = 60;
+        this.cost = 80;
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

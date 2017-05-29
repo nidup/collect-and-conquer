@@ -14,4 +14,9 @@ export class Player
     {
         // TODO extract Play state logic
     }
+
+    public getArmy()
+    {
+        return this.army;
+    }
 }
