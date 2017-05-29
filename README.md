@@ -1,12 +1,20 @@
-# AI Sandbox
+# NoNameYet / AI Sandbox
 
-Playing with steering behaviors, stacked FSM and A* path finding.
+Mini RTS game developed with Typescript + Phaser JS for the Akeneo Game Jam #4.
+
+Playing with steering behaviors, stacked FSM, A* path finding and procedural map generation.
+
+![Image of GameJam](doc/game-jam-4.jpg)
 
 # Demo
 
-https://nidup.github.io/phaserjs-ai-sandbox/
+You can access to the demo [here](https://nidup.github.io/phaserjs-ai-sandbox/)
 
-# Getting Started
+# Screenshots
+
+TODO
+
+# Getting Started to Dev
 
 ## Pre-requisites
 
@@ -110,15 +118,20 @@ Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  s
 
 # Resources
 
-## Steering Behavior
+## Steering Behavior
 
  - http://www.red3d.com/cwr/steer/
  - https://gamedevelopment.tutsplus.com/series/understanding-steering-behaviors--gamedev-12732
 
-## Finite State Machine
+## Finite State Machine
 
  - https://gamedevelopment.tutsplus.com/tutorials/finite-state-machines-theory-and-implementation--gamedev-11867
 
 ## Assets
 
  - http://lunar.lostgarden.com/game_HardVacuum.htm
+
+# Thanks
+
+ - @grena for dat game jam org! :tada:
+ - @pierallard for procedural map generation! :tada:
