@@ -44,13 +44,13 @@ export default class Play extends Phaser.State
         this.game.stage.backgroundColor = '#000000';
         this.game.antialias = false;
 
-        const screenWidth = 1000;
-        const screenHeight = 800;
+        const mapWidth = this.game.width - 120;
+        const mapHeight = this.game.height;
         const tileSize = 20;
 
-        // const mapGenerator = new CloudMapGenerator(this.game, screenWidth, screenHeight);
-        const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
-        // const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
+        // const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight);
+        const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
+        // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
         this.map = mapGenerator.generate();
 
         // handle collisions
@@ -106,7 +106,7 @@ export default class Play extends Phaser.State
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
-        new CommandPanel(this.game, screenWidth, this.unitSelector);
+        new CommandPanel(this.game, this.game.width, this.unitSelector);
     }
 
     public update()
