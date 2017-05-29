@@ -4,7 +4,7 @@ import {Vehicle} from "../world/vehicle/Vehicle";
 import {Building} from "../world/building/Building";
 import {Item} from "../world/item/Item";
 import {StateColors} from "../world/vehicle/StateColor";
-import BoardFX from "../fx/BoardFX";
+
 const SCALE_RATIO = 1.5;
 const PANEL_WIDTH = 82;
 
@@ -16,7 +16,6 @@ export class CommandPanel extends Phaser.Sprite
     private unitStateText: Phaser.Text;
     private stateColors: StateColors;
     private unitStateImage: Phaser.Sprite;
-    private boardFx: BoardFX;
 
     constructor(game: Phaser.Game, screenWidth: number, unitSelector: UnitSelector)
     {
@@ -41,14 +40,10 @@ export class CommandPanel extends Phaser.Sprite
         this.unitStateText.fixedToCamera = true;
 
         this.stateColors = new StateColors();
-
-        this.boardFx = new BoardFX(game, screenWidth);
     }
 
     public update ()
     {
-        this.boardFx.update();
-
         const selectedUnit = this.unitSelector.getSelectedUnit();
         if (selectedUnit) {
             this.camera.follow(selectedUnit);
