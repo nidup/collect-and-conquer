@@ -39,6 +39,7 @@ export default class Preload extends Phaser.State {
         this.load.image('GrssCrtr', 'assets/terrain/GrssCrtr.png');
         this.load.image('GrssMisc', 'assets/terrain/GrssMisc.png');
         this.load.image('MntMisc', 'assets/terrain/MntMisc.png');
+        this.load.image('Snw2Mnt', 'assets/terrain/Snw2Mnt.png');
     }
 
     private loadGameImages()

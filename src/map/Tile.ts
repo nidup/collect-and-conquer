@@ -1,6 +1,8 @@
 // Constants to describe the type of ground on the tiles
 export const GRASS = 1;
 export const MNT = 2;
+export const LAVA = 3;
+export const SNOW = 4;
 
 export class Tile
 {
@@ -27,7 +29,15 @@ export class Tile
         return MNT;
     }
 
+    static get LAVA() {
+        return LAVA;
+    }
+
+    static get SNOW() {
+        return SNOW;
+    }
+
     static get GROUNDS() {
-        return [GRASS, MNT];
+        return [GRASS, MNT, LAVA, SNOW];
     }
 }
