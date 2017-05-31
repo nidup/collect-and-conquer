@@ -1,7 +1,6 @@
 
-import Physics = Phaser.Physics;
-import {Mine} from "../building/Mine";
 import {Vehicle} from "../vehicle/Vehicle";
+
 export class HealthBar
 {
     private game: Phaser.Game;
@@ -10,7 +9,6 @@ export class HealthBar
     private foreground: Phaser.Graphics;
     private healthOkColor: number = 0x00FF00;
     private healthKoColor: number = 0xFF0000;
-
 
     constructor(game: Phaser.Game, host: Phaser.Sprite)
     {

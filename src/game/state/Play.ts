@@ -111,7 +111,19 @@ export default class Play extends Phaser.State
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
-        new ControlPanel(this.game, this.game.width,panelWith,  this.unitSelector, humanPlayer);
+
+
+        const rectX = 200;
+        const rectY = 10;
+        const rectWidth = 70;
+        const rectHeight = 17;
+        const health = this.game.add.graphics(this.game.width - 435, 302);
+        health.beginFill(0x00FF00, 1);
+        health.drawRect(rectX, rectY, rectWidth, rectHeight);
+        health.z = 200;
+
+
+        new ControlPanel(this.game, this.game.width, panelWith, this.unitSelector, humanPlayer);
     }
 
     public update()

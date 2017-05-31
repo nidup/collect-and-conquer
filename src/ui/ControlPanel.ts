@@ -14,7 +14,7 @@ export class ControlPanel extends Phaser.Sprite
     private camera: Phaser.Camera;
     private unitStateText: Phaser.Text;
     private unitStateImage: Phaser.Sprite;
-    private commandPannel: RecruitPanel;
+    private recruitPanel: RecruitPanel;
     private textStyle: TextStyle;
 
     constructor(game: Phaser.Game, screenWidth: number, panelWidth: number, unitSelector: UnitSelector, player: Player)
@@ -34,7 +34,7 @@ export class ControlPanel extends Phaser.Sprite
         this.unitStateText = this.game.add.text(screenWidth - 150, 241, '', {});
         this.unitStateText.fixedToCamera = true;
 
-        this.commandPannel = new RecruitPanel(this.game, player);
+        this.recruitPanel = new RecruitPanel(this.game, player);
     }
 
     public update ()
@@ -46,7 +46,7 @@ export class ControlPanel extends Phaser.Sprite
             this.copySelectedUnitImage(selectedUnit);
         }
 
-        this.commandPannel.update();
+        this.recruitPanel.update();
     }
 
     private displayUnitStatus(selectedUnit: Phaser.Sprite)
