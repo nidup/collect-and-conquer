@@ -2,6 +2,7 @@
 import {UnitSelector} from "./UnitSelector";
 import {Player} from "../game/player/Player";
 import {ControlPanel} from "./ControlPanel";
+import {OrderPanel} from "./OrderPanel";
 
 export class MainPanel
 {
@@ -27,6 +28,7 @@ export class MainPanel
         this.health.z = 200;
 
         new ControlPanel(game, screenWidth, panelWith, unitSelector, player);
+        new OrderPanel(game, screenWidth, panelWith, player);
     }
 
     public update()
