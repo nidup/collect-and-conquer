@@ -23,6 +23,7 @@ import {UnitSelector} from "../../ui/UnitSelector";
 import {Building} from "../../world/building/Building";
 import {Player} from "../player/Player";
 import {Army} from "../../world/Army";
+import {MainPanel} from "../../ui/MainPanel";
 
 export default class Play extends Phaser.State
 {
@@ -35,6 +36,7 @@ export default class Play extends Phaser.State
     private debug: boolean = false;
     private enableTileCollision = true;
     private players: Player[];
+    private mainPanel: MainPanel;
 
     public create()
     {
@@ -112,18 +114,7 @@ export default class Play extends Phaser.State
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
 
-
-        const rectX = 200;
-        const rectY = 10;
-        const rectWidth = 70;
-        const rectHeight = 17;
-        const health = this.game.add.graphics(this.game.width - 435, 302);
-        health.beginFill(0x00FF00, 1);
-        health.drawRect(rectX, rectY, rectWidth, rectHeight);
-        health.z = 200;
-
-
-        new ControlPanel(this.game, this.game.width, panelWith, this.unitSelector, humanPlayer);
+        this.mainPanel = new MainPanel(this.game, this.game.width, panelWith, this.unitSelector, humanPlayer);
     }
 
     public update()
@@ -131,6 +122,7 @@ export default class Play extends Phaser.State
         this.updateItems(this.items);
         this.updateVehicles(this.vehicles, this.game, this.layer);
         this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
+        this.mainPanel.update();
     }
 
     private updateItems(items: ItemRepository)
