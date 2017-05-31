@@ -12,6 +12,7 @@ export class RecruitPanel
 {
     private base: Base;
     private vehicleCosts: VehicleCosts;
+    private totalStock: Phaser.Text;
     private minerButton: Phaser.Button;
     private scoutButton: Phaser.Button;
     private builderButton: Phaser.Button;
@@ -20,7 +21,7 @@ export class RecruitPanel
 
     constructor(game: Phaser.Game, player: Player)
     {
-        let positionY = 400;
+        let positionY = 367;
         const buttonHeight = 27;
         const verticalMargin = 5;
         const base = player.getArmy().getBase();
@@ -28,6 +29,9 @@ export class RecruitPanel
         this.vehicleCosts = new VehicleCosts();
         this.textStyle = new TextStyle();
 
+        this.totalStock = this.addCostTextAndImage(game, positionY, base.getStock());
+
+        positionY += 33;
         let callback = function() {
             base.buildMiner();
         };
@@ -58,6 +62,8 @@ export class RecruitPanel
 
     public update()
     {
+        this.totalStock.setText(this.base.getStock().toString());
+
         if (this.base.getStock() >= this.vehicleCosts.getCost(Miner)) {
             this.enableButton(this.minerButton);
         } else {
@@ -111,14 +117,16 @@ export class RecruitPanel
         return button;
     }
 
-    private addCostTextAndImage(game: Phaser.Game, positionY: number, cost: number)
+    private addCostTextAndImage(game: Phaser.Game, positionY: number, cost: number): Phaser.Text
     {
         const txtPositionX = game.width - 200;
         const txtPositionY = positionY + 3;
-        game.add.text(txtPositionX, txtPositionY, cost.toString(), this.textStyle.getNormalStyle());
+        const text = game.add.text(txtPositionX, txtPositionY, cost.toString(), this.textStyle.getNormalStyle());
         const oilPositionX = txtPositionX - 37;
         const oilPositionY = txtPositionY - 2;
         game.add.image(oilPositionX, oilPositionY, 'Icons', 33);
+
+        return text;
     }
 
     private enableButton(button: Phaser.Button)
