@@ -44,7 +44,8 @@ export default class Play extends Phaser.State
         this.game.stage.backgroundColor = '#000000';
         this.game.antialias = false;
 
-        const mapWidth = this.game.width - 120;
+        const panelWith = 240;
+        const mapWidth = this.game.width - panelWith;
         const mapHeight = this.game.height;
         const tileSize = 20;
 
@@ -79,14 +80,14 @@ export default class Play extends Phaser.State
         const armyRed = new Army(0xff6771, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
         this.players.push(new Player(armyRed));
 
-        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 230));
-        this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 120));
-        this.items.add(new Oil(this.game, 550, 650, 'Icons', 0, 70));
-        this.items.add(new Oil(this.game, 150, 650, 'Icons', 0, 70));
-        this.items.add(new Oil(this.game, 500, 400, 'Icons', 0, 70));
+        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 550, 650, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 150, 650, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 500, 400, 'Icons', 0, 1000));
 
         const base = armyBlue.buildBase(150, 150);
-        base.stock(200);
+        base.stock(400);
 
         /*
         armyBlue.recruitMiner(70, 100);
@@ -110,7 +111,7 @@ export default class Play extends Phaser.State
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
-        new ControlPanel(this.game, this.game.width, this.unitSelector, humanPlayer);
+        new ControlPanel(this.game, this.game.width,panelWith,  this.unitSelector, humanPlayer);
     }
 
     public update()

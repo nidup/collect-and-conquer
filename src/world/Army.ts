@@ -97,4 +97,14 @@ export class Army
 //        console.log(parseInt(0xff0000.toString(16), 16));
 
     }
+
+    public getBase() : Base
+    {
+        const myself = this;
+        return this.buildings.bases()
+            .filter(function (base: Base) {
+                    return base.getArmy() == myself;
+                }
+            )[0];
+    }
 }

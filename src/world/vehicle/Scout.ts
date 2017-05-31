@@ -15,7 +15,6 @@ export class Scout extends Vehicle
         this.maxHealth = 30;
         this.health = this.maxHealth;
         this.maxVelocity = 90;
-        this.cost = 60;
 
         this.anchor.setTo(.5, .5);
         game.physics.enable(this, Phaser.Physics.ARCADE);

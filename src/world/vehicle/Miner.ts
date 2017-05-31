@@ -25,7 +25,6 @@ export class Miner extends Vehicle
         this.maxHealth = 100;
         this.health = this.maxHealth;
         this.maxVelocity = 60;
-        this.cost = 100;
 
         this.anchor.setTo(.5,.5);
         game.physics.enable(this, Phaser.Physics.ARCADE);
