@@ -18,11 +18,12 @@ import {Item} from "../../world/item/Item";
 import {Oil} from "../../world/item/Oil";
 import {Vehicle} from "../../world/vehicle/Vehicle";
 import {Radar} from "../../world/vehicle/sensor/Radar";
-import {CommandPanel} from "../../ui/CommandPanel";
+import {ControlPanel} from "../../ui/ControlPanel";
 import {UnitSelector} from "../../ui/UnitSelector";
 import {Building} from "../../world/building/Building";
 import {Player} from "../player/Player";
 import {Army} from "../../world/Army";
+import {MainPanel} from "../../ui/MainPanel";
 
 export default class Play extends Phaser.State
 {
@@ -35,6 +36,7 @@ export default class Play extends Phaser.State
     private debug: boolean = false;
     private enableTileCollision = true;
     private players: Player[];
+    private mainPanel: MainPanel;
 
     public create()
     {
@@ -44,13 +46,14 @@ export default class Play extends Phaser.State
         this.game.stage.backgroundColor = '#000000';
         this.game.antialias = false;
 
-        const screenWidth = 1000;
-        const screenHeight = 800;
+        const panelWith = 240;
+        const mapWidth = this.game.width - panelWith;
+        const mapHeight = this.game.height;
         const tileSize = 20;
 
-        // const mapGenerator = new CloudMapGenerator(this.game, screenWidth, screenHeight);
-        const mapGenerator = new RandomMapGenerator(this.game, screenWidth, screenHeight);
-        // const mapGenerator = new FileMapGenerator(this.game, screenWidth, screenHeight);
+        // const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight);
+        const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
+        // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
         this.map = mapGenerator.generate();
 
         // handle collisions
@@ -73,20 +76,23 @@ export default class Play extends Phaser.State
         this.players = [];
 
         const armyBlue = new Army(0x8cd6ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
-        this.players.push(new Player(armyBlue));
+        const humanPlayer = new Player(armyBlue);
+        this.players.push(humanPlayer);
 
         const armyRed = new Army(0xff6771, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
         this.players.push(new Player(armyRed));
 
-        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 230));
-        this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 120));
-        this.items.add(new Oil(this.game, 550, 650, 'Icons', 0, 70));
-        this.items.add(new Oil(this.game, 150, 650, 'Icons', 0, 70));
-        this.items.add(new Oil(this.game, 500, 400, 'Icons', 0, 70));
+        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 550, 650, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 150, 650, 'Icons', 0, 1000));
+        this.items.add(new Oil(this.game, 500, 400, 'Icons', 0, 1000));
 
-        armyBlue.buildBase(150, 150);
+        const base = armyBlue.buildBase(150, 150);
+        base.stock(400);
+
+        /*
         armyBlue.recruitMiner(70, 100);
-
         armyBlue.recruitMiner(100, 400);
         armyBlue.recruitMiner(400, 100);
         armyBlue.recruitMiner(100, 600);
@@ -94,19 +100,21 @@ export default class Play extends Phaser.State
         armyBlue.recruitScout(50, 400);
         armyBlue.recruitBuilder(330, 370);
         armyBlue.recruitTank(300, 260);
+        */
 
         armyRed.buildBase(850, 650);
         armyRed.recruitMiner(850, 500);
         armyRed.recruitMiner(800, 600);
         armyRed.recruitMiner(700, 700);
-        armyRed.recruitMiner(100, 700);
+        armyRed.recruitMiner(600, 700);
         armyRed.recruitScout(450, 800);
         armyRed.recruitScout(300, 600);
         armyRed.recruitTank(600, 760);
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
-        new CommandPanel(this.game, screenWidth, this.unitSelector);
+
+        this.mainPanel = new MainPanel(this.game, this.game.width, panelWith, this.unitSelector, humanPlayer);
     }
 
     public update()
@@ -114,6 +122,7 @@ export default class Play extends Phaser.State
         this.updateItems(this.items);
         this.updateVehicles(this.vehicles, this.game, this.layer);
         this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
+        this.mainPanel.update();
     }
 
     private updateItems(items: ItemRepository)
@@ -141,13 +150,14 @@ export default class Play extends Phaser.State
                 vehicle.destroy();
             });
 
+        /*
         if (game.input.mousePointer.isDown) {
             aliveVehicles.all().map(function(vehicle: Vehicle) {
                 if (vehicle instanceof Builder) {
                     (<Builder>vehicle).changePath(new Phaser.Point(game.input.x, game.input.y));
                 }
             });
-        }
+        }*/
 
         if (this.enableTileCollision) {
             const layer = collisionLayer;

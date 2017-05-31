@@ -6,11 +6,7 @@ export default class Preload extends Phaser.State {
         this.loadTilemap();
         this.loadTileImages();
         this.loadGameImages();
-
-        this.load.bitmapFont('carrier-command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml');
-
-        this.load.image('CommandsPanel', 'assets/interface/CommandPanel.png');
-        this.load.image('UnitBackground', 'assets/interface/UnitSelectionBackground.png');
+        this.loadUIImages();
     }
 
     public create ()
@@ -61,5 +57,17 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('BigExplosion', 'assets/explosion/Big.png', 40, 40);
 
         this.load.spritesheet('Bullet', 'assets/bullet/Bullet3.png', 10, 10);
+    }
+
+    private loadUIImages()
+    {
+        this.load.bitmapFont('carrier-command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml');
+
+        this.load.image('CommandPanel', 'assets/interface/CommandPanel.png');
+        this.load.image('ControlPanel', 'assets/interface/ControlPanel.png');
+        this.load.spritesheet('Button', 'assets/interface/Button.png', 94, 27);
+        this.load.spritesheet('BuyButton', 'assets/interface/BuyButton.png', 140, 27);
+        this.load.spritesheet('OrderButton', 'assets/interface/OrderButton.png', 110, 27);
+        this.load.image('UnitBackground', 'assets/interface/UnitSelectionBackground.png');
     }
 }
