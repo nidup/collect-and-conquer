@@ -22,12 +22,14 @@ export class OrderPanel
 
         let positionX = screenWidth - 233;
         positionY += 30;
-        let callback = function() { console.log('test'); };
+        let callback = function() { player.getArmy().getStrategy().defend(); };
         this.addOrderButton(game, positionX, positionY, 0, 'Defend', callback);
 
         positionX += buttonWidth + buttonMargin;
-        callback = function() { console.log('test'); };
+        callback = function() { player.getArmy().getStrategy().attack(); };
         this.addOrderButton(game, positionX, positionY, 2, 'Attack', callback);
+
+        // TODO: enable / disable button
 
     }
 

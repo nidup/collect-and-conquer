@@ -18,7 +18,8 @@ export class Tank extends Vehicle
     protected attackDamage: number;
     protected weapon: Weapon;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse) {
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
+    {
         super(game, x, y, army, radar, key, frame);
 
         this.maxHealth = 150;

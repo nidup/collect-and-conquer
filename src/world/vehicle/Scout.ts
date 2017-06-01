@@ -9,7 +9,8 @@ import {Army} from "../Army";
 
 export class Scout extends Vehicle
 {
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number) {
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number)
+    {
         super(game, x, y, army, radar, key, frame);
 
         this.maxHealth = 30;
