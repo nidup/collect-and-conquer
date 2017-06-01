@@ -1,22 +1,21 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
-import {State} from "../../ai/fsm/State";
-import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
 import {Army} from "../Army";
 import {Radar} from "./sensor/Radar";
-import {Miner} from "./Miner";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {MapAnalyse} from "../../ai/map/MapAnalyse";
-import Weapon = Phaser.Weapon;
+import {TankDefendBrain} from "./brain/TankDefendBrain";
+import Physics = Phaser.Physics;
+import {TankAttackBrain} from "./brain/TankAttackBrain";
 
 export class Tank extends Vehicle
 {
-    private pathfinder: PathFinder;
-    private path: PhaserPointPath;
     protected attackScope: number;
     protected attackDamage: number;
-    protected weapon: Weapon;
+    protected weapon: Phaser.Weapon;
+    private brainAttack: TankAttackBrain;
+    private brainDefend: TankDefendBrain;
 
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
@@ -42,8 +41,6 @@ export class Tank extends Vehicle
 
         game.add.existing(this);
 
-        this.pathfinder = new PathFinder(mapAnalyse);
-
         this.behavior = new SteeringComputer(this);
 
         this.weapon = game.add.weapon(30, 'Bullet', 14);
@@ -52,87 +49,25 @@ export class Tank extends Vehicle
         this.weapon.fireRate = 500;
         this.weapon.trackSprite(this, 0, 0, true);
 
-        /**
-         * Attacking FSM
-         * - Wander Attack -> Pursuing + Attack
-         *
-         * Defending FSM
-         * - Wander Attack -> Pursuing + Attack
-         * - Wander Defend Unit (no Mine) -> escorting Miner
-         * - Wander Defend Mine -> patrol Mine to Base
-         */
-        this.fsm.pushState(new State('wander', this.wander));
+        this.brainAttack = new TankAttackBrain(this);
+        this.brainDefend = new TankDefendBrain(this, new PathFinder(mapAnalyse));
+
+        this.brain = this.brainDefend;
     }
 
-    public wander = () =>
+    // Temporary TODO to drop!!!
+    public update ()
     {
-        const visibleEnemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
-        const closestMiner = this.radar.closestTeamate(this.getPosition().clone(), Miner);
-        const closestMine = this.radar.closestExploitableMine(this.getPosition());
-        const closestBase = this.radar.closestBase(this.getPosition());
-        if (visibleEnemy) {
-            this.fsm.popState();
-            this.fsm.pushState(new State('attack', this.attackEnemy));
-        } else if (closestMine) {
-            this.path = this.pathfinder.findPhaserPointPath(closestMine.getPosition().clone(), closestBase.getPosition().clone());
-            this.fsm.pushState(new State('protect mine', this.protectingMine));
-        } else if (closestMiner) {
-            this.fsm.pushState(new State('escorting', this.escortingMiner));
-        } else {
-            this.behavior.wander();
-            this.behavior.avoidCollision(this.radar);
-            this.behavior.reactToCollision(this.body);
+        if (this.army.getStrategy().isAttacking()) {
+            this.brain = this.brainAttack;
+        } else if (this.army.getStrategy().isDefending()) {
+            this.brain = this.brainDefend;
         }
-    }
 
-    public escortingMiner = () =>
-    {
-        const visibleEnemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
-        const closestMiner = this.radar.closestTeamate(this.getPosition().clone(), Miner);
-        const closestBase = this.radar.closestBase(this.getPosition());
-        const closestMine = this.radar.closestExploitableMine(this.getPosition());
-        if (visibleEnemy) {
-            this.fsm.popState();
-            this.fsm.pushState(new State('attack', this.attackEnemy));
-        } else if (closestMine) {
-            this.path = this.pathfinder.findPhaserPointPath(closestMine.getPosition().clone(), closestBase.getPosition().clone());
-            this.fsm.popState();
-            this.fsm.pushState(new State('protect mine', this.protectingMine));
-        } else if (closestMiner !== null) {
-            this.behavior.pursuing(closestMiner);
-        } else {
-            this.fsm.popState();
-            this.fsm.pushState(new State('wander', this.wander));
-        }
-    }
-
-    public protectingMine = () =>
-    {
-        const visibleEnemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
-        const closestMine = this.radar.closestExploitableMine(this.getPosition());
-        if (visibleEnemy) {
-            this.path = null;
-            this.fsm.popState();
-            this.fsm.pushState(new State('attack', this.attackEnemy));
-        } else if (closestMine && this.path) {
-            this.behavior.pathPatrolling(this.path);
-        } else {
-            this.path = null;
-            this.fsm.popState();
-            this.fsm.pushState(new State('wander', this.wander));
-        }
-    }
-
-    public attackEnemy = () =>
-    {
-        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
-        if (enemy !== null) {
-            this.behavior.pursuing(enemy);
-            this.attack(enemy);
-        } else {
-            this.fsm.popState();
-            this.fsm.pushState(new State('wander', this.wander));
-        }
+        this.brain.think();
+        this.behavior.compute();
+        this.updateAngle();
+        this.healthBar.update();
     }
 
     public attack(enemy: Vehicle)
@@ -153,5 +88,25 @@ export class Tank extends Vehicle
             );
             this.weapon.fireAtSprite(enemy)
         }
+    }
+
+    public getVisibilityScope()
+    {
+        return this.visibilityScope;
+    }
+
+    public getRadar(): Radar
+    {
+        return this.radar;
+    }
+
+    public getSteeringComputer(): SteeringComputer
+    {
+        return this.behavior;
+    }
+
+    public getBody(): Physics.Arcade.Body
+    {
+        return this.body;
     }
 }

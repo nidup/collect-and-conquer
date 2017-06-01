@@ -6,6 +6,7 @@ import {BrainText} from "./info/BrainText";
 import {Army} from "../Army";
 import {Radar} from "./sensor/Radar";
 import {HealthBar} from "../common/HealthBar";
+import {VehicleBrain} from "./brain/VehicleBrain";
 
 export abstract class Vehicle extends Phaser.Sprite implements Boid
 {
@@ -13,6 +14,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
     protected army: Army;
     protected radar: Radar;
     protected behavior: SteeringComputer;
+    protected brain: VehicleBrain;
     protected fsm: StackFSM;
     protected brainText: BrainText;
     protected healthBar: HealthBar;
@@ -29,7 +31,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.health = 100;
         this.healthBar = new HealthBar(this.game, this);
         this.fsm = new StackFSM();
-        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.fsm);
+        //TODO this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.fsm);
         this.visibilityScope = 200;
     }
 
@@ -38,7 +40,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.fsm.update();
         this.behavior.compute();
         this.updateAngle();
-        this.brainText.update();
+        //TODO this.brainText.update();
         this.healthBar.update();
     }
 
@@ -73,7 +75,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
 
     destroy(destroyChildren?: boolean): void
     {
-        this.brainText.destroy();
+        //TODO this.brainText.destroy();
         this.healthBar.destroy();
         super.destroy(destroyChildren);
     }
