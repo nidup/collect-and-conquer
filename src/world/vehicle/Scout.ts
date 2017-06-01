@@ -6,6 +6,8 @@ import {State} from "../../ai/fsm/State";
 import {BrainText} from "./info/BrainText";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
+import {ScoutExploreBrain} from "./brain/ScoutExploreBrain";
+import Physics = Phaser.Physics;
 
 export class Scout extends Vehicle
 {
@@ -32,33 +34,27 @@ export class Scout extends Vehicle
         game.add.existing(this);
 
         this.behavior = new SteeringComputer(this);
-        this.fsm.pushState(new State('wander', this.wander));
+        this.brain = new ScoutExploreBrain(this);
+        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
     }
 
-    public wander = () =>
+    public getVisibilityScope(): number
     {
-        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
-        if (enemy !== null) {
-            this.fsm.pushState(new State('evading', this.evading));
-
-        } else {
-            this.behavior.wander();
-            this.behavior.avoidCollision(this.radar);
-            this.behavior.reactToCollision(this.body);
-        }
+        return this.visibilityScope;
     }
 
-    public evading = () =>
+    public getRadar(): Radar
     {
-        const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
-        if (enemy !== null) {
-            // TODO: flee makes something more natural when pursuing!
-            // TODO: sometimes both vehicle and enemy does not move anymore!
-            //this.behavior.evading(enemy);
-            this.behavior.flee(enemy.getPosition());
-            this.behavior.avoidCollision(this.radar);
-        } else {
-            this.fsm.popState();
-        }
+        return this.radar;
+    }
+
+    public getSteeringComputer(): SteeringComputer
+    {
+        return this.behavior;
+    }
+
+    public getBody(): Physics.Arcade.Body
+    {
+        return this.body;
     }
 }

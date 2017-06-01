@@ -14,4 +14,9 @@ export class VehicleBrain
     {
         this.fsm.update();
     }
+
+    public getStateName(): string
+    {
+        return this.fsm.getCurrentState().getName();
+    }
 }

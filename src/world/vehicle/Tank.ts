@@ -8,6 +8,7 @@ import {MapAnalyse} from "../../ai/map/MapAnalyse";
 import {TankDefendBrain} from "./brain/TankDefendBrain";
 import Physics = Phaser.Physics;
 import {TankAttackBrain} from "./brain/TankAttackBrain";
+import {BrainText} from "./info/BrainText";
 
 export class Tank extends Vehicle
 {
@@ -53,21 +54,19 @@ export class Tank extends Vehicle
         this.brainDefend = new TankDefendBrain(this, new PathFinder(mapAnalyse));
 
         this.brain = this.brainDefend;
+        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
     }
 
-    // Temporary TODO to drop!!!
     public update ()
     {
         if (this.army.getStrategy().isAttacking()) {
             this.brain = this.brainAttack;
+            this.brainText.changeBrain(this.brain);
         } else if (this.army.getStrategy().isDefending()) {
             this.brain = this.brainDefend;
+            this.brainText.changeBrain(this.brain);
         }
-
-        this.brain.think();
-        this.behavior.compute();
-        this.updateAngle();
-        this.healthBar.update();
+        super.update();
     }
 
     public attack(enemy: Vehicle)

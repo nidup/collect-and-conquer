@@ -9,12 +9,12 @@ import {State} from "../../ai/fsm/State";
 import {BrainText} from "./info/BrainText";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
+import {BuilderDefendBrain} from "./brain/BuilderDefendBrain";
+import Physics = Phaser.Physics;
 
 export class Builder extends Vehicle
 {
     public body: Phaser.Physics.Arcade.Body;
-    private pathfinder: PathFinder;
-    private path: PhaserPointPath;
 
     constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
     {
@@ -40,42 +40,22 @@ export class Builder extends Vehicle
 
         this.behavior = new SteeringComputer(this);
 
-        this.pathfinder = new PathFinder(mapAnalyse);
-        this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
-
-        this.fsm.pushState(new State('path following', this.pathFollowing));
+        this.brain = new BuilderDefendBrain(this, new PathFinder(mapAnalyse));
+        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
     }
 
-    // TODO: for debug purpose
-    public changePath(finalDestination: Phaser.Point)
+    public getRadar(): Radar
     {
-        const newPath = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), finalDestination);
-        if (newPath) {
-            this.path = newPath;
-        }
+        return this.radar;
     }
 
-    public pathFollowing = () =>
+    public getSteeringComputer(): SteeringComputer
     {
-        if (this.path && this.path.lastNode() && this.getPosition().distance(this.path.lastNode()) > 20) {
-            this.behavior.pathFollowing(this.path);
-            this.behavior.reactToCollision(this.body);
-        } else {
-            this.path = null;
-            this.fsm.popState();
-            this.fsm.pushState(new State('wander', this.wander));
-        }
+        return this.behavior;
     }
 
-    public wander = () =>
+    public getBody(): Physics.Arcade.Body
     {
-        if (this.path == null) {
-            this.behavior.wander();
-            this.behavior.avoidCollision(this.radar);
-            this.behavior.reactToCollision(this.body);
-        } else {
-            this.fsm.popState();
-            this.fsm.pushState(new State('path following', this.pathFollowing));
-        }
+        return this.body;
     }
 }

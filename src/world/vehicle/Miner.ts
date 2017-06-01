@@ -10,6 +10,7 @@ import {Oil} from "../item/Oil";
 import {Mine} from "../building/Mine";
 import {Base} from "../building/Base";
 import Physics = Phaser.Physics;
+import {BrainText} from "./info/BrainText";
 
 export class Miner extends Vehicle
 {
@@ -45,15 +46,7 @@ export class Miner extends Vehicle
         this.oilCapacity = 10
 
         this.brain = new MinerCollectBrain(this, new PathFinder(mapAnalyse));
-    }
-
-    // TODO: to drop!!
-    public update ()
-    {
-        this.brain.think();
-        this.behavior.compute();
-        this.updateAngle();
-        this.healthBar.update();
+        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
     }
 
     public buildMine(oil: Oil)
