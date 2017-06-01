@@ -48,7 +48,7 @@ export class Miner extends Vehicle
          * Wander Collect -> Go to mine -> Load -> Go to base -> Unload -> Go to mine
          * Wander Oil -> Go to oil -> Build mine (destroy)
          */
-        this.brain.pushState(new State('wander', this.wander));
+        this.fsm.pushState(new State('wander', this.wander));
 
         this.oilLoad = 0
         this.oilCapacity = 10
@@ -65,13 +65,13 @@ export class Miner extends Vehicle
         if (knowBaseAndMine) {
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), mine.getPosition().clone());
             if (this.path) {
-                this.brain.popState();
-                this.brain.pushState(new State('go to mine', this.gotoMine));
+                this.fsm.popState();
+                this.fsm.pushState(new State('go to mine', this.gotoMine));
             }
         } else if (knowMinePlaceholder) {
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), oil.getPosition().clone());
-            this.brain.popState();
-            this.brain.pushState(new State('go to oil', this.gotoOil));
+            this.fsm.popState();
+            this.fsm.pushState(new State('go to oil', this.gotoOil));
 
         } else {
             this.behavior.wander();
@@ -88,19 +88,19 @@ export class Miner extends Vehicle
         const canBuildMine = this.path && this.getPosition().distance(this.path.lastNode()) < this.buildingScope;
         if (lookForOilPosition) {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         } else if (canGoToMinePlaceholder) {
             this.behavior.pathFollowing(this.path);
             this.behavior.reactToCollision(this.body);
         } else if (canBuildMine) {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('build mine', this.buildMine));
+            this.fsm.popState();
+            this.fsm.pushState(new State('build mine', this.buildMine));
         } else {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         }
     }
 
@@ -112,12 +112,12 @@ export class Miner extends Vehicle
             const position = oil.getPosition();
             oil.collect();
             this.army.buildMine(position.x, position.y - 20, oil);
-            this.brain.popState();
-            this.brain.pushState(new State('extracting', this.extracting));
+            this.fsm.popState();
+            this.fsm.pushState(new State('extracting', this.extracting));
         } else {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         }
     }
 
@@ -135,15 +135,15 @@ export class Miner extends Vehicle
 
         if (!exploitableMine) {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         } else if (!canLoadOil) {
             this.behavior.pathFollowing(this.path);
             this.behavior.reactToCollision(this.body);
         } else {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('load oil', this.loadOil));
+            this.fsm.popState();
+            this.fsm.pushState(new State('load oil', this.loadOil));
         }
     }
 
@@ -158,12 +158,12 @@ export class Miner extends Vehicle
 
             const base = this.radar.closestBase(this.getPosition());
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), base.getPosition().clone());
-            this.brain.popState();
-            this.brain.pushState(new State('go to base', this.gotoBase));
+            this.fsm.popState();
+            this.fsm.pushState(new State('go to base', this.gotoBase));
         } else {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         }
     }
 
@@ -175,8 +175,8 @@ export class Miner extends Vehicle
             this.behavior.reactToCollision(this.body);
         } else {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('unload oil', this.unloadOil));
+            this.fsm.popState();
+            this.fsm.pushState(new State('unload oil', this.unloadOil));
         }
     }
 
@@ -189,12 +189,12 @@ export class Miner extends Vehicle
         const exploitableMine = this.radar.closestExploitableMine(this.getPosition());
         if (exploitableMine) {
             this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), exploitableMine.getPosition().clone());
-            this.brain.popState();
-            this.brain.pushState(new State('go to mine', this.gotoMine));
+            this.fsm.popState();
+            this.fsm.pushState(new State('go to mine', this.gotoMine));
         } else {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         }
     }
 }

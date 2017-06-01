@@ -53,11 +53,15 @@ export class Tank extends Vehicle
         this.weapon.trackSprite(this, 0, 0, true);
 
         /**
-         * Wander Attack -> Pursuing + Attack
-         * Wander Defend Unit (no Mine) -> escorting Miner
-         * Wander Defend Mine -> patrol Mine to Base
+         * Attacking FSM
+         * - Wander Attack -> Pursuing + Attack
+         *
+         * Defending FSM
+         * - Wander Attack -> Pursuing + Attack
+         * - Wander Defend Unit (no Mine) -> escorting Miner
+         * - Wander Defend Mine -> patrol Mine to Base
          */
-        this.brain.pushState(new State('wander', this.wander));
+        this.fsm.pushState(new State('wander', this.wander));
     }
 
     public wander = () =>
@@ -67,13 +71,13 @@ export class Tank extends Vehicle
         const closestMine = this.radar.closestExploitableMine(this.getPosition());
         const closestBase = this.radar.closestBase(this.getPosition());
         if (visibleEnemy) {
-            this.brain.popState();
-            this.brain.pushState(new State('attack', this.attackEnemy));
+            this.fsm.popState();
+            this.fsm.pushState(new State('attack', this.attackEnemy));
         } else if (closestMine) {
             this.path = this.pathfinder.findPhaserPointPath(closestMine.getPosition().clone(), closestBase.getPosition().clone());
-            this.brain.pushState(new State('protect mine', this.protectingMine));
+            this.fsm.pushState(new State('protect mine', this.protectingMine));
         } else if (closestMiner) {
-            this.brain.pushState(new State('escorting', this.escortingMiner));
+            this.fsm.pushState(new State('escorting', this.escortingMiner));
         } else {
             this.behavior.wander();
             this.behavior.avoidCollision(this.radar);
@@ -88,17 +92,17 @@ export class Tank extends Vehicle
         const closestBase = this.radar.closestBase(this.getPosition());
         const closestMine = this.radar.closestExploitableMine(this.getPosition());
         if (visibleEnemy) {
-            this.brain.popState();
-            this.brain.pushState(new State('attack', this.attackEnemy));
+            this.fsm.popState();
+            this.fsm.pushState(new State('attack', this.attackEnemy));
         } else if (closestMine) {
             this.path = this.pathfinder.findPhaserPointPath(closestMine.getPosition().clone(), closestBase.getPosition().clone());
-            this.brain.popState();
-            this.brain.pushState(new State('protect mine', this.protectingMine));
+            this.fsm.popState();
+            this.fsm.pushState(new State('protect mine', this.protectingMine));
         } else if (closestMiner !== null) {
             this.behavior.pursuing(closestMiner);
         } else {
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         }
     }
 
@@ -108,14 +112,14 @@ export class Tank extends Vehicle
         const closestMine = this.radar.closestExploitableMine(this.getPosition());
         if (visibleEnemy) {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('attack', this.attackEnemy));
+            this.fsm.popState();
+            this.fsm.pushState(new State('attack', this.attackEnemy));
         } else if (closestMine && this.path) {
             this.behavior.pathPatrolling(this.path);
         } else {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         }
     }
 
@@ -126,8 +130,8 @@ export class Tank extends Vehicle
             this.behavior.pursuing(enemy);
             this.attack(enemy);
         } else {
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         }
     }
 

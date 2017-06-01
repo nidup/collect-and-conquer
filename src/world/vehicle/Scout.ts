@@ -32,14 +32,14 @@ export class Scout extends Vehicle
         game.add.existing(this);
 
         this.behavior = new SteeringComputer(this);
-        this.brain.pushState(new State('wander', this.wander));
+        this.fsm.pushState(new State('wander', this.wander));
     }
 
     public wander = () =>
     {
         const enemy = this.radar.closestVisibleEnemy(this.getPosition().clone(), this.visibilityScope);
         if (enemy !== null) {
-            this.brain.pushState(new State('evading', this.evading));
+            this.fsm.pushState(new State('evading', this.evading));
 
         } else {
             this.behavior.wander();
@@ -58,7 +58,7 @@ export class Scout extends Vehicle
             this.behavior.flee(enemy.getPosition());
             this.behavior.avoidCollision(this.radar);
         } else {
-            this.brain.popState();
+            this.fsm.popState();
         }
     }
 }

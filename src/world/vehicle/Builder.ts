@@ -43,7 +43,7 @@ export class Builder extends Vehicle
         this.pathfinder = new PathFinder(mapAnalyse);
         this.path = this.pathfinder.findPhaserPointPath(this.getPosition().clone(), new Phaser.Point(800, 200));
 
-        this.brain.pushState(new State('path following', this.pathFollowing));
+        this.fsm.pushState(new State('path following', this.pathFollowing));
     }
 
     // TODO: for debug purpose
@@ -62,8 +62,8 @@ export class Builder extends Vehicle
             this.behavior.reactToCollision(this.body);
         } else {
             this.path = null;
-            this.brain.popState();
-            this.brain.pushState(new State('wander', this.wander));
+            this.fsm.popState();
+            this.fsm.pushState(new State('wander', this.wander));
         }
     }
 
@@ -74,8 +74,8 @@ export class Builder extends Vehicle
             this.behavior.avoidCollision(this.radar);
             this.behavior.reactToCollision(this.body);
         } else {
-            this.brain.popState();
-            this.brain.pushState(new State('path following', this.pathFollowing));
+            this.fsm.popState();
+            this.fsm.pushState(new State('path following', this.pathFollowing));
         }
     }
 }
