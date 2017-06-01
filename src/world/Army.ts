@@ -12,10 +12,12 @@ import {Base} from "./building/Base";
 import {Generator} from "./building/Generator";
 import {Mine} from "./building/Mine";
 import {Oil} from "./item/Oil";
+import {Strategy} from "./Strategy";
 
 export class Army
 {
     private color: number;
+    private strategy: Strategy;
     private vehicles: VehicleRepository;
     private buildings: BuildingRepository;
     private items: ItemRepository;
@@ -26,6 +28,7 @@ export class Army
     constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, mapAnalyse: MapAnalyse, game: Phaser.Game)
     {
         this.color = color;
+        this.strategy = new Strategy();
         this.vehicles = vehicles;
         this.buildings = buildings;
         this.items = items;
@@ -83,12 +86,17 @@ export class Army
         return building;
     }
 
-    public getColor()
+    public getColor(): number
     {
         return this.color;
     }
 
-    public getColorString()
+    public getStrategy(): Strategy
+    {
+        return this.strategy;
+    }
+
+    public getColorString(): string
     {
         return this.color.toString(16);
 
@@ -98,7 +106,7 @@ export class Army
 
     }
 
-    public getBase() : Base
+    public getBase(): Base
     {
         const myself = this;
         return this.buildings.bases()

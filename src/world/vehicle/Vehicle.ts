@@ -6,6 +6,7 @@ import {BrainText} from "./info/BrainText";
 import {Army} from "../Army";
 import {Radar} from "./sensor/Radar";
 import {HealthBar} from "../common/HealthBar";
+import {VehicleBrain} from "./brain/VehicleBrain";
 
 export abstract class Vehicle extends Phaser.Sprite implements Boid
 {
@@ -13,7 +14,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
     protected army: Army;
     protected radar: Radar;
     protected behavior: SteeringComputer;
-    protected brain: StackFSM;
+    protected brain: VehicleBrain;
     protected brainText: BrainText;
     protected healthBar: HealthBar;
     protected visibilityScope: number;
@@ -28,14 +29,12 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.maxHealth = 100;
         this.health = 100;
         this.healthBar = new HealthBar(this.game, this);
-        this.brain = new StackFSM();
-        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
         this.visibilityScope = 200;
     }
 
     public update ()
     {
-        this.brain.update();
+        this.brain.think();
         this.behavior.compute();
         this.updateAngle();
         this.brainText.update();
@@ -68,7 +67,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
 
     public getStatus() :string
     {
-        return this.brain.getCurrentState().getName();
+        return this.brain.getStateName();
     }
 
     destroy(destroyChildren?: boolean): void
