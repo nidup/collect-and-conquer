@@ -91,12 +91,12 @@ export class Army
         return this.color;
     }
 
-    public getStrategy()
+    public getStrategy(): Strategy
     {
         return this.strategy;
     }
 
-    public getColorString()
+    public getColorString(): string
     {
         return this.color.toString(16);
 
@@ -106,7 +106,7 @@ export class Army
 
     }
 
-    public getBase() : Base
+    public getBase(): Base
     {
         const myself = this;
         return this.buildings.bases()
