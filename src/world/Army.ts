@@ -3,7 +3,6 @@ import {VehicleRepository} from "./vehicle/VehicleRepository";
 import {Radar} from "./vehicle/sensor/Radar";
 import {BuildingRepository} from "./building/BuildingRepository";
 import {ItemRepository} from "./item/ItemRepository";
-import {MapAnalyse} from "../ai/map/MapAnalyse";
 import {Miner} from "./vehicle/Miner";
 import {Scout} from "./vehicle/Scout";
 import {Tank} from "./vehicle/Tank";
@@ -15,6 +14,7 @@ import {Oil} from "./item/Oil";
 import {Strategy} from "./Strategy";
 import {Building} from "./building/Building";
 import {Vehicle} from "./vehicle/Vehicle";
+import {Map} from "../ai/map/Map";
 
 export class Army
 {
@@ -24,24 +24,24 @@ export class Army
     private buildings: BuildingRepository;
     private items: ItemRepository;
     private radar: Radar;
-    private mapAnalyse: MapAnalyse;
+    private map: Map;
     private game: Phaser.Game;
 
-    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, mapAnalyse: MapAnalyse, game: Phaser.Game)
+    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, map: Map, game: Phaser.Game)
     {
         this.color = color;
         this.strategy = new Strategy();
         this.vehicles = vehicles;
         this.buildings = buildings;
         this.items = items;
-        this.mapAnalyse = mapAnalyse; // TODO: inject in radar?
+        this.map = map;
         this.game = game;
         this.radar = new Radar(this.items, this.buildings, this.vehicles, this);
     }
 
     public recruitMiner(x: number, y: number): Miner
     {
-        const vehicle = new Miner(this.game, x, y, this, this.radar, 'Miner', 0, this.mapAnalyse);
+        const vehicle = new Miner(this.game, x, y, this, this.radar, 'Miner', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -55,14 +55,14 @@ export class Army
 
     public recruitTank(x: number, y: number): Tank
     {
-        const vehicle = new Tank(this.game, x, y, this, this.radar, 'Tank5', 0, this.mapAnalyse);
+        const vehicle = new Tank(this.game, x, y, this, this.radar, 'Tank5', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
 
     public recruitBuilder(x: number, y: number): Builder
     {
-        const vehicle = new Builder(this.game, x, y, this, this.radar, 'Builder1', 0, this.mapAnalyse);
+        const vehicle = new Builder(this.game, x, y, this, this.radar, 'Builder1', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }

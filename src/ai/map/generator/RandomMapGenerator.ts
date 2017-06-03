@@ -20,9 +20,9 @@ export class RandomMapGenerator extends MapGenerator
 {
     private tileRegistry: TileRegistry;
 
-    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number)
+    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number, tilesize: number)
     {
-        super(game, screenWidth, screenHeight);
+        super(game, screenWidth, screenHeight, tilesize);
 
         this.tileRegistry = new TileRegistry();
     }
@@ -32,7 +32,7 @@ export class RandomMapGenerator extends MapGenerator
         const map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
 
         map.removeAllLayers();
-        map.createBlankLayer(MapGenerator.LAYER_NAME, this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
+        map.createBlankLayer(Map.LAYER_NAME, this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
         this.addTileSets(map);
 
         let points = [];
@@ -54,7 +54,7 @@ export class RandomMapGenerator extends MapGenerator
             []
         ).slice(0, numberRows);
 
-        return new Map(map, grounds);
+        return new Map(map, grounds, this.tilesize);
     }
 
     /**

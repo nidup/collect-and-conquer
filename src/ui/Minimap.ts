@@ -10,7 +10,6 @@ import {ItemRepository} from "../world/item/ItemRepository";
 import {Item} from "../world/item/Item";
 
 /**
- * @see https://phaser.io/examples/v2/create/generate-sprite sadly a bug on first display
  * @see https://phaser.io/examples/v2/bitmapdata/reveal
  */
 export class Minimap

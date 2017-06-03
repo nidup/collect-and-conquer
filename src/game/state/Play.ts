@@ -1,5 +1,4 @@
 
-import {MapAnalyser} from "../../ai/map/MapAnalyser";
 import {VehicleRepository} from "../../world/vehicle/VehicleRepository";
 import {BuildingRepository} from "../../world/building/BuildingRepository";
 import {MapGenerator} from "../../ai/map/generator/MapGenerator";
@@ -22,11 +21,9 @@ export default class Play extends Phaser.State
     private items: ItemRepository;
     private buildings: BuildingRepository;
     private vehicles: VehicleRepository;
-    private map : Phaser.Tilemap;
-    private layer : Phaser.TilemapLayer;
+    private collisionLayer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
     private debug: boolean = false;
-    private enableTileCollision = true;
     private mainPanel: MainPanel;
 
     public create()
@@ -69,24 +66,16 @@ export default class Play extends Phaser.State
         emptyAreas.push(new EmptyArea(Math.round(oil4X/tileSize), Math.round(oil4Y/tileSize), oilAreaGap));
         emptyAreas.push(new EmptyArea(Math.round(oil5X/tileSize), Math.round(oil5Y/tileSize), oilAreaGap));
 
-        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight, emptyAreas);
-        // const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
-        // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
+        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight, tileSize, emptyAreas);
+        // const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight, tileSize);
+        // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight, tileSize);
         const generatedMap = mapGenerator.generate();
-        this.map = generatedMap.getTilemap();
 
-        // handle collisions
-        const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
-        const mapAnalyse = analyser.analyse();
-        if (this.enableTileCollision) {
-            this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
-        }
-
-        this.layer = this.map.createLayer(MapGenerator.LAYER_NAME);
+        this.collisionLayer = generatedMap.getCollisionLayer();
         if (this.debug) {
-            this.layer.debug = true;
+            this.collisionLayer.debug = true;
         }
-        this.layer.resizeWorld();
+        this.collisionLayer.resizeWorld();
 
         this.items = new ItemRepository();
         this.buildings = new BuildingRepository();
@@ -101,11 +90,11 @@ export default class Play extends Phaser.State
 
         const players = new PlayerRepository();
 
-        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
+        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, this.game);
         const humanPlayer = new Player(armyBlue, true);
         players.add(humanPlayer);
 
-        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, mapAnalyse, this.game)
+        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, this.game)
         const botPlayer = new Player(armyRed, false);
         players.add(botPlayer);
 
@@ -141,7 +130,7 @@ export default class Play extends Phaser.State
     public update()
     {
         this.updateItems(this.items);
-        this.updateVehicles(this.vehicles, this.game, this.layer);
+        this.updateVehicles(this.vehicles, this.game, this.collisionLayer);
         this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
         this.mainPanel.update();
     }
@@ -171,12 +160,10 @@ export default class Play extends Phaser.State
                 vehicle.destroy();
             });
 
-        if (this.enableTileCollision) {
-            const layer = collisionLayer;
-            aliveVehicles.all().map(function(vehicle: Vehicle) {
-                game.physics.arcade.collide(vehicle, layer);
-            });
-        }
+        const layer = collisionLayer;
+        aliveVehicles.all().map(function(vehicle: Vehicle) {
+            game.physics.arcade.collide(vehicle, layer);
+        });
     }
 
     // TODO: move to panel

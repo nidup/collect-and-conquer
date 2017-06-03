@@ -4,11 +4,11 @@ import {Vehicle} from "./Vehicle";
 import {Army} from "../Army";
 import {Radar} from "./sensor/Radar";
 import {PathFinder} from "../../ai/path/PathFinder";
-import {MapAnalyse} from "../../ai/map/MapAnalyse";
 import {TankDefendBrain} from "./brain/TankDefendBrain";
 import Physics = Phaser.Physics;
 import {TankAttackBrain} from "./brain/TankAttackBrain";
 import {BrainText} from "./info/BrainText";
+import {Map} from "../../ai/map/Map";
 
 export class Tank extends Vehicle
 {
@@ -18,7 +18,7 @@ export class Tank extends Vehicle
     private brainAttack: TankAttackBrain;
     private brainDefend: TankDefendBrain;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, map: Map)
     {
         super(game, x, y, army, radar, key, frame);
 
@@ -51,7 +51,7 @@ export class Tank extends Vehicle
         this.weapon.trackSprite(this, 0, 0, true);
 
         this.brainAttack = new TankAttackBrain(this);
-        this.brainDefend = new TankDefendBrain(this, new PathFinder(mapAnalyse));
+        this.brainDefend = new TankDefendBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
 
         this.brain = this.brainDefend;
         this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);

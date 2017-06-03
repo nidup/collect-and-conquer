@@ -1,22 +1,19 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
-import {StackFSM} from "../../ai/fsm/StackFSM";
-import {MapAnalyse} from "../../ai/map/MapAnalyse";
 import {PathFinder} from "../../ai/path/PathFinder";
-import {PhaserPointPath} from "../../ai/path/PhaserPointPath";
-import {State} from "../../ai/fsm/State";
 import {BrainText} from "./info/BrainText";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 import {BuilderDefendBrain} from "./brain/BuilderDefendBrain";
 import Physics = Phaser.Physics;
+import {Map} from "../../ai/map/Map";
 
 export class Builder extends Vehicle
 {
     public body: Phaser.Physics.Arcade.Body;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, map: Map)
     {
         super(game, x, y, army, radar, key, frame);
 
@@ -40,7 +37,7 @@ export class Builder extends Vehicle
 
         this.behavior = new SteeringComputer(this);
 
-        this.brain = new BuilderDefendBrain(this, new PathFinder(mapAnalyse));
+        this.brain = new BuilderDefendBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
         this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
     }
 

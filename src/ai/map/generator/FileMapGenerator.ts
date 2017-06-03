@@ -5,9 +5,9 @@ import {Tile} from "./Tile";
 
 export class FileMapGenerator extends MapGenerator
 {
-    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number)
+    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number, tilesize: number)
     {
-        super(game, screenWidth, screenHeight);
+        super(game, screenWidth, screenHeight, tilesize);
     }
 
     generate(): Map
@@ -55,6 +55,6 @@ export class FileMapGenerator extends MapGenerator
             []
         );
 
-        return new Map(map, grounds);
+        return new Map(map, grounds, this.tilesize);
     }
 }

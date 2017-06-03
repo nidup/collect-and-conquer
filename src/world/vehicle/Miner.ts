@@ -2,7 +2,6 @@
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
 import {PathFinder} from "../../ai/path/PathFinder";
-import {MapAnalyse} from "../../ai/map/MapAnalyse";;
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 import {MinerCollectBrain} from "./brain/MinerCollectBrain";
@@ -11,6 +10,7 @@ import {Mine} from "../building/Mine";
 import {Base} from "../building/Base";
 import Physics = Phaser.Physics;
 import {BrainText} from "./info/BrainText";
+import {Map} from "../../ai/map/Map";
 
 export class Miner extends Vehicle
 {
@@ -18,7 +18,7 @@ export class Miner extends Vehicle
     private oilLoad: number;
     private oilCapacity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, map: Map)
     {
         super(game, x, y, army, radar, key, frame);
 
@@ -45,7 +45,7 @@ export class Miner extends Vehicle
         this.oilLoad = 0
         this.oilCapacity = 10
 
-        this.brain = new MinerCollectBrain(this, new PathFinder(mapAnalyse));
+        this.brain = new MinerCollectBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
         this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
     }
 

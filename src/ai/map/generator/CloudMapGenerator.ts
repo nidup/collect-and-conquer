@@ -16,9 +16,9 @@ export class CloudMapGenerator extends MapGenerator
     private tileRegistry: TileRegistry;
     private emptyAreas: EmptyArea[];
 
-    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number, emptyAreas: EmptyArea[])
+    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number, tilesize: number, emptyAreas: EmptyArea[])
     {
-        super(game, screenWidth, screenHeight);
+        super(game, screenWidth, screenHeight, tilesize);
 
         this.tileRegistry = new TileRegistry();
         this.emptyAreas = emptyAreas;
@@ -29,7 +29,7 @@ export class CloudMapGenerator extends MapGenerator
         const map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
 
         map.removeAllLayers();
-        map.createBlankLayer(MapGenerator.LAYER_NAME, this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
+        map.createBlankLayer(Map.LAYER_NAME, this.screenWidth/tileSize, this.screenHeight/tileSize, tileSize, tileSize);
 
         this.addTileSets(map);
 
@@ -52,7 +52,7 @@ export class CloudMapGenerator extends MapGenerator
             []
         ).slice(0, numberRows);
 
-        return new Map(map, reducedGrounds);
+        return new Map(map, reducedGrounds, this.tilesize);
     }
 
     /**
