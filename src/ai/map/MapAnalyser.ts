@@ -28,7 +28,7 @@ export class MapAnalyser
             200, 201, 202, 203, 204, 205 // Mountain deco
         ];
 
-        const maxIndex = 200;
+        const maxIndex = 400;
         let walkable = [];
         for (let index = 1; index < maxIndex; index++) {
             walkable.push(index);
