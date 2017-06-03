@@ -90,11 +90,6 @@ export class Tank extends Vehicle
         }
     }
 
-    public getVisibilityScope()
-    {
-        return this.visibilityScope;
-    }
-
     public getSteeringComputer(): SteeringComputer
     {
         return this.behavior;

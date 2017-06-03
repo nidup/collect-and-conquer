@@ -12,16 +12,18 @@ export class Camera
     private items: ItemRepository;
     private buildings: BuildingRepository;
     private vehicles: VehicleRepository;
+    private visibilityScope: number;
 
-    constructor(items: ItemRepository, buildings: BuildingRepository, vehicles: VehicleRepository, army: Army)
+    constructor(items: ItemRepository, buildings: BuildingRepository, vehicles: VehicleRepository, army: Army, visibilityScope: number)
     {
         this.items = items;
         this.buildings = buildings;
         this.vehicles = vehicles;
         this.army = army;
+        this.visibilityScope = visibilityScope;
     }
 
-    public closestVisibleEnemy(position: Phaser.Point, visibilityScope: number): Vehicle|null
+    public closestVisibleEnemy(position: Phaser.Point): Vehicle|null
     {
         class VehicleAndDistance {
             public vehicle: Vehicle;
@@ -35,6 +37,7 @@ export class Camera
             return new VehicleAndDistance(vehicle, position.distance(vehicle.getPosition()));
         };
         const myArmy = this.army;
+        const visibilityScope = this.visibilityScope;
         const closestEnemies = this.vehicles.all()
             .filter(function (vehicle: Vehicle) {
                     return vehicle.getArmy() != myArmy;
@@ -55,7 +58,7 @@ export class Camera
         return closestEnemies.length > 0 ? closestEnemies[0].vehicle : null;
     }
 
-    public closestVisibleOil(position: Phaser.Point, visibilityScope: number): Oil|null
+    public closestVisibleOil(position: Phaser.Point): Oil|null
     {
         class OilAndDistance {
             public oil: Oil;
@@ -68,6 +71,7 @@ export class Camera
         const transfoAddDistance = function(oil: Oil) {
             return new OilAndDistance(oil, position.distance(oil.getPosition()));
         };
+        const visibilityScope = this.visibilityScope;
         const closestOils = this.items.oils()
             .reduce(function (oilsWithDistance, oil) {
                 oilsWithDistance.push(transfoAddDistance(oil));

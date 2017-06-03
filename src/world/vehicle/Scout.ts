@@ -37,11 +37,6 @@ export class Scout extends Vehicle
         this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
     }
 
-    public getVisibilityScope(): number
-    {
-        return this.visibilityScope;
-    }
-
     public getSteeringComputer(): SteeringComputer
     {
         return this.behavior;
