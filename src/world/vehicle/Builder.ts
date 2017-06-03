@@ -3,6 +3,7 @@ import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {BrainText} from "./info/BrainText";
+import {Camera} from "./sensor/Camera";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 import {BuilderDefendBrain} from "./brain/BuilderDefendBrain";
@@ -13,9 +14,9 @@ export class Builder extends Vehicle
 {
     public body: Phaser.Physics.Arcade.Body;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, map: Map)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map)
     {
-        super(game, x, y, army, radar, key, frame);
+        super(game, x, y, army, radar, camera, key, frame);
 
         this.maxHealth = 80;
         this.health = this.maxHealth;
@@ -39,11 +40,6 @@ export class Builder extends Vehicle
 
         this.brain = new BuilderDefendBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
         this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
-    }
-
-    public getRadar(): Radar
-    {
-        return this.radar;
     }
 
     public getSteeringComputer(): SteeringComputer

@@ -2,6 +2,7 @@
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
 import {PathFinder} from "../../ai/path/PathFinder";
+import {Camera} from "./sensor/Camera";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 import {MinerCollectBrain} from "./brain/MinerCollectBrain";
@@ -18,9 +19,9 @@ export class Miner extends Vehicle
     private oilLoad: number;
     private oilCapacity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, map: Map)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map)
     {
-        super(game, x, y, army, radar, key, frame);
+        super(game, x, y, army, radar, camera, key, frame);
 
         this.maxHealth = 100;
         this.health = this.maxHealth;
@@ -78,11 +79,6 @@ export class Miner extends Vehicle
     public getBuildingScope(): number
     {
         return this.buildingScope;
-    }
-
-    public getRadar(): Radar
-    {
-        return this.radar;
     }
 
     public getSteeringComputer(): SteeringComputer

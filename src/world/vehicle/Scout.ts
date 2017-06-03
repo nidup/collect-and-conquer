@@ -1,9 +1,8 @@
 
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
-import {StackFSM} from "../../ai/fsm/StackFSM";
-import {State} from "../../ai/fsm/State";
 import {BrainText} from "./info/BrainText";
+import {Camera} from "./sensor/Camera";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
 import {ScoutExploreBrain} from "./brain/ScoutExploreBrain";
@@ -11,9 +10,9 @@ import Physics = Phaser.Physics;
 
 export class Scout extends Vehicle
 {
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number)
     {
-        super(game, x, y, army, radar, key, frame);
+        super(game, x, y, army, radar, camera, key, frame);
 
         this.maxHealth = 30;
         this.health = this.maxHealth;
@@ -41,11 +40,6 @@ export class Scout extends Vehicle
     public getVisibilityScope(): number
     {
         return this.visibilityScope;
-    }
-
-    public getRadar(): Radar
-    {
-        return this.radar;
     }
 
     public getSteeringComputer(): SteeringComputer

@@ -2,6 +2,7 @@
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
 import {Army} from "../Army";
+import {Camera} from "./sensor/Camera";
 import {Radar} from "./sensor/Radar";
 import {PathFinder} from "../../ai/path/PathFinder";
 import {TankDefendBrain} from "./brain/TankDefendBrain";
@@ -18,9 +19,9 @@ export class Tank extends Vehicle
     private brainAttack: TankAttackBrain;
     private brainDefend: TankDefendBrain;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, map: Map)
+    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map)
     {
-        super(game, x, y, army, radar, key, frame);
+        super(game, x, y, army, radar, camera, key, frame);
 
         this.maxHealth = 150;
         this.health = this.maxHealth;
@@ -92,11 +93,6 @@ export class Tank extends Vehicle
     public getVisibilityScope()
     {
         return this.visibilityScope;
-    }
-
-    public getRadar(): Radar
-    {
-        return this.radar;
     }
 
     public getSteeringComputer(): SteeringComputer
