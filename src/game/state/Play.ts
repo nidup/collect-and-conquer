@@ -4,7 +4,7 @@ import {VehicleRepository} from "../../world/vehicle/VehicleRepository";
 import {BuildingRepository} from "../../world/building/BuildingRepository";
 import {MapGenerator} from "../../ai/map/generator/MapGenerator";
 import {RandomMapGenerator} from "../../ai/map/generator/RandomMapGenerator";
-import {CloudMapGenerator} from "../../ai/map/generator/CloudMapGenerator";
+import {CloudMapGenerator, EmptyArea} from "../../ai/map/generator/CloudMapGenerator";
 import {FileMapGenerator} from "../../ai/map/generator/FileMapGenerator";
 import {ItemRepository} from "../../world/item/ItemRepository";
 import {Item} from "../../world/item/Item";
@@ -42,7 +42,34 @@ export default class Play extends Phaser.State
         const mapHeight = this.game.height;
         const tileSize = 20;
 
-        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight); //TODO 132 to fix!!
+        const baseAreaGap = 4;
+        const baseBlueX = 150;
+        const baseBlueY = 150;
+        const baseRedX = 850;
+        const baseRedY = 650;
+        const oilAreaGap = 2;
+        const oil1X = 450;
+        const oil1Y = 150;
+        const oil2X = 850;
+        const oil2Y = 150;
+        const oil3X = 550;
+        const oil3Y = 650;
+        const oil4X = 150;
+        const oil4Y = 650;
+        const oil5X = 500;
+        const oil5Y = 400;
+
+        const emptyAreas = [];
+        emptyAreas.push(new EmptyArea(Math.round(baseBlueX/tileSize), Math.round(baseBlueY/tileSize), baseAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(baseRedX/tileSize), Math.round(baseRedY/tileSize), baseAreaGap));
+
+        emptyAreas.push(new EmptyArea(Math.round(oil1X/tileSize), Math.round(oil1Y/tileSize), oilAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(oil2X/tileSize), Math.round(oil2Y/tileSize), oilAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(oil3X/tileSize), Math.round(oil3Y/tileSize), oilAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(oil4X/tileSize), Math.round(oil4Y/tileSize), oilAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(oil5X/tileSize), Math.round(oil5Y/tileSize), oilAreaGap));
+
+        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight, emptyAreas);
         // const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
         // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
         const generatedMap = mapGenerator.generate();
@@ -65,6 +92,13 @@ export default class Play extends Phaser.State
         this.buildings = new BuildingRepository();
         this.vehicles = new VehicleRepository();
 
+        const oilQuantity = 1000;
+        this.items.add(new Oil(this.game, oil1X, oil1Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(this.game, oil2X, oil2Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(this.game, oil3X, oil3Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(this.game, oil4X, oil4Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(this.game, oil5X, oil5Y, 'Icons', 0, oilQuantity));
+
         const players = new PlayerRepository();
 
         const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
@@ -75,13 +109,7 @@ export default class Play extends Phaser.State
         const botPlayer = new Player(armyRed, false);
         players.add(botPlayer);
 
-        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 1000));
-        this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 1000));
-        this.items.add(new Oil(this.game, 550, 650, 'Icons', 0, 1000));
-        this.items.add(new Oil(this.game, 150, 650, 'Icons', 0, 1000));
-        this.items.add(new Oil(this.game, 500, 400, 'Icons', 0, 1000));
-
-        const base = armyBlue.buildBase(150, 150);
+        const base = armyBlue.buildBase(baseBlueX, baseBlueY);
         base.stock(400);
 
         /*

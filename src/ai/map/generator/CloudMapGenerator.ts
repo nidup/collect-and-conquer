@@ -14,12 +14,14 @@ const RADIUS = 1; // Specify the smooth. 0.001 = big smooth, infinite = no smoot
 export class CloudMapGenerator extends MapGenerator
 {
     private tileRegistry: TileRegistry;
+    private emptyAreas: EmptyArea[];
 
-    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number)
+    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number, emptyAreas: EmptyArea[])
     {
         super(game, screenWidth, screenHeight);
 
         this.tileRegistry = new TileRegistry();
+        this.emptyAreas = emptyAreas;
     }
 
     generate(): Map
@@ -242,16 +244,12 @@ export class CloudMapGenerator extends MapGenerator
         }.bind(this));
     }
 
-    private containsPredefined(x: number, y: number, blockSizeX: number, blockSizeY: number) {
-        const centers = [
-            {x:Math.round(150/20), y:Math.round(150/20)}, //Base blue
-            {x:Math.round(850/20), y:Math.round(650/20)} //Base red
-        ];
-        const gap = 4;
+    private containsPredefined(x: number, y: number, blockSizeX: number, blockSizeY: number)
+    {
         let points = [];
-        centers.forEach(function(center) {
-            for(let yi = center.y - gap; yi <= center.y + gap; yi++) {
-                for(let xi = center.x - gap; xi <= center.x + gap; xi++) {
+        this.emptyAreas.forEach(function(center: EmptyArea) {
+            for(let yi = center.getY() - center.getGap(); yi <= center.getY() + center.getGap(); yi++) {
+                for(let xi = center.getX() - center.getGap(); xi <= center.getX() + center.getGap(); xi++) {
                     points.push({x: xi, y: yi});
                 }
             }
@@ -265,5 +263,34 @@ export class CloudMapGenerator extends MapGenerator
         });
 
         return found ? 1 : null;
+    }
+}
+
+export class EmptyArea
+{
+    private x: number;
+    private y: number;
+    private gap: number;
+
+    public constructor(x: number, y: number, gap: number)
+    {
+        this.x = x;
+        this.y = y;
+        this.gap = gap;
+    }
+
+    public getX(): number
+    {
+        return this.x;
+    }
+
+    public getY(): number
+    {
+        return this.y;
+    }
+
+    public getGap(): number
+    {
+        return this.gap;
     }
 }
