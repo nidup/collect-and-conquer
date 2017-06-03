@@ -40,7 +40,7 @@ export class SharedMemory
 
         for (let y = startY; y < endY; y++) {
             for (let x = startX; x < endX; x++) {
-                if (x > 0 && y > 0 && y < this.knownTiles.length && x < this.knownTiles[y].length) {
+                if (x >= 0 && y >= 0 && y < this.knownTiles.length && x < this.knownTiles[y].length) {
                     this.knownTiles[y][x] = true;
                 }
             }

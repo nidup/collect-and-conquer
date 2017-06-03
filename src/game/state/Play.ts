@@ -15,6 +15,7 @@ import {Player} from "../player/Player";
 import {Army} from "../../world/Army";
 import {MainPanel} from "../../ui/MainPanel";
 import {PlayerRepository} from "../player/PlayerRepository";
+import {FogOfWar} from "../../ai/map/FogOfWar";
 
 export default class Play extends Phaser.State
 {
@@ -25,6 +26,10 @@ export default class Play extends Phaser.State
     private unitSelector: UnitSelector;
     private debug: boolean = false;
     private mainPanel: MainPanel;
+    private players: PlayerRepository;
+    private fogOfWar: FogOfWar;
+    private tiles: Array<Array<Phaser.Tile>>;
+    private bitmap: Phaser.BitmapData;
 
     public create()
     {
@@ -70,6 +75,7 @@ export default class Play extends Phaser.State
         // const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight, tileSize);
         // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight, tileSize);
         const generatedMap = mapGenerator.generate();
+        this.tiles = generatedMap.getTiles();
 
         this.collisionLayer = generatedMap.getCollisionLayer();
         if (this.debug) {
@@ -88,15 +94,15 @@ export default class Play extends Phaser.State
         this.items.add(new Oil(this.game, oil4X, oil4Y, 'Icons', 0, oilQuantity));
         this.items.add(new Oil(this.game, oil5X, oil5Y, 'Icons', 0, oilQuantity));
 
-        const players = new PlayerRepository();
+        this.players = new PlayerRepository();
 
         const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, this.game);
         const humanPlayer = new Player(armyBlue, true);
-        players.add(humanPlayer);
+        this.players.add(humanPlayer);
 
         const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, this.game)
         const botPlayer = new Player(armyRed, false);
-        players.add(botPlayer);
+        this.players.add(botPlayer);
 
         const base = armyBlue.buildBase(baseBlueX, baseBlueY);
         base.stock(400);
@@ -124,7 +130,15 @@ export default class Play extends Phaser.State
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
 
-        this.mainPanel = new MainPanel(this.game, panelWith, this.unitSelector, players, generatedMap, this.items);
+        this.mainPanel = new MainPanel(this.game, panelWith, this.unitSelector, this.players, generatedMap, this.items);
+
+        this.fogOfWar = new FogOfWar();
+        const fogX = 0;
+        const fogY = 0;
+        this.bitmap = this.game.make.bitmapData(52, 40);
+        this.bitmap.addToWorld(fogX, fogY, 0, 0, generatedMap.getTileSize(), generatedMap.getTileSize());
+        const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
+        this.fogOfWar.apply(this.bitmap, knownTiles);
     }
 
     public update()
@@ -133,6 +147,8 @@ export default class Play extends Phaser.State
         this.updateVehicles(this.vehicles, this.game, this.collisionLayer);
         this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
         this.mainPanel.update();
+        const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
+        this.fogOfWar.apply(this.bitmap, knownTiles);
     }
 
     private updateItems(items: ItemRepository)

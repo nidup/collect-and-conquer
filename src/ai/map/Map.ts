@@ -47,12 +47,12 @@ export class Map
         return this.grounds;
     }
 
-    public getTiles() : Array<Array<Phaser.Tile>>
+    public getTiles(): Array<Array<Phaser.Tile>>
     {
         return this.tiles;
     }
 
-    public getTileSize() : number
+    public getTileSize(): number
     {
         return this.tilesize;
     }
