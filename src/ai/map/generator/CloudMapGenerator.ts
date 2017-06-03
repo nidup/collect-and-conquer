@@ -37,12 +37,20 @@ export class CloudMapGenerator extends MapGenerator
         let points = this.mixCloudMaps(cloudMaps);
         let grounds = this.getGrounds(points);
 
-
-        // TODO: why a so big map ground??
-
         this.draw(map, grounds);
 
-        return new Map(map, grounds);
+        // remove useless columns and rows
+        const numberColumns = map.width;
+        const numberRows = map.height;
+        const reducedGrounds = grounds.reduce(
+            function(rows: Array<Array<number>>, row: Array<number>) {
+                rows.push(row.slice(0, numberColumns));
+                return rows;
+            },
+            []
+        ).slice(0, numberRows);
+
+        return new Map(map, reducedGrounds);
     }
 
     /**

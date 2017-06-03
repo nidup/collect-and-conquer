@@ -43,7 +43,18 @@ export class RandomMapGenerator extends MapGenerator
         points = this.fixMissingTextures(points);
         this.draw(map, points);
 
-        return new Map(map, points);
+        // remove useless columns and rows
+        const numberColumns = map.width;
+        const numberRows = map.height;
+        const grounds = points.reduce(
+            function(rows: Array<Array<number>>, row: Array<number>) {
+                rows.push(row.slice(0, numberColumns));
+                return rows;
+            },
+            []
+        ).slice(0, numberRows);
+
+        return new Map(map, grounds);
     }
 
     /**

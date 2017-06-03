@@ -1,6 +1,7 @@
 
 import {MapGenerator} from "./MapGenerator";
 import {Map} from "../Map";
+import {Tile} from "./Tile";
 
 export class FileMapGenerator extends MapGenerator
 {
@@ -35,7 +36,15 @@ export class FileMapGenerator extends MapGenerator
                 groundRows.push(
                     tileRow.reduce(
                         function(groundRow: Array<number>, tile: Phaser.Tile) {
-                            groundRow.push(tile.index);
+                            let ground = Tile.GRASS;
+                            if (tile.index >= 132 && tile.index <= 146) {
+                                ground = Tile.MNT;
+                            } else if (tile.index >= 162 && tile.index <= 176) {
+                                ground = Tile.LAVA;
+                            } else if (tile.index >= 252 && tile.index <= 256) {
+                                ground = Tile.SNOW;
+                            }
+                            groundRow.push(ground);
                             return groundRow;
                         },
                         []
