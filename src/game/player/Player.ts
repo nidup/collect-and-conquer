@@ -4,10 +4,12 @@ import {Army} from "../../world/Army";
 export class Player
 {
     private army: Army;
+    private human: boolean;
 
-    constructor(army: Army)
+    constructor(army: Army, human: boolean)
     {
         this.army = army;
+        this.human = human;
     }
 
     public play()
@@ -15,8 +17,13 @@ export class Player
         // TODO extract Play state logic
     }
 
-    public getArmy()
+    public getArmy(): Army
     {
         return this.army;
+    }
+
+    public isHuman(): boolean
+    {
+        return this.human;
     }
 }

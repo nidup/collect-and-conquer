@@ -19,8 +19,9 @@ export class OrderPanel
 
         const buttonWidth = 110;
         const buttonMargin = 7;
+        const marginX = 7;
 
-        let positionX = screenWidth - 233;
+        let positionX = screenWidth - panelWith + marginX;
         positionY += 30;
         let callback = function() { player.getArmy().getStrategy().defend(); };
         this.addOrderButton(game, positionX, positionY, 0, 'Defend', callback);

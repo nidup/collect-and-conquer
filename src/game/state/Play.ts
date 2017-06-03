@@ -15,6 +15,7 @@ import {Building} from "../../world/building/Building";
 import {Player} from "../player/Player";
 import {Army} from "../../world/Army";
 import {MainPanel} from "../../ui/MainPanel";
+import {PlayerRepository} from "../player/PlayerRepository";
 
 export default class Play extends Phaser.State
 {
@@ -26,7 +27,6 @@ export default class Play extends Phaser.State
     private unitSelector: UnitSelector;
     private debug: boolean = false;
     private enableTileCollision = true;
-    private players: Player[];
     private mainPanel: MainPanel;
 
     public create()
@@ -65,14 +65,15 @@ export default class Play extends Phaser.State
         this.buildings = new BuildingRepository();
         this.vehicles = new VehicleRepository();
 
-        this.players = [];
+        const players = new PlayerRepository();
 
-        const armyBlue = new Army(0x8cd6ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
-        const humanPlayer = new Player(armyBlue);
-        this.players.push(humanPlayer);
+        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
+        const humanPlayer = new Player(armyBlue, true);
+        players.add(humanPlayer);
 
-        const armyRed = new Army(0xff6771, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
-        this.players.push(new Player(armyRed));
+        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, mapAnalyse, this.game)
+        const botPlayer = new Player(armyRed, false);
+        players.add(botPlayer);
 
         this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 1000));
         this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 1000));
@@ -106,7 +107,7 @@ export default class Play extends Phaser.State
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
 
-        this.mainPanel = new MainPanel(this.game, this.game.width, panelWith, this.unitSelector, humanPlayer, generatedMap);
+        this.mainPanel = new MainPanel(this.game, panelWith, this.unitSelector, players, generatedMap, this.items);
     }
 
     public update()
