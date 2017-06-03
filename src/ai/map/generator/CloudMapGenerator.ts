@@ -130,7 +130,8 @@ export class CloudMapGenerator extends MapGenerator
                         if (undefined === squaresMap[y + yi]) {
                             squaresMap[y + yi] = [];
                         }
-                        squaresMap[y + yi][x + xi] = random;
+                        let predefined = this.containsPredefined(x, y, blockSize, blockSize);
+                        squaresMap[y + yi][x + xi] = null !== predefined ? predefined : random
                     }
                 }
             }
@@ -239,5 +240,30 @@ export class CloudMapGenerator extends MapGenerator
 
             }.bind(this))
         }.bind(this));
+    }
+
+    private containsPredefined(x: number, y: number, blockSizeX: number, blockSizeY: number) {
+        const centers = [
+            {x:Math.round(150/20), y:Math.round(150/20)}, //Base blue
+            {x:Math.round(850/20), y:Math.round(650/20)} //Base red
+        ];
+        const gap = 4;
+        let points = [];
+        centers.forEach(function(center) {
+            for(let yi = center.y - gap; yi <= center.y + gap; yi++) {
+                for(let xi = center.x - gap; xi <= center.x + gap; xi++) {
+                    points.push({x: xi, y: yi});
+                }
+            }
+        });
+
+        let found = false;
+        points.forEach(function (point) {
+            if (x < point.x && point.x < (x + blockSizeX) && y < point.y && point.y < (y + blockSizeY)) {
+                found = true;
+            }
+        });
+
+        return found ? 1 : null;
     }
 }
