@@ -151,6 +151,7 @@ export default class Play extends Phaser.State
         }
     }
 
+    // TODO: move to panel
     private updateUnitSelector(unitSelector: UnitSelector, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository)
     {
         unitSelector.listenVehicles(vehicles.all());
