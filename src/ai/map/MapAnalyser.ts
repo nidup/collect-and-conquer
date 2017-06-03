@@ -23,11 +23,12 @@ export class MapAnalyser
             104, 105, 106, 107, 108, 109, 110, 111, // grass brown rocks
             112, 113, 114, 116, 118, 120, 121, 122, 125, 126, 129, 130, // grass brown rocks
             147, 148, 149, 150, 152, 153, 154, 155, 157, 158, 160, 161, // grass water
+            162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 175, 176,// grass lava
             177, 178, 179, 185, 186, 188, 189, 190, // Grass deco
             200, 201, 202, 203, 204, 205 // Mountain deco
         ];
 
-        const maxIndex = 200;
+        const maxIndex = 400;
         let walkable = [];
         for (let index = 1; index < maxIndex; index++) {
             walkable.push(index);

@@ -5159,7 +5159,7 @@ declare module Phaser {
     * quickly and easily, without the need for any external files. You can create textures for sprites and in
     * coming releases we'll add dynamic sound effect generation support as well (like sfxr).
     * 
-    * Access this via `Game.create` (`this.game.create` from within a State object)
+    * Access this via `Game.create` (`this.game.create` from within a State object).
     */
     class Create {
 
@@ -5169,7 +5169,7 @@ declare module Phaser {
         * quickly and easily, without the need for any external files. You can create textures for sprites and in
         * coming releases we'll add dynamic sound effect generation support as well (like sfxr).
         * 
-        * Access this via `Game.create` (`this.game.create` from within a State object)
+        * Access this via `Game.create` (`this.game.create` from within a State object).
         * 
         * @param game Game reference to the currently running game.
         */
@@ -5229,6 +5229,20 @@ declare module Phaser {
 
 
         /**
+        * Copies the contents of {@link bmd Create's canvas} to the given BitmapData object, or a new BitmapData object.
+        * 
+        * @param dest The BitmapData receiving the copied image.
+        * @param x The x coordinate to translate to before drawing.
+        * @param y The y coordinate to translate to before drawing.
+        * @param width The new width of the Sprite being copied.
+        * @param height The new height of the Sprite being copied.
+        * @param blendMode The composite blend mode that will be used when drawing. The default is no blend mode at all. This is a Canvas globalCompositeOperation value such as 'lighter' or 'xor'.
+        * @param roundPx Should the x and y values be rounded to integers before drawing? This prevents anti-aliasing in some instances.
+        * @return - The `dest` argument (if passed), or a new BitmapData object
+        */
+        copy(dest?: Phaser.BitmapData, x?: number, y?: number, width?: number, height?: number, blendMode?: string, roundPx?: boolean): Phaser.BitmapData;
+
+        /**
         * Creates a grid texture based on the given dimensions.
         * 
         * @param key The key used to store this texture in the Phaser Cache.
@@ -5237,9 +5251,12 @@ declare module Phaser {
         * @param cellWidth The width of the grid cells in pixels.
         * @param cellHeight The height of the grid cells in pixels.
         * @param color The color to draw the grid lines in. Should be a Canvas supported color string like `#ff5500` or `rgba(200,50,3,0.5)`.
-        * @return The newly generated texture.
+        * @param generateTexture When false, a new BitmapData object is returned instead. - Default: true
+        * @param callback A function to execute once the texture is generated. It will be passed the newly generated texture.
+        * @param callbackContext The context in which to invoke the callback.
+        * @return The newly generated texture, or a new BitmapData object if `generateTexture` is false, or `null` if a callback was passed and the texture isn't available yet.
         */
-        grid(key: string, width: number, height: number, cellWidth: number, cellHeight: number, color: string): PIXI.Texture;
+        grid(key: string, width: number, height: number, cellWidth: number, cellHeight: number, color: string, generateTexture?: boolean, callback?: Function, callbackContext?: any): PIXI.Texture;
 
         /**
         * Generates a new PIXI.Texture from the given data, which can be applied to a Sprite.
@@ -5269,9 +5286,12 @@ declare module Phaser {
         * @param pixelWidth The width of each pixel. - Default: 8
         * @param pixelHeight The height of each pixel. - Default: 8
         * @param palette The palette to use when rendering the texture. One of the Phaser.Create.PALETTE consts.
-        * @return The newly generated texture.
+        * @param generateTexture When false, a new BitmapData object is returned instead. - Default: true
+        * @param callback A function to execute once the texture is generated. It will be passed the newly generated texture.
+        * @param callbackContext The context in which to invoke the callback.
+        * @return The newly generated texture, or a new BitmapData object if `generateTexture` is false, or `null` if a callback was passed and the texture isn't available yet.
         */
-        texture(key: string, data: any, pixelWidth?: number, pixelHeight?: number, palette?: number): PIXI.Texture;
+        texture(key: string, data: any, pixelWidth?: number, pixelHeight?: number, palette?: number, generateTexture?: boolean, callback?: Function, callbackContext?: any): PIXI.Texture;
 
     }
 
@@ -7466,6 +7486,20 @@ declare module Phaser {
         * @param transparent Use a transparent canvas background or not.
         * @param antialias Draw all image textures anti-aliased or not. The default is for smooth textures, but disable if your game features pixel art. - Default: true
         * @param physicsConfig A physics configuration object to pass to the Physics world on creation.
+        * @param config A single configuration object
+        * @param config.antialias  - Default: true
+        * @param config.height  - Default: 600
+        * @param config.enableDebug Enable {@link Phaser.Utils.Debug}. You can gain a little performance by disabling this in production. - Default: true
+        * @param config.multiTexture Enable support for multiple bound Textures in WebGL. Same as `renderer: Phaser.WEBGL_MULTI`.
+        * @param config.parent  - Default: ''
+        * @param config.physicsConfig
+        * @param config.preserveDrawingBuffer Whether or not the contents of the stencil buffer is retained after rendering.
+        * @param config.renderer  - Default: Phaser.AUTO
+        * @param config.resolution The resolution of your game, as a ratio of canvas pixels to game pixels. - Default: 1
+        * @param config.seed Seed for {@link Phaser.RandomDataGenerator}.
+        * @param config.state
+        * @param config.transparent
+        * @param config.width  - Default: 800
         */
         constructor(width?: number | string, height?: number | string, renderer?: number, parent?: any, state?: any, transparent?: boolean, antialias?: boolean, physicsConfig?: any);
 
@@ -7532,6 +7566,20 @@ declare module Phaser {
         * @param transparent Use a transparent canvas background or not.
         * @param antialias Draw all image textures anti-aliased or not. The default is for smooth textures, but disable if your game features pixel art. - Default: true
         * @param physicsConfig A physics configuration object to pass to the Physics world on creation.
+        * @param config A single configuration object
+        * @param config.antialias  - Default: true
+        * @param config.height  - Default: 600
+        * @param config.enableDebug Enable {@link Phaser.Utils.Debug}. You can gain a little performance by disabling this in production. - Default: true
+        * @param config.multiTexture Enable support for multiple bound Textures in WebGL. Same as `renderer: Phaser.WEBGL_MULTI`.
+        * @param config.parent  - Default: ''
+        * @param config.physicsConfig
+        * @param config.preserveDrawingBuffer Whether or not the contents of the stencil buffer is retained after rendering.
+        * @param config.renderer  - Default: Phaser.AUTO
+        * @param config.resolution The resolution of your game, as a ratio of canvas pixels to game pixels. - Default: 1
+        * @param config.seed Seed for {@link Phaser.RandomDataGenerator}.
+        * @param config.state
+        * @param config.transparent
+        * @param config.width  - Default: 800
         */
         constructor(config: IGameConfig);
 
@@ -7542,7 +7590,7 @@ declare module Phaser {
         add: Phaser.GameObjectFactory;
 
         /**
-        * Anti-alias graphics. By default scaled images are smoothed in Canvas and WebGL, set anti-alias to false to disable this globally.
+        * Anti-alias graphics (as set when the Game is created). By default scaled and rotated images are smoothed in Canvas and WebGL; set `antialias` to false to disable this globally. After the game boots, use `game.stage.smoothed` instead.
         * Default: true
         */
         antialias: boolean;
@@ -7596,7 +7644,7 @@ declare module Phaser {
         device: Phaser.Device;
 
         /**
-        * Should the game loop force a logic update, regardless of the delta timer? Set to true if you know you need this. You can toggle it on the fly.
+        * Should the game loop force a logic update, regardless of the delta timer? You can toggle it on the fly.
         */
         forceSingleUpdate: boolean;
 
@@ -7682,7 +7730,7 @@ declare module Phaser {
         onResume: Phaser.Signal;
 
         /**
-        * The Games DOM parent.
+        * The Game's DOM parent (or name thereof), if any, as set when the game was created. The actual parent can be found in `game.canvas.parentNode`. Setting this has no effect after {@link Phaser.ScaleManager} is booted.
         */
         parent: HTMLElement;
 
@@ -7738,7 +7786,7 @@ declare module Phaser {
         renderType: number;
 
         /**
-        * The resolution of your game. This value is read only, but can be changed at start time it via a game configuration object.
+        * The resolution of your game, as a ratio of canvas pixels to game pixels. This value is read only, but can be changed at start time it via a game configuration object.
         * Default: 1
         */
         resolution: number;
@@ -8177,7 +8225,7 @@ declare module Phaser {
         * @param style The style object containing style attributes like font, font size , etc.
         * @return The newly created text object.
         */
-        text(x: number, y: number, text?: string, style?: any): Phaser.Text;
+        text(x: number, y: number, text?: string, style?: PhaserTextStyle): Phaser.Text;
 
         /**
         * Creates a new Phaser.Tilemap object.
@@ -8370,7 +8418,7 @@ declare module Phaser {
         * @param group Optional Group to add the object to. If not specified it will be added to the World group.
         * @return The newly created graphics object.
         */
-        graphics(x: number, y: number, group?: Phaser.Group): Phaser.Graphics;
+        graphics(x?: number, y?: number, group?: Phaser.Group): Phaser.Graphics;
 
         /**
         * A Group is a container for display objects that allows for fast pooling, recycling and collision checks.
@@ -8399,7 +8447,7 @@ declare module Phaser {
         * @param group Optional Group to add the object to. If not specified it will be added to the World group.
         * @return The newly created Image object.
         */
-        image(x: number, y: number, key?: any, frame?: any, group?: Phaser.Group): Phaser.Image;
+        image(x?: number, y?: number, key?: any, frame?: any, group?: Phaser.Group): Phaser.Image;
 
         /**
         * A Group is a container for display objects that allows for fast pooling, recycling and collision checks.
@@ -8473,7 +8521,7 @@ declare module Phaser {
         * @param group Optional Group to add the object to. If not specified it will be added to the World group.
         * @return The newly created Rope object.
         */
-        rope(x: number, y: number, key: any, frame?: any, points?: Phaser.Point[]): Phaser.Rope;
+        rope(x?: number, y?: number, key?: any, frame?: any, points?: Phaser.Point[]): Phaser.Rope;
 
         /**
         * Creates a new Sound object.
@@ -8500,7 +8548,7 @@ declare module Phaser {
         * @param group Optional Group to add the object to. If not specified it will be added to the World group.
         * @return The newly created Sprite object.
         */
-        sprite(x: number, y: number, key?: any, frame?: any, group?: Phaser.Group): Phaser.Sprite;
+        sprite(x?: number, y?: number, key?: any, frame?: any, group?: Phaser.Group): Phaser.Sprite;
 
         /**
         * A SpriteBatch is a really fast version of a Phaser Group built solely for speed.
@@ -8524,7 +8572,7 @@ declare module Phaser {
         * @param group Optional Group to add the object to. If not specified it will be added to the World group.
         * @return The newly created text object.
         */
-        text(x: number, y: number, text: string, style: any, group?: Phaser.Group): Phaser.Text;
+        text(x?: number, y?: number, text?: string, style?: PhaserTextStyle, group?: Phaser.Group): Phaser.Text;
 
         /**
         * Creates a new Phaser.Tilemap object.
@@ -9321,7 +9369,22 @@ declare module Phaser {
         * @param destroyChildren Should every child of this object have its destroy method called? - Default: true
         */
         destroy(destroyChildren?: boolean): void;
+
+        /**
+        * Draws a single {Phaser.Polygon} triangle from a {Phaser.Point} array
+        * 
+        * @param points An array of Phaser.Points that make up the three vertices of this triangle
+        * @param cull Should we check if the triangle is back-facing
+        */
         drawTriangle(points: Phaser.Point[], cull?: boolean): void;
+
+        /**
+        * Draws {Phaser.Polygon} triangles
+        * 
+        * @param vertices An array of Phaser.Points or numbers that make up the vertices of the triangles
+        * @param {indices An array of numbers that describe what order to draw the vertices in - Default: null}
+        * @param cull Should we check if the triangle is back-facing
+        */
         drawTriangles(vertices: Phaser.Point[] | number[], indices?: number[], cull?: boolean): void;
 
         /**
@@ -9734,6 +9797,11 @@ declare module Phaser {
         type: number;
 
         /**
+        * Skip children with `exists = false` in {@link Phaser.Group#update update}.
+        */
+        updateOnlyExistingChildren: boolean;
+
+        /**
         * The visible state of the group. Non-visible Groups and all of their children are not rendered.
         */
         visible: boolean;
@@ -9998,28 +10066,40 @@ declare module Phaser {
         callbackFromArray(child: any, callback: Function, length: number): void;
 
         /**
-        * Quickly check that the same property across all children of this group is equal to the given value.
+        * Test that the same property across all children of this group is equal to the given value.
         * 
         * This call doesn't descend down children, so if you have a Group inside of this group, the property will be checked on the group but not its children.
         * 
-        * @param key The property, as a string, to be set. For example: 'body.velocity.x'
+        * @param key The property, as a string, to be checked. For example: 'body.velocity.x'
         * @param value The value that will be checked.
         * @param checkAlive If set then only children with alive=true will be checked. This includes any Groups that are children.
         * @param checkVisible If set then only children with visible=true will be checked. This includes any Groups that are children.
-        * @param force If `force` is true then the property will be checked on the child regardless if it already exists or not. If true and the property doesn't exist, false will be returned.
+        * @param force Also return false if the property is missing or undefined (regardless of the `value` argument).
         */
-        checkAll(key: string[], value: any, checkAlive?: boolean, checkVisible?: boolean, force?: boolean): boolean;
+        checkAll(key: string, value: any, checkAlive?: boolean, checkVisible?: boolean, force?: boolean): boolean;
+
+        /**
+        * Test that at least one child of this group has the given property value.
+        * 
+        * This call doesn't descend down children, so if you have a Group inside of this group, the property will be checked on the group but not its children.
+        * 
+        * @param key The property, as a string, to be checked. For example: 'body.velocity.x'
+        * @param value The value that will be checked.
+        * @param checkAlive If set then only children with alive=true will be checked. This includes any Groups that are children.
+        * @param checkVisible If set then only children with visible=true will be checked. This includes any Groups that are children.
+        */
+        checkAny(key: string, value: any, checkAlive?: boolean, checkVisible?: boolean): boolean;
 
         /**
         * Checks a property for the given value on the child.
         * 
         * @param child The child to check the property value on.
-        * @param key An array of strings that make up the property that will be set.
+        * @param key The property, as a string, to be checked. For example: 'body.velocity.x'
         * @param value The value that will be checked.
-        * @param force If `force` is true then the property will be checked on the child regardless if it already exists or not. If true and the property doesn't exist, false will be returned.
-        * @return True if the property was was equal to value, false if not.
+        * @param force Also return false if the property is missing or undefined (regardless of the `value` argument).
+        * @return True if `child` is a child of this Group and the property was equal to value, false if not.
         */
-        checkProperty(child: any, key: string[], value: any, force?: boolean): boolean;
+        checkProperty(child: any, key: string, value: any, force?: boolean): boolean;
 
         /**
         * Get the number of dead children in this group.
@@ -10212,19 +10292,19 @@ declare module Phaser {
         * 
         * You can optionally specify a matching criteria using the `property` and `value` arguments.
         * 
-        * For example: `getAll('exists', true)` would return only children that have their exists property set.
+        * For example: `getAll('exists', true)` would return only children that have an `exists` property equal to `true`.
         * 
         * Optionally you can specify a start and end index. For example if this Group had 100 children,
-        * and you set `startIndex` to 0 and `endIndex` to 50, it would return a random child from only
-        * the first 50 children in the Group.
+        * and you set `startIndex` to 0 and `endIndex` to 50, it would return the first 50 children in the Group.
+        * If `property` and `value` are also specified, only children within the given index range are searched.
         * 
         * @param property An optional property to test against the value argument.
         * @param value If property is set then Child.property must strictly equal this value to be included in the results.
         * @param startIndex The first child index to start the search from.
         * @param endIndex The last child index to search up until.
-        * @return A random existing child of this Group.
+        * @return - An array containing all, some, or none of the Children of this Group.
         */
-        getAll(property: string, value: any, startIndex: number, endIndex: number): any;
+        getAll(property?: string, value?: any, startIndex?: number, endIndex?: number): any[];
 
         /**
         * Returns the child found at the given index within this group.
@@ -10418,6 +10498,11 @@ declare module Phaser {
         iterate(key: string, value: any, returnType: number, callback?: Function, callbackContext?: any, ...args: any[]): any;
 
         /**
+        * Kills all children having exists=true.
+        */
+        killAll(): void;
+
+        /**
         * Moves all children from this Group to the Group given.
         * 
         * @param group The new Group to which the children will be moved to.
@@ -10541,6 +10626,17 @@ declare module Phaser {
         replace(oldChild: any, newChild: any): any;
 
         /**
+        * Calls {@link Phaser.Group#resetChild resetChild} on each child (or each existing child).
+        * 
+        * @param x The x coordinate to reset each child to. The value is in relation to the group.x point.
+        * @param y The y coordinate to reset each child to. The value is in relation to the group.y point.
+        * @param key The image or texture used by the Sprite during rendering.
+        * @param frame The frame of a sprite sheet or texture atlas.
+        * @param checkExists Reset only existing children.
+        */
+        resetAll(x?: number, y?: number, key?: string | Phaser.RenderTexture | Phaser.BitmapData | Phaser.Video | PIXI.Texture, frame?: string | number, checkExists?: boolean);
+
+        /**
         * Takes a child and if the `x` and `y` arguments are given it calls `child.reset(x, y)` on it.
         * 
         * If the `key` and optionally the `frame` arguments are given, it calls `child.loadTexture(key, frame)` on it.
@@ -10572,6 +10668,19 @@ declare module Phaser {
         * This operation applies only to immediate children and does not propagate to subgroups.
         */
         reverse(): void;
+
+        /**
+        * Revives all children having exists=false.
+        */
+        reviveAll(): void;
+
+        /**
+        * Places each child at a random position within the given Rectangle (or the {@link Phaser.World#bounds World bounds}).
+        * 
+        * @param rect A Rectangle. If omitted {@link Phaser.World#bounds} is used. - Default: this.game.world.bounds
+        * @param checkExists Place only children with exists=true.
+        */
+        scatter(rect?: Phaser.Rectangle, checkExists?: boolean);
 
         /**
         * Sends the given child to the bottom of this group so it renders below all other children.
@@ -10689,6 +10798,8 @@ declare module Phaser {
 
         /**
         * The core update - as called by World.
+        * 
+        * Children with `exists = false` are updated unless {@link Phaser.Group#updateOnlyExistingChildren updateOnlyExistingChildren} is true.
         */
         update(): void;
 
@@ -10712,14 +10823,16 @@ declare module Phaser {
 
 
     /**
-    * An Image is a light-weight object you can use to display anything that doesn't need physics or animation.
+    * An Image is a light-weight object you can use to display anything that doesn't need health, physics, or complex position monitoring.
+    * 
     * It can still rotate, scale, crop and receive input events. This makes it perfect for logos, backgrounds, simple buttons and other non-Sprite graphics.
     */
     class Image extends PIXI.Sprite {
 
 
         /**
-        * An Image is a light-weight object you can use to display anything that doesn't need physics or animation.
+        * An Image is a light-weight object you can use to display anything that doesn't need health, physics, or complex position monitoring.
+        * 
         * It can still rotate, scale, crop and receive input events. This makes it perfect for logos, backgrounds, simple buttons and other non-Sprite graphics.
         * 
         * @param game A reference to the currently running game.
@@ -10852,7 +10965,7 @@ declare module Phaser {
         events: Phaser.Events;
 
         /**
-        * Controls if this Sprite is processed by the core Phaser game loops and Group loops.
+        * Controls if this Sprite is processed by the core Phaser game loops and Group loops (except {@link Phaser.Group#update}).
         * Default: true
         */
         exists: boolean;
@@ -13573,6 +13686,8 @@ declare module Phaser {
         * The number of concurrent / parallel resources to try and fetch at once.
         * 
         * Many current browsers limit 6 requests per domain; this is slightly conservative.
+        * 
+        * This should generally be left at the default, but can be set to a higher limit for specific use-cases. Just be careful when setting large values as different browsers could behave differently.
         */
         maxParallelDownloads: number;
 
@@ -14656,9 +14771,11 @@ declare module Phaser {
         * @param baseTexture The BaseTexture this font uses.
         * @param xSpacing Additional horizontal spacing between the characters.
         * @param ySpacing Additional vertical spacing between the characters.
+        * @param frame Optional Frame, if this font is embedded in a texture atlas.
+        * @param resolution Optional game resolution to apply to the kerning data. - Default: 1
         * @return The parsed Bitmap Font data.
         */
-        static bitmapFont(xml: any, baseTexture: PIXI.BaseTexture, xSpacing?: number, ySpacing?: number): any;
+        static bitmapFont(xml: any, baseTexture: PIXI.BaseTexture, xSpacing?: number, ySpacing?: number, frame?: Phaser.Frame, resolution?: number): any;
 
         /**
         * Parse a Bitmap Font from an XML file.
@@ -14668,10 +14785,10 @@ declare module Phaser {
         * @param xSpacing Additional horizontal spacing between the characters.
         * @param ySpacing Additional vertical spacing between the characters.
         * @param frame Optional Frame, if this font is embedded in a texture atlas.
-        * @param resolution Optional game resolution to apply to the kerning data.
+        * @param resolution Optional game resolution to apply to the kerning data. - Default: 1
         * @return The parsed Bitmap Font data.
         */
-        static xmlBitmapFont(xml: any, baseTexture: PIXI.BaseTexture, xSpacing?: number, ySpacing?: number, frame?: Phaser.Frame): any;
+        static xmlBitmapFont(xml: any, baseTexture: PIXI.BaseTexture, xSpacing?: number, ySpacing?: number, frame?: Phaser.Frame, resolution?: number): any;
 
         /**
         * Parse a Bitmap Font from a JSON file.
@@ -14681,10 +14798,10 @@ declare module Phaser {
         * @param xSpacing Additional horizontal spacing between the characters.
         * @param ySpacing Additional vertical spacing between the characters.
         * @param frame Optional Frame, if this font is embedded in a texture atlas.
-        * @param resolution Optional game resolution to apply to the kerning data.
+        * @param resolution Optional game resolution to apply to the kerning data. - Default: 1
         * @return The parsed Bitmap Font data.
         */
-        static jsonBitmapFont(json: any, baseTexture: PIXI.BaseTexture, xSpacing?: number, ySpacing?: number, frame?: Phaser.Frame): any;
+        static jsonBitmapFont(json: any, baseTexture: PIXI.BaseTexture, xSpacing?: number, ySpacing?: number, frame?: Phaser.Frame, resolution?: number): any;
 
     }
 
@@ -16059,7 +16176,9 @@ declare module Phaser {
         remove(emitter: Phaser.Particles.Arcade.Emitter): void;
 
         /**
-        * Called by the core game loop. Updates all Emitters who have their exists value set to true.
+        * Updates all Emitters who have their exists value set to true.
+        * 
+        * Phaser no longer uses this method; Emitters receive updates via {@link Phaser.Stage#update} instead.
         */
         update(): void;
 
@@ -16160,7 +16279,7 @@ declare module Phaser {
                 /**
                 * Sets the `body.gravity` of each particle sprite to this on launch.
                 */
-                gravity: number;
+                gravity: Phaser.Point;
                 group: Phaser.Group;
 
                 /**
@@ -16178,6 +16297,16 @@ declare module Phaser {
                 * Default: 2000
                 */
                 lifespan: number;
+
+                /**
+                * The number of particles released during one particle's {@link lifespan}, after calling {@link flow}.
+                */
+                lifespanOutput: number;
+
+                /**
+                * The maximum angle of initial particle velocities, in degrees. When set to a non-null value (with {@link minAngle}), {@link minSpeed} and {@link maxSpeed} are used and {@link minParticleSpeed} and {@link maxParticleSpeed} are ignored.
+                */
+                maxAngle: number;
 
                 /**
                 * The total number of particles in this emitter.
@@ -16202,6 +16331,17 @@ declare module Phaser {
                 maxRotation: number;
 
                 /**
+                * The maximum initial speed of particles released within {@link minAngle} and {@link maxAngle}.
+                * Default: 100
+                */
+                maxSpeed: number;
+
+                /**
+                * The minimum angle of initial particle velocities, in degrees. When set to a non-null value (with {@link maxAngle}), {@link minSpeed} and {@link maxSpeed} are used and {@link minParticleSpeed} and {@link maxParticleSpeed} are ignored.
+                */
+                minAngle: number;
+
+                /**
                 * The minimum possible scale of a particle. This is applied to the X and Y axis. If you need to control each axis see minParticleScaleX.
                 * Default: 1
                 */
@@ -16218,6 +16358,11 @@ declare module Phaser {
                 minRotation: number;
 
                 /**
+                * The minimum initial speed of particles released within {@link minAngle} and {@link maxAngle}.
+                */
+                minSpeed: number;
+
+                /**
                 * A handy string name for this emitter. Can be set to anything.
                 */
                 name: string;
@@ -16226,6 +16371,11 @@ declare module Phaser {
                 * Determines whether the emitter is currently emitting particles. It is totally safe to directly toggle this.
                 */
                 on: boolean;
+
+                /**
+                * The number of particles released per second, after calling {@link flow}.
+                */
+                output: number;
 
                 /**
                 * When a particle is created its anchor will be set to match this Point object (defaults to x/y: 0.5 to aid in rotation)
@@ -16264,6 +16414,11 @@ declare module Phaser {
                 * To obtain that value please see the `worldPosition` property.
                 */
                 position: Phaser.Point;
+
+                /**
+                * The expected number of unreleased particles after a flow interval of {@link lifespan}, after calling {@link flow}.
+                */
+                remainder: number;
 
                 /**
                 * Gets the right position of the Emitter.
@@ -16384,6 +16539,7 @@ declare module Phaser {
                 * @return This Emitter instance.
                 */
                 setAlpha(min?: number, max?: number, rate?: number, ease?: (k: number) => number, yoyo?: boolean): Phaser.Particles.Arcade.Emitter;
+                setAngle(minAngle: number, maxAngle: number, minSpeed?: number, maxSpeed?: number);
 
                 /**
                 * A more compact way of setting the angular velocity constraints of the particles.
@@ -17237,14 +17393,43 @@ declare module Phaser {
             angleToXY(displayObject: any, x: number, y: number, world?: boolean): number;
 
             /**
-            * Checks for collision between two game objects. You can perform Sprite vs. Sprite, Sprite vs. Group, Group vs. Group, Sprite vs. Tilemap Layer or Group vs. Tilemap Layer collisions.
-            * Both the first and second parameter can be arrays of objects, of differing types.
-            * If two arrays are passed, the contents of the first parameter will be tested against all contents of the 2nd parameter.
-            * The objects are also automatically separated. If you don't require separation then use ArcadePhysics.overlap instead.
-            * An optional processCallback can be provided. If given this function will be called when two sprites are found to be colliding. It is called before any separation takes place,
-            * giving you the chance to perform additional checks. If the function returns true then the collision and separation is carried out. If it returns false it is skipped.
+            * Checks for collision between two game objects and separates them if colliding. If you don't require separation then use {@link Phaser.Physics.Arcade#overlap overlap} instead.
+            * 
+            * You can perform Sprite vs. Sprite, Sprite vs. Group, Group vs. Group, Sprite vs. Tilemap Layer or Group vs. Tilemap Layer collisions.
+            * Both the `object1` and `object2` can be arrays of objects, of differing types.
+            * 
+            * If two Groups or arrays are passed, each member of one will be tested against each member of the other.
+            * 
+            * If one Group **only** is passed (as `object1`), each member of the Group will be collided against the other members.
+            * 
+            * If either object is `null` the collision test will fail.
+            * 
+            * Bodies with `enable = false` and Sprites with `exists = false` are skipped (ignored).
+            * 
+            * An optional processCallback can be provided. If given this function will be called when two sprites are found to be colliding. It is called before any separation takes place, giving you the chance to perform additional checks. If the function returns true then the collision and separation is carried out. If it returns false it is skipped.
+            * 
             * The collideCallback is an optional function that is only called if two sprites collide. If a processCallback has been set then it needs to return true for collideCallback to be called.
-            * NOTE: This function is not recursive, and will not test against children of objects passed (i.e. Groups or Tilemaps within other Groups).
+            * 
+            * **This function is not recursive**, and will not test against children of objects passed (i.e. Groups or Tilemaps within other Groups).
+            * 
+            * ##### Examples
+            * 
+            *     collide(group);
+            *     collide(group, undefined); // equivalent
+            * 
+            *     collide(sprite1, sprite2);
+            * 
+            *     collide(sprite, group);
+            * 
+            *     collide(group1, group2);
+            * 
+            *     collide([sprite1, sprite2], [sprite3, sprite4]); // 1v3, 1v4, 2v3, 2v4
+            * 
+            * ##### Tilemaps
+            * 
+            * Tiles marked via {@link Phaser.Tilemap#setCollision} (and similar methods) are "solid". If a Sprite collides with one of these tiles, the two are separated by moving the Sprite outside the tile's edges. Enable {@link Phaser.TilemapLayer#debug} to see the colliding edges of the Tilemap.
+            * 
+            * Tiles with a callback attached via {@link Phaser.Tilemap#setTileIndexCallback} or {@link Phaser.Tilemap#setTileLocationCallback} invoke the callback if a Sprite collides with them. If a tile has a callback attached via both methods, only the location callback is invoked. The colliding Sprite is separated from the tile only if the callback returns `true`.
             * 
             * @param object1 The first object or array of objects to check. Can be Phaser.Sprite, Phaser.Group, Phaser.Particles.Emitter, or Phaser.TilemapLayer.
             * @param object2 The second object or array of objects to check. Can be Phaser.Sprite, Phaser.Group, Phaser.Particles.Emitter or Phaser.TilemapLayer.
@@ -17432,11 +17617,22 @@ declare module Phaser {
 
             /**
             * Checks for overlaps between two game objects. The objects can be Sprites, Groups or Emitters.
+            * 
+            * Unlike {@link Phaser.Physics.Arcade#collide collide} the objects are NOT automatically separated or have any physics applied, they merely test for overlap results.
+            * 
             * You can perform Sprite vs. Sprite, Sprite vs. Group and Group vs. Group overlap checks.
-            * Unlike collide the objects are NOT automatically separated or have any physics applied, they merely test for overlap results.
             * Both the first and second parameter can be arrays of objects, of differing types.
             * If two arrays are passed, the contents of the first parameter will be tested against all contents of the 2nd parameter.
-            * NOTE: This function is not recursive, and will not test against children of objects passed (i.e. Groups within Groups).
+            * 
+            * **This function is not recursive**, and will not test against children of objects passed (i.e. Groups within Groups).
+            * 
+            * ##### Tilemaps
+            * 
+            * Any overlapping tiles, including blank/null tiles, will give a positive result. Tiles marked via {@link Phaser.Tilemap#setCollision} (and similar methods) have no special status, and callbacks added via {@link Phaser.Tilemap#setTileIndexCallback} or {@link Phaser.Tilemap#setTileLocationCallback} are not invoked. So calling this method without any callbacks isn't very useful.
+            * 
+            * If you're interested only in whether an object overlaps a certain tile or class of tiles, filter the tiles with `processCallback` and then use the result returned by this method. Blank/null tiles can be excluded by their {@link Phaser.Tile#index index} (-1).
+            * 
+            * If you want to take action on certain overlaps, examine the tiles in `collideCallback` and then handle as you like.
             * 
             * @param object1 The first object or array of objects to check. Can be Phaser.Sprite, Phaser.Group or Phaser.Particles.Emitter.
             * @param object2 The second object or array of objects to check. Can be Phaser.Sprite, Phaser.Group or Phaser.Particles.Emitter.
@@ -17569,6 +17765,12 @@ declare module Phaser {
                 acceleration: Phaser.Point;
 
                 /**
+                * Apply this Body's {@link drag}.
+                * Default: true
+                */
+                allowDrag: boolean;
+
+                /**
                 * Allow this Body to be influenced by gravity? Either world or local.
                 * Default: true
                 */
@@ -17657,7 +17859,7 @@ declare module Phaser {
                 dirty: boolean;
 
                 /**
-                * The drag applied to the motion of the Body. Measured in pixels per second squared.
+                * The drag applied to the motion of the Body (when {@link allowDrag} is enabled). Measured in pixels per second squared.
                 */
                 drag: Phaser.Point;
 
@@ -17688,7 +17890,7 @@ declare module Phaser {
                 game: Phaser.Game;
 
                 /**
-                * A local gravity applied to this Body. If non-zero this overrides any world gravity, unless Body.allowGravity is set to false.
+                * This Body's local gravity, **added** to any world gravity, unless Body.allowGravity is set to false.
                 */
                 gravity: Phaser.Point;
 
@@ -17708,7 +17910,7 @@ declare module Phaser {
                 height: number;
 
                 /**
-                * An immovable Body will not receive any impacts from other bodies.
+                * An immovable Body will not receive any impacts from other bodies. **Two** immovable Bodies can't separate or exchange momentum and will pass through each other.
                 */
                 immovable: boolean;
 
@@ -17741,9 +17943,13 @@ declare module Phaser {
                 maxVelocity: Phaser.Point;
 
                 /**
+                * Whether the physics system should update the Body's position and rotation based on its velocity, acceleration, drag, and gravity.
+                * 
                 * If you have a Body that is being moved around the world via a tween or a Group motion, but its local x/y position never
                 * actually changes, then you should set Body.moves = false. Otherwise it will most likely fly off the screen.
-                * If you want the physics system to move the body around, then set moves to true. Set to true to allow the Physics system to move this Body, otherwise false to move it manually.
+                * If you want the physics system to move the body around, then set moves to true.
+                * 
+                * A Body with moves = false can still be moved slightly (but not accelerated) during collision separation unless you set {@link Phaser.Physics.Arcade.Body#immovable immovable} as well. Set to true to allow the Physics system to move this Body, otherwise false to move it manually.
                 * Default: true
                 */
                 moves: boolean;
@@ -17764,7 +17970,7 @@ declare module Phaser {
                 newVelocity: Phaser.Point;
 
                 /**
-                * The offset of the Physics Body from the Sprite x/y position.
+                * The offset of the Physics Body from the Sprite's texture.
                 */
                 offset: Phaser.Point;
 
@@ -17849,9 +18055,10 @@ declare module Phaser {
                 prev: Phaser.Point;
 
                 /**
-                * The radius of the circular collision shape this Body is using if Body.setCircle has been enabled.
+                * The radius of the circular collision shape this Body is using if Body.setCircle has been enabled, relative to the Sprite's _texture_.
                 * If you wish to change the radius then call `setCircle` again with the new value.
                 * If you wish to stop the Body using a circle then call `setCircle` with a radius of zero (or undefined).
+                * The actual radius of the Body (at any Sprite scale) is equal to {@link halfWidth}.
                 */
                 radius: number;
 
@@ -18130,9 +18337,9 @@ declare module Phaser {
 
                 /**
                 * Sets this Body as using a circle, of the given radius, for all collision detection instead of a rectangle.
-                * The radius is given in pixels and is the distance from the center of the circle to the edge.
+                * The radius is given in pixels (relative to the Sprite's _texture_) and is the distance from the center of the circle to the edge.
                 * 
-                * You can also control the x and y offset, which is the position of the Body relative to the top-left of the Sprite.
+                * You can also control the x and y offset, which is the position of the Body relative to the top-left of the Sprite's texture.
                 * 
                 * To change a Body back to being rectangular again call `Body.setSize`.
                 * 
@@ -18140,8 +18347,8 @@ declare module Phaser {
                 * work against tile maps, where rectangular collision is the only method supported.
                 * 
                 * @param radius The radius of the Body in pixels. Pass a value of zero / undefined, to stop the Body using a circle for collision.
-                * @param offsetX The X offset of the Body from the Sprite position.
-                * @param offsetY The Y offset of the Body from the Sprite position.
+                * @param offsetX The X offset of the Body from the left of the Sprite's texture.
+                * @param offsetY The Y offset of the Body from the top of the Sprite's texture.
                 */
                 setCircle(radius: number, offsetX?: number, offsetY?: number): void;
 
@@ -18171,8 +18378,8 @@ declare module Phaser {
                 * 
                 * @param width The width of the Body.
                 * @param height The height of the Body.
-                * @param offsetX The X offset of the Body from the top-left of the Sprite's texture.
-                * @param offsetY The Y offset of the Body from the top-left of the Sprite's texture.
+                * @param offsetX The X offset of the Body from the left of the Sprite's texture.
+                * @param offsetY The Y offset of the Body from the top of the Sprite's texture.
                 */
                 setSize(width: number, height: number, offsetX?: number, offsetY?: number): void;
 
@@ -22095,6 +22302,12 @@ declare module Phaser {
         * @return The new Point object.
         */
         static centroid(points: Phaser.Point[], out?: Phaser.Point): Phaser.Point;
+
+        /**
+        * Tests a Point or Point-like object.
+        * @return - True if the object has numeric x and y properties.
+        */
+        static isPoint(obj: object): boolean;
 
 
         /**
@@ -26119,7 +26332,7 @@ declare module Phaser {
         events: Phaser.Events;
 
         /**
-        * Controls if this Sprite is processed by the core Phaser game loops and Group loops.
+        * Controls if this Sprite is processed by the core Phaser game loops and Group loops (except {@link Phaser.Group#update}).
         * Default: true
         */
         exists: boolean;
@@ -26931,7 +27144,7 @@ declare module Phaser {
     * The Display canvas - or Game size, depending {@link Phaser.ScaleManager#scaleMode scaleMode} - is updated to best utilize the Parent size.
     * When in Fullscreen mode or with {@link Phaser.ScaleManager#parentIsWindow parentIsWindow} the Parent size is that of the visual viewport (see {@link Phaser.ScaleManager#getParentBounds getParentBounds}).
     * 
-    * Parent and Display canvas containment guidelines:
+    * #### Parent and Display canvas containment guidelines:
     * 
     * - Style the Parent element (of the game canvas) to control the Parent size and
     *   thus the Display canvas's size and layout.
@@ -26945,6 +27158,24 @@ declare module Phaser {
     * 
     * - The Display canvas layout CSS styles (i.e. margins, size) should not be altered/specified as
     *   they may be updated by the ScaleManager.
+    * 
+    * #### Example Uses
+    * 
+    * -  ##### Fixed game size; scale canvas proportionally to fill its container
+    * 
+    *    Use `scaleMode` SHOW_ALL.
+    * 
+    * -  ##### Fixed game size; stretch canvas to fill its container (uncommon)
+    * 
+    *    Use `scaleMode` EXACT_FIT.
+    * 
+    * -  ##### Fixed game size; scale canvas proportionally by some other criteria
+    * 
+    *    Use `scaleMode` USER_SCALE. Examine `parentBounds` in the {@link #setResizeCallback resize callback} and call {@link Phaser.ScaleManager#setUserScale setUserScale} if necessary.
+    * 
+    * -  ##### Fluid game/canvas size
+    * 
+    *    Use `scaleMode` RESIZE. Examine the game or canvas size from the {@link onSizeChange} signal and reposition game objects.
     */
     class ScaleManager {
 
@@ -27245,6 +27476,8 @@ declare module Phaser {
         * This signal is dispatched when the size of the Display canvas changes _or_ the size of the Game changes.
         * When invoked this is done _after_ the Canvas size/position have been updated.
         * 
+        * The callback is supplied with three arguments: the Scale Manager, canvas {@link Phaser.ScaleManager#width width}, and canvas {@link Phaser.ScaleManager#height height}. (Game dimensions can be found in `scale.game.width` and `scale.game.height`.)
+        * 
         * This signal is _only_ called when a change occurs and a reflow may be required.
         * For example, if the canvas does not change sizes because of CSS settings (such as min-width)
         * then this signal will _not_ be triggered.
@@ -27492,6 +27725,12 @@ declare module Phaser {
         /**
         * Sets the callback that will be invoked before sizing calculations.
         * 
+        * Typically this is triggered when the Scale Manager has detected a change to the canvas's boundaries:
+        * the browser window has been resized, the device has been rotated, or the parent container's size has changed.
+        * At this point the Scale Manager has not resized the game or canvas yet (and may not resize them at all
+        * after it makes its sizing calculations). You can read the size of the parent container from the
+        * `parentBounds` argument to the callback.
+        * 
         * This is the appropriate place to call {@link Phaser.ScaleManager#setUserScale setUserScale} if needing custom dynamic scaling.
         * 
         * The callback is supplied with two arguments `scale` and `parentBounds` where `scale` is the ScaleManager
@@ -27517,14 +27756,16 @@ declare module Phaser {
         *     canvas.width = (game.width * hScale) - hTrim
         *     canvas.height = (game.height * vScale) - vTrim
         * 
-        * This method can be used in the {@link Phaser.ScaleManager#setResizeCallback resize callback}.
+        * This method can be used in the {@link Phaser.ScaleManager#setResizeCallback resize callback}. Set `queueUpdate` and `force` to false if the resize callback is being called repeatedly.
         * 
         * @param hScale Horizontal scaling factor.
         * @param vScale Vertical scaling factor.
         * @param hTrim Horizontal trim, applied after scaling.
         * @param vTrim Vertical trim, applied after scaling.
+        * @param queueUpdate Queue a size/bounds check at next preUpdate - Default: true
+        * @param force Force a resize during the next preUpdate - Default: true
         */
-        setUserScale(hScale: number, vScale: number, hTrim?: number, vTrim?: number): void;
+        setUserScale(hScale: number, vScale: number, hTrim?: number, vTrim?: number, queueUpdate?: boolean, force?: boolean): void;
 
         /**
         * Set the min and max dimensions for the Display canvas.
@@ -28297,7 +28538,7 @@ declare module Phaser {
         events: Phaser.Events;
 
         /**
-        * Controls if this Sprite is processed by the core Phaser game loops and Group loops.
+        * Controls if this Sprite is processed by the core Phaser game loops and Group loops (except {@link Phaser.Group#update}).
         * Default: true
         */
         exists: boolean;
@@ -29396,13 +29637,19 @@ declare module Phaser {
         createBlankLayer(name: string, width: number, height: number, tileWidth: number, tileHeight: number, group?: Phaser.Group): Phaser.TilemapLayer;
 
         /**
-        * Creates a Sprite for every object matching the given gid in the map data. You can optionally specify the group that the Sprite will be created in. If none is
+        * Creates a Sprite for every {@link http://doc.mapeditor.org/reference/tmx-map-format/#object object} matching the `gid` argument. You can optionally specify the group that the Sprite will be created in. If none is
         * given it will be created in the World. All properties from the map data objectgroup are copied across to the Sprite, so you can use this as an easy way to
-        * configure Sprite properties from within the map editor. For example giving an object a property of alpha: 0.5 in the map editor will duplicate that when the
-        * Sprite is created. You could also give it a value like: body.velocity.x: 100 to set it moving automatically.
+        * configure Sprite properties from within the map editor. For example giving an object a property of `alpha: 0.5` in the map editor will duplicate that when the
+        * Sprite is created. You could also give it a value like: `body.velocity.x: 100` to set it moving automatically.
+        * 
+        * The `gid` argument is matched against:
+        * 
+        * 1. For a tile object, the tile identifier (`gid`); or
+        * 2. The object's unique ID (`id`); or
+        * 3. The object's `name` (a string)
         * 
         * @param name The name of the Object Group to create Sprites from.
-        * @param gid The layer array index value, or if a string is given the layer name within the map data.
+        * @param gid The object's tile reference (gid), unique ID (id) or name.
         * @param key The Game.cache key of the image that this Sprite will use.
         * @param frame If the Sprite image contains multiple frames you can specify which one to use here.
         * @param exists The default exists state of the Sprite. - Default: true
@@ -29696,8 +29943,10 @@ declare module Phaser {
         searchTileIndex(index: number, skip?: number, reverse?: boolean, layer?: any): Phaser.Tile;
 
         /**
-        * Sets collision the given tile or tiles. You can pass in either a single numeric index or an array of indexes: [ 2, 3, 15, 20].
+        * Sets collision on the given tile or tiles. You can pass in either a single numeric index or an array of indexes: [2, 3, 15, 20].
         * The `collides` parameter controls if collision will be enabled (true) or disabled (false).
+        * 
+        * Collision-enabled tiles can be collided against Sprites using {@link Phaser.Physics.Arcade#collide}.
         * 
         * @param indexes Either a single tile index, or an array of tile IDs to be checked for collision.
         * @param collides If true it will enable collision. If false it will clear collision. - Default: true
@@ -29761,8 +30010,10 @@ declare module Phaser {
         * If a callback is already set for the tile index it will be replaced. Set the callback to null to remove it.
         * If you want to set a callback for a tile at a specific location on the map then see setTileLocationCallback.
         * 
+        * Return `true` from the callback to continue separating the tile and colliding object, or `false` to cancel the collision for the current tile (see {@link Phaser.Physics.Arcade#separateTile}).
+        * 
         * @param indexes Either a single tile index, or an array of tile indexes to have a collision callback set for.
-        * @param callback The callback that will be invoked when the tile is collided with.
+        * @param callback The callback that will be invoked when the tile is collided with (via {@link Phaser.Physics.Arcade#collide}).
         * @param callbackContext The context under which the callback is called.
         * @param layer The layer to operate on. If not given will default to this.currentLayer.
         */
@@ -29773,11 +30024,13 @@ declare module Phaser {
         * If a callback is already set for the tile index it will be replaced. Set the callback to null to remove it.
         * If you want to set a callback for a tile at a specific location on the map then see setTileLocationCallback.
         * 
+        * Return `true` from the callback to continue separating the tile and colliding object, or `false` to cancel the collision for the current tile (see {@link Phaser.Physics.Arcade#separateTile}).
+        * 
         * @param x X position of the top left of the area to copy (given in tiles, not pixels)
         * @param y Y position of the top left of the area to copy (given in tiles, not pixels)
         * @param width The width of the area to copy (given in tiles, not pixels)
         * @param height The height of the area to copy (given in tiles, not pixels)
-        * @param callback The callback that will be invoked when the tile is collided with.
+        * @param callback The callback that will be invoked when the tile is collided with (via {@link Phaser.Physics.Arcade#collide}).
         * @param callbackContext The context under which the callback is called.
         * @param layer The layer to operate on. If not given will default to this.currentLayer.
         */
@@ -30479,7 +30732,7 @@ declare module Phaser {
         events: Phaser.Events;
 
         /**
-        * Controls if this Sprite is processed by the core Phaser game loops and Group loops.
+        * Controls if this Sprite is processed by the core Phaser game loops and Group loops (except {@link Phaser.Group#update}).
         * Default: true
         */
         exists: boolean;
@@ -31618,7 +31871,7 @@ declare module Phaser {
         * @param context The context in which the callback will be called.
         * @param onEnd Will the callback fire on a touchstart (default) or touchend event?
         */
-        addTouchLockCallback(callback: Function, context?: any, onEnd?: Function): void;
+        addTouchLockCallback(callback: Function, context?: any, onEnd?: boolean): void;
 
         /**
         * Removes the callback at the defined index from the Phaser.Touch.touchLockCallbacks array
@@ -32414,11 +32667,11 @@ declare module Phaser {
 
 
         /**
-        * Gets an objects property by string.
+        * Gets an object's property by string.
         * 
         * @param obj The object to traverse.
         * @param prop The property whose value will be returned.
-        * @return the value of the property or null if property isn't found .
+        * @return - The value of the property or `undefined` if the property isn't found.
         */
         static getProperty(obj: any, prop: string): any;
 
@@ -32587,6 +32840,7 @@ declare module Phaser {
 
             /**
             * The spacing between columns.
+            * Default: 100
             */
             columnWidth: number;
 
@@ -32618,7 +32872,7 @@ declare module Phaser {
 
             /**
             * The font that the debug information is rendered in.
-            * Default: '14px Courier'
+            * Default: 14px Courier
             */
             font: string;
 
@@ -32629,16 +32883,18 @@ declare module Phaser {
 
             /**
             * The line height between the debug text.
+            * Default: 16
             */
             lineHeight: number;
 
             /**
             * Should the text be rendered with a slight shadow? Makes it easier to read on different types of background.
+            * Default: true
             */
             renderShadow: boolean;
 
             /**
-            * If debugging in WebGL mode we need this.
+            * If debugging in WebGL mode, this is the Image displaying the debug {@link #bmd BitmapData}.
             */
             sprite: Phaser.Image;
 

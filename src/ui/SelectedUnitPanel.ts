@@ -3,50 +3,50 @@ import {UnitSelector} from "./UnitSelector";
 import {Vehicle} from "../world/vehicle/Vehicle";
 import {Building} from "../world/building/Building";
 import {Item} from "../world/item/Item";
-import {RecruitPanel} from "./RecruitPanel";
-import {Player} from "../game/player/Player";
 import {TextStyle} from "./TextStyle";
 
-export class ControlPanel extends Phaser.Sprite
+export class SelectedUnitPanel
 {
-    private screenWidth: number;
+    private game: Phaser.Game;
+    private panelWidth: number;
     private unitSelector: UnitSelector;
-    private camera: Phaser.Camera;
     private unitStateText: Phaser.Text;
     private unitStateImage: Phaser.Sprite;
-    private recruitPanel: RecruitPanel;
     private textStyle: TextStyle;
+    private health: Phaser.Graphics;
 
-    constructor(game: Phaser.Game, screenWidth: number, panelWidth: number, unitSelector: UnitSelector, player: Player)
+    constructor(game: Phaser.Game, panelWidth: number, unitSelector: UnitSelector)
     {
-        super(game, screenWidth - panelWidth, 0, 'CommandPanel', 0);
-
-        this.screenWidth = screenWidth;
-        this.fixedToCamera = true;
-        this.z = 100;
+        this.game = game;
+        this.panelWidth = panelWidth;
         this.textStyle = new TextStyle();
-
-        game.add.existing(this);
-
         this.unitSelector = unitSelector;
-        this.camera = game.camera;
-
-        this.unitStateText = this.game.add.text(screenWidth - 150, 241, '', {});
+        let positionY = 190;
+        this.unitStateText = this.game.add.text(this.game.width - 150, positionY, '', this.textStyle.getNormalStyle());
         this.unitStateText.fixedToCamera = true;
 
-        this.recruitPanel = new RecruitPanel(this.game, player);
+        positionY += 61;
+        const rectX = 200;
+        const rectY = 10;
+        const rectWidth = 70;
+        const rectHeight = 17;
+        this.health = this.game.add.graphics(this.getHealthBarPositionX(), positionY);
+        this.health.beginFill(0x00FF00, 1);
+        this.health.drawRect(rectX, rectY, this.getHealthBarWidth(rectWidth), rectHeight);
+        this.health.endFill();
+        this.health.z = 200;
+
+        positionY += 7;
+        this.game.add.image(this.game.width - panelWidth, positionY, 'HealthJauge', 0);
     }
 
     public update ()
     {
         const selectedUnit = this.unitSelector.getSelectedUnit();
         if (selectedUnit) {
-            this.camera.follow(selectedUnit);
             this.displayUnitStatus(selectedUnit);
             this.copySelectedUnitImage(selectedUnit);
         }
-
-        this.recruitPanel.update();
     }
 
     private displayUnitStatus(selectedUnit: Phaser.Sprite)
@@ -70,12 +70,12 @@ export class ControlPanel extends Phaser.Sprite
             []
         );
 
-        let positionX = this.screenWidth - 240;
+        let positionX = this.game.width - this.panelWidth;
         positionX += (selectedUnit instanceof Vehicle) ? 30 : 0;
         positionX += (selectedUnit instanceof Building) ? 20 : 0;
         positionX += (selectedUnit instanceof Item) ? 30 : 0;
 
-        let positionY = 235;
+        let positionY = 184;
         positionY += (selectedUnit instanceof Vehicle) ? 40 : 0;
         positionY += (selectedUnit instanceof Building) ? 10 : 0;
         positionY += (selectedUnit instanceof Item) ? 35 : 0;
@@ -87,20 +87,19 @@ export class ControlPanel extends Phaser.Sprite
         if (selectedUnit.animations.currentAnim) {
             this.unitStateImage.animations.play(selectedUnit.animations.currentAnim.name);
         }
+        // TODO: bug when select the mine during the building, infinite loop on building
+    }
 
+    private getHealthBarPositionX()
+    {
+        return this.game.width - 435;
+    }
 
-        // TODO: issue when following a miner that build a mine and destroy itself
-        /*
-        if (selectedUnit instanceof Vehicle) {
-            this.unitStateImage.angle = 180 + Phaser.Math.radToDeg(
-                Phaser.Point.angle(
-                    selectedUnit.getPosition(),
-                    new Phaser.Point(
-                        selectedUnit.getPosition().x + selectedUnit.getVelocity().x,
-                        selectedUnit.getPosition().y + selectedUnit.getVelocity().y
-                    )
-                )
-            );
-        }*/
+    private getHealthBarWidth(maxWidth: number) {
+        const host = this.unitSelector.getSelectedUnit();
+        const healthRatio = host.health / host.maxHealth;
+        const healthWidth = maxWidth * healthRatio;
+
+        return healthWidth;
     }
 }

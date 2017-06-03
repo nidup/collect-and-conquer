@@ -1,29 +1,21 @@
 
-import {Builder} from "../../world/vehicle/Builder";
 import {MapAnalyser} from "../../ai/map/MapAnalyser";
-import {Scout} from "../../world/vehicle/Scout";
 import {VehicleRepository} from "../../world/vehicle/VehicleRepository";
-import {Tank} from "../../world/vehicle/Tank";
-import {Miner} from "../../world/vehicle/Miner";
 import {BuildingRepository} from "../../world/building/BuildingRepository";
-import {Base} from "../../world/building/Base";
-import {Mine} from "../../world/building/Mine";
-import {Generator} from "../../world/building/Generator";
-import {MapGenerator} from "../../map/MapGenerator";
-import {RandomMapGenerator} from "../../map/RandomMapGenerator";
-import {CloudMapGenerator} from "../../map/CloudMapGenerator";
-import {FileMapGenerator} from "../../map/FileMapGenerator";
+import {MapGenerator} from "../../ai/map/generator/MapGenerator";
+import {RandomMapGenerator} from "../../ai/map/generator/RandomMapGenerator";
+import {CloudMapGenerator} from "../../ai/map/generator/CloudMapGenerator";
+import {FileMapGenerator} from "../../ai/map/generator/FileMapGenerator";
 import {ItemRepository} from "../../world/item/ItemRepository";
 import {Item} from "../../world/item/Item";
 import {Oil} from "../../world/item/Oil";
 import {Vehicle} from "../../world/vehicle/Vehicle";
-import {Radar} from "../../world/vehicle/sensor/Radar";
-import {ControlPanel} from "../../ui/ControlPanel";
 import {UnitSelector} from "../../ui/UnitSelector";
 import {Building} from "../../world/building/Building";
 import {Player} from "../player/Player";
 import {Army} from "../../world/Army";
 import {MainPanel} from "../../ui/MainPanel";
+import {PlayerRepository} from "../player/PlayerRepository";
 
 export default class Play extends Phaser.State
 {
@@ -35,7 +27,6 @@ export default class Play extends Phaser.State
     private unitSelector: UnitSelector;
     private debug: boolean = false;
     private enableTileCollision = true;
-    private players: Player[];
     private mainPanel: MainPanel;
 
     public create()
@@ -51,10 +42,11 @@ export default class Play extends Phaser.State
         const mapHeight = this.game.height;
         const tileSize = 20;
 
-        // const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight);
-        const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
+        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight); //TODO 132 to fix!!
+        // const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
         // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
-        this.map = mapGenerator.generate();
+        const generatedMap = mapGenerator.generate();
+        this.map = generatedMap.getTilemap();
 
         // handle collisions
         const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
@@ -73,14 +65,15 @@ export default class Play extends Phaser.State
         this.buildings = new BuildingRepository();
         this.vehicles = new VehicleRepository();
 
-        this.players = [];
+        const players = new PlayerRepository();
 
-        const armyBlue = new Army(0x8cd6ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
-        const humanPlayer = new Player(armyBlue);
-        this.players.push(humanPlayer);
+        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
+        const humanPlayer = new Player(armyBlue, true);
+        players.add(humanPlayer);
 
-        const armyRed = new Army(0xff6771, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
-        this.players.push(new Player(armyRed));
+        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, mapAnalyse, this.game)
+        const botPlayer = new Player(armyRed, false);
+        players.add(botPlayer);
 
         this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 1000));
         this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 1000));
@@ -109,12 +102,12 @@ export default class Play extends Phaser.State
         armyRed.recruitMiner(600, 700);
         armyRed.recruitScout(450, 800);
         armyRed.recruitScout(300, 600);
-        armyRed.recruitTank(600, 760);
+        armyRed.recruitTank(650, 760);
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
 
-        this.mainPanel = new MainPanel(this.game, this.game.width, panelWith, this.unitSelector, humanPlayer);
+        this.mainPanel = new MainPanel(this.game, panelWith, this.unitSelector, players, generatedMap, this.items);
     }
 
     public update()
@@ -150,15 +143,6 @@ export default class Play extends Phaser.State
                 vehicle.destroy();
             });
 
-        /*
-        if (game.input.mousePointer.isDown) {
-            aliveVehicles.all().map(function(vehicle: Vehicle) {
-                if (vehicle instanceof Builder) {
-                    (<Builder>vehicle).changePath(new Phaser.Point(game.input.x, game.input.y));
-                }
-            });
-        }*/
-
         if (this.enableTileCollision) {
             const layer = collisionLayer;
             aliveVehicles.all().map(function(vehicle: Vehicle) {
@@ -167,6 +151,7 @@ export default class Play extends Phaser.State
         }
     }
 
+    // TODO: move to panel
     private updateUnitSelector(unitSelector: UnitSelector, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository)
     {
         unitSelector.listenVehicles(vehicles.all());

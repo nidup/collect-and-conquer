@@ -2,6 +2,7 @@
 import {MapGenerator} from "./MapGenerator";
 import {Tile} from "./Tile";
 import {TileRegistry} from "./TilesRegistry";
+import {Map} from "../Map";
 
 const DECORATION_RANDOM = 0.05;
 const SMOOTH_LOOPS = 3;
@@ -26,7 +27,7 @@ export class RandomMapGenerator extends MapGenerator
         this.tileRegistry = new TileRegistry();
     }
 
-    generate(): Phaser.Tilemap
+    generate(): Map
     {
         const map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
 
@@ -42,7 +43,18 @@ export class RandomMapGenerator extends MapGenerator
         points = this.fixMissingTextures(points);
         this.draw(map, points);
 
-        return map;
+        // remove useless columns and rows
+        const numberColumns = map.width;
+        const numberRows = map.height;
+        const grounds = points.reduce(
+            function(rows: Array<Array<number>>, row: Array<number>) {
+                rows.push(row.slice(0, numberColumns));
+                return rows;
+            },
+            []
+        ).slice(0, numberRows);
+
+        return new Map(map, grounds);
     }
 
     /**

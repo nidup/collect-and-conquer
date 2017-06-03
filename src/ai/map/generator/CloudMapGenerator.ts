@@ -2,6 +2,7 @@
 import {MapGenerator} from "./MapGenerator";
 import {Tile} from "./Tile";
 import {TileRegistry} from "./TilesRegistry";
+import {Map} from "../Map";
 
 const tileSize = 20;
 const tileSpacing = 20;
@@ -21,7 +22,7 @@ export class CloudMapGenerator extends MapGenerator
         this.tileRegistry = new TileRegistry();
     }
 
-    generate(): Phaser.Tilemap
+    generate(): Map
     {
         const map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
 
@@ -38,7 +39,18 @@ export class CloudMapGenerator extends MapGenerator
 
         this.draw(map, grounds);
 
-        return map;
+        // remove useless columns and rows
+        const numberColumns = map.width;
+        const numberRows = map.height;
+        const reducedGrounds = grounds.reduce(
+            function(rows: Array<Array<number>>, row: Array<number>) {
+                rows.push(row.slice(0, numberColumns));
+                return rows;
+            },
+            []
+        ).slice(0, numberRows);
+
+        return new Map(map, reducedGrounds);
     }
 
     /**
@@ -180,7 +192,7 @@ export class CloudMapGenerator extends MapGenerator
         points.forEach(function (line) {
             let groudLine = [];
             line.forEach(function (cell) {
-                groudLine.push(this.getGroud(cell));
+                groudLine.push(this.getGround(cell));
             }.bind(this));
             result.push(groudLine);
         }.bind(this));
@@ -188,7 +200,7 @@ export class CloudMapGenerator extends MapGenerator
         return result;
     }
 
-    private getGroud(cell: number): number|null {
+    private getGround(cell: number): number|null {
         const probabilities = [
             [Tile.LAVA, 1],
             [Tile.GRASS, 2],

@@ -13,6 +13,8 @@ import {Generator} from "./building/Generator";
 import {Mine} from "./building/Mine";
 import {Oil} from "./item/Oil";
 import {Strategy} from "./Strategy";
+import {Building} from "./building/Building";
+import {Vehicle} from "./vehicle/Vehicle";
 
 export class Army
 {
@@ -96,16 +98,6 @@ export class Army
         return this.strategy;
     }
 
-    public getColorString(): string
-    {
-        return this.color.toString(16);
-
-//        console.log(0xff0000);
-//        console.log(0xff0000.toString(16));
-//        console.log(parseInt(0xff0000.toString(16), 16));
-
-    }
-
     public getBase(): Base
     {
         const myself = this;
@@ -114,5 +106,23 @@ export class Army
                     return base.getArmy() == myself;
                 }
             )[0];
+    }
+
+    public getBuildings(): Building[]
+    {
+        const myself = this;
+        return this.buildings.all().filter(function (building: Building) {
+                return building.getArmy() == myself;
+            }
+        );
+    }
+
+    public getVehicles(): Vehicle[]
+    {
+        const myself = this;
+        return this.vehicles.all().filter(function (vehicle: Vehicle) {
+                return vehicle.getArmy() == myself;
+            }
+        );
     }
 }

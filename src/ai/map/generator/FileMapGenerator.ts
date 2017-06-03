@@ -1,5 +1,7 @@
 
 import {MapGenerator} from "./MapGenerator";
+import {Map} from "../Map";
+import {Tile} from "./Tile";
 
 export class FileMapGenerator extends MapGenerator
 {
@@ -8,7 +10,7 @@ export class FileMapGenerator extends MapGenerator
         super(game, screenWidth, screenHeight);
     }
 
-    generate(): Phaser.Tilemap
+    generate(): Map
     {
         let tileSize = 20;
         let tileSpacing = 20;
@@ -29,6 +31,30 @@ export class FileMapGenerator extends MapGenerator
         map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing);
         map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing);
 
-        return map;
+        const grounds = map.layers[0].data.reduce(
+            function(groundRows: Array<Array<number>>, tileRow: Phaser.Tile[]) {
+                groundRows.push(
+                    tileRow.reduce(
+                        function(groundRow: Array<number>, tile: Phaser.Tile) {
+                            let ground = Tile.GRASS;
+                            if (tile.index >= 132 && tile.index <= 146) {
+                                ground = Tile.MNT;
+                            } else if (tile.index >= 162 && tile.index <= 176) {
+                                ground = Tile.LAVA;
+                            } else if (tile.index >= 252 && tile.index <= 256) {
+                                ground = Tile.SNOW;
+                            }
+                            groundRow.push(ground);
+                            return groundRow;
+                        },
+                        []
+                    )
+                );
+                return groundRows;
+            },
+            []
+        );
+
+        return new Map(map, grounds);
     }
 }
