@@ -12,7 +12,7 @@ export class ScoutExploreBrain extends VehicleBrain
         super();
         this.host = scout;
 
-        this.fsm.pushState(new State('wander', this.wander));
+        this.fsm.pushState(new State('explore', this.wander));
     }
 
     public wander = () =>

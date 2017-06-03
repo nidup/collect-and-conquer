@@ -2,9 +2,12 @@
 export class StateColors
 {
     private stateColors: {} = {
-        'wander': '#93d9f4',
-        'path following': '#00cd00',
+        'explore': '#93d9f4',
+        'go to mine': '#00cd00',
+        'go to oil': '#00cd00',
         'patrolling': '#eedb13',
+        'escorting': '#eedb13',
+        'protect mine': '#eedb13',
         'pursuing': '#ee8400',
         'evading': '#ff4040',
         'attack': '#ff4040'
