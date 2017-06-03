@@ -4,6 +4,7 @@ export class StateColors
     private stateColors: {} = {
         'explore': '#93d9f4',
         'go to mine': '#00cd00',
+        'go to base': '#00cd00',
         'go to oil': '#00cd00',
         'patrolling': '#eedb13',
         'escorting': '#eedb13',

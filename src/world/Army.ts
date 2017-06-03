@@ -16,6 +16,7 @@ import {Building} from "./building/Building";
 import {Vehicle} from "./vehicle/Vehicle";
 import {Map} from "../ai/map/Map";
 import {Camera} from "./vehicle/sensor/Camera";
+import {SharedMemory} from "./vehicle/knowledge/SharedMemory";
 
 export class Army
 {
@@ -37,7 +38,7 @@ export class Army
         this.items = items;
         this.map = map;
         this.game = game;
-        this.radar = new Radar(this.items, this.buildings, this.vehicles, this);
+        this.radar = new Radar(this.items, this.buildings, this.vehicles, this, new SharedMemory(map));
     }
 
     public recruitMiner(x: number, y: number): Miner
@@ -129,5 +130,10 @@ export class Army
                 return vehicle.getArmy() == myself;
             }
         );
+    }
+
+    public getSharedMemory(): SharedMemory
+    {
+        return this.radar.getSharedMemory();
     }
 }

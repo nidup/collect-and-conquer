@@ -9,6 +9,7 @@ import {Item} from "../../item/Item";
 import {Building} from "../../building/Building";
 import {Vehicle} from "../Vehicle";
 import {Army} from "../../Army";
+import {SharedMemory} from "../knowledge/SharedMemory";
 
 export class Radar
 {
@@ -16,13 +17,25 @@ export class Radar
     private items: ItemRepository;
     private buildings: BuildingRepository;
     private vehicles: VehicleRepository;
+    private sharedMemory: SharedMemory;
 
-    constructor(items: ItemRepository, buildings: BuildingRepository, vehicles: VehicleRepository, army: Army)
+    constructor(items: ItemRepository, buildings: BuildingRepository, vehicles: VehicleRepository, army: Army, sharedMemory: SharedMemory)
     {
         this.items = items;
         this.buildings = buildings;
         this.vehicles = vehicles;
         this.army = army;
+        this.sharedMemory = sharedMemory;
+    }
+
+    public registerVisibleEnvironment(position: Phaser.Point, visibleScope: number): void
+    {
+        this.sharedMemory.registerEnvironment(position, visibleScope);
+    }
+
+    public getSharedMemory(): SharedMemory
+    {
+        return this.sharedMemory;
     }
 
     public closestExploitableMine(position: Phaser.Point): Mine|null

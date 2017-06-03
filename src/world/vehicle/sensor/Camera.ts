@@ -23,6 +23,11 @@ export class Camera
         this.visibilityScope = visibilityScope;
     }
 
+    public getVisibilityScope(): number
+    {
+        return this.visibilityScope;
+    }
+
     public closestVisibleEnemy(position: Phaser.Point): Vehicle|null
     {
         class VehicleAndDistance {

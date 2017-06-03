@@ -32,7 +32,7 @@ export class Minimap
 
     public update()
     {
-        this.drawGrounds(this.map);
+        this.drawGrounds(this.map.getGrounds());
         const myself = this;
         this.players.all().forEach(
             function(player: Player) {
@@ -41,13 +41,15 @@ export class Minimap
             }
         )
         this.drawItems(this.items);
+        const sharedMemory = this.players.human().getArmy().getSharedMemory();
+        this.drawFogOfWar(sharedMemory.getKnownTiles())
     }
 
-    public drawGrounds(map: Map)
+    public drawGrounds(grounds: Array<Array<number>>)
     {
-        for (let y = 0; y < map.getGrounds().length; y++) {
-            for (let x = 0; x < map.getGrounds()[y].length; x++) {
-                const ground = map.getGrounds()[y][x];
+        for (let y = 0; y < grounds.length; y++) {
+            for (let x = 0; x < grounds[y].length; x++) {
+                const ground = grounds[y][x];
                 let red = 0;
                 let green = 0;
                 let blue = 0;
@@ -130,5 +132,20 @@ export class Minimap
                 myself.bitmap.setPixel(x+1, y+1, color.red, color.green, color.blue);
             }
         );
+    }
+
+    public drawFogOfWar(knownGrounds: Array<Array<boolean>>)
+    {
+        for (let y = 0; y < knownGrounds.length; y++) {
+            for (let x = 0; x < knownGrounds[y].length; x++) {
+                const unknownGround = !knownGrounds[y][x];
+                if (unknownGround) {
+                    let red = 0;
+                    let green = 0;
+                    let blue = 0;
+                    this.bitmap.setPixel(x, y, red, green, blue);
+                }
+            }
+        }
     }
 }

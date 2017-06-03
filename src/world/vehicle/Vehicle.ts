@@ -7,6 +7,7 @@ import {Camera} from "./sensor/Camera";
 import {Radar} from "./sensor/Radar";
 import {HealthBar} from "../common/HealthBar";
 import {VehicleBrain} from "./brain/VehicleBrain";
+import {Radio} from "./sensor/Radio";
 
 export abstract class Vehicle extends Phaser.Sprite implements Boid
 {
@@ -14,6 +15,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
     protected army: Army;
     protected camera: Camera;
     protected radar: Radar;
+    protected radio: Radio;
     protected behavior: SteeringComputer;
     protected brain: VehicleBrain;
     protected brainText: BrainText;
@@ -26,6 +28,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.army = army;
         this.radar = radar;
         this.camera = camera;
+        this.radio = new Radio(camera, radar);
         this.tint = army.getColor();
         this.maxHealth = 100;
         this.health = 100;
@@ -39,6 +42,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.updateAngle();
         this.brainText.update();
         this.healthBar.update();
+        this.radio.communicate(this.getPosition());
     }
 
     public isAlive() :boolean
