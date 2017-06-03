@@ -28,6 +28,7 @@ export class Army
     private radar: Radar;
     private map: Map;
     private game: Phaser.Game;
+    private sharedMemory: SharedMemory;
 
     constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, map: Map, game: Phaser.Game)
     {
@@ -38,12 +39,13 @@ export class Army
         this.items = items;
         this.map = map;
         this.game = game;
-        this.radar = new Radar(this.items, this.buildings, this.vehicles, this, new SharedMemory(map));
+        this.sharedMemory = new SharedMemory(map);
+        this.radar = new Radar(this.items, this.buildings, this.vehicles, this, this.sharedMemory);
     }
 
     public recruitMiner(x: number, y: number): Miner
     {
-        const camera = new Camera(this.items, this.buildings, this.vehicles, this, 180);
+        const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
         const vehicle = new Miner(this.game, x, y, this, this.radar, camera, 'Miner', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
@@ -67,7 +69,7 @@ export class Army
 
     public recruitBuilder(x: number, y: number): Builder
     {
-        const camera = new Camera(this.items, this.buildings, this.vehicles, this, 180);
+        const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
         const vehicle = new Builder(this.game, x, y, this, this.radar, camera, 'Builder1', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
@@ -77,6 +79,7 @@ export class Army
     {
         const building = new Base(this.game, x, y, this, 'Base', 0);
         this.buildings.add(building);
+        this.sharedMemory.registerEnvironment(building.getPosition(), 200);
         return building;
     }
 
@@ -134,6 +137,6 @@ export class Army
 
     public getSharedMemory(): SharedMemory
     {
-        return this.radar.getSharedMemory();
+        return this.sharedMemory;
     }
 }

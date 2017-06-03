@@ -33,11 +33,6 @@ export class Radar
         this.sharedMemory.registerEnvironment(position, visibleScope);
     }
 
-    public getSharedMemory(): SharedMemory
-    {
-        return this.sharedMemory;
-    }
-
     public closestExploitableMine(position: Phaser.Point): Mine|null
     {
         class MineAndDistance {
