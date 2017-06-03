@@ -180,7 +180,7 @@ export class CloudMapGenerator extends MapGenerator
         points.forEach(function (line) {
             let groudLine = [];
             line.forEach(function (cell) {
-                groudLine.push(this.getGroud(cell));
+                groudLine.push(this.getGround(cell));
             }.bind(this));
             result.push(groudLine);
         }.bind(this));
@@ -188,7 +188,7 @@ export class CloudMapGenerator extends MapGenerator
         return result;
     }
 
-    private getGroud(cell: number): number|null {
+    private getGround(cell: number): number|null {
         const probabilities = [
             [Tile.LAVA, 1],
             [Tile.GRASS, 2],

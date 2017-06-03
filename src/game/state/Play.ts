@@ -33,7 +33,7 @@ export default class Play extends Phaser.State
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
-    private debug: boolean = false;
+    private debug: boolean = true;
     private enableTileCollision = true;
     private players: Player[];
     private mainPanel: MainPanel;
@@ -51,9 +51,9 @@ export default class Play extends Phaser.State
         const mapHeight = this.game.height;
         const tileSize = 20;
 
-        // const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight);
-        const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
-        // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
+        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight);
+        //const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
+        //const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
         this.map = mapGenerator.generate();
 
         // handle collisions
@@ -109,7 +109,7 @@ export default class Play extends Phaser.State
         armyRed.recruitMiner(600, 700);
         armyRed.recruitScout(450, 800);
         armyRed.recruitScout(300, 600);
-        armyRed.recruitTank(600, 760);
+        armyRed.recruitTank(650, 760);
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
