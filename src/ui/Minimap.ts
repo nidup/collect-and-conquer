@@ -10,8 +10,8 @@ export class Minimap
 {
     public constructor(game: Phaser.Game, panelWidth: number, map: Map)
     {
-        const marginX = 15;
-        const marginY = 15;
+        const marginX = 10;
+        const marginY = 8;
         const bitmap = game.make.bitmapData(52, 40);
         for (let y = 0; y < map.getGrounds().length; y++) {
             for (let x = 0; x < map.getGrounds()[y].length; x++) {
@@ -39,6 +39,6 @@ export class Minimap
                 bitmap.setPixel(x, y, red, green, blue);
             }
         }
-        bitmap.addToWorld(game.width - panelWidth + marginX, marginY, 0, 0, 4, 4);
+        bitmap.addToWorld(game.width - panelWidth + marginX, marginY, 0, 0, 4.24, 4.24);
     }
 }

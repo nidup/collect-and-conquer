@@ -1,17 +1,19 @@
 
 import {UnitSelector} from "./UnitSelector";
 import {Player} from "../game/player/Player";
-import {ControlPanel} from "./ControlPanel";
+import {SelectedUnitPanel} from "./SelectedUnitPanel";
 import {OrderPanel} from "./OrderPanel";
 import {Minimap} from "./Minimap";
 import {Map} from "../ai/map/Map";
+import {RecruitPanel} from "./RecruitPanel";
 
 export class MainPanel
 {
     private game: Phaser.Game;
     private unitSelector: UnitSelector;
-    private health: Phaser.Graphics;
     private screenWidth: number;
+    private selectedUnitPanel: SelectedUnitPanel;
+    private recruitPanel: RecruitPanel;
 
     constructor(game: Phaser.Game, screenWidth: number, panelWith: number, unitSelector: UnitSelector, player: Player, map: Map)
     {
@@ -19,37 +21,18 @@ export class MainPanel
         this.screenWidth = screenWidth;
         this.unitSelector = unitSelector;
 
-        const rectX = 200;
-        const rectY = 10;
-        const rectWidth = 70;
-        const rectHeight = 17;
-        this.health = this.game.add.graphics(this.getHealthBarPositionX(), 302);
-        this.health.beginFill(0x00FF00, 1);
-        this.health.drawRect(rectX, rectY, this.getHealthBarWidth(rectWidth), rectHeight);
-        this.health.endFill();
-        this.health.z = 200;
-
-        new ControlPanel(game, screenWidth, panelWith, unitSelector, player);
-        new OrderPanel(game, screenWidth, panelWith, player);
         new Minimap(game, panelWith, map);
+        const background = game.add.sprite(screenWidth - panelWith, 0, 'CommandPanel', 0);
+        background.z = 100;
+
+        this.selectedUnitPanel = new SelectedUnitPanel(game, panelWith, unitSelector);
+        this.recruitPanel = new RecruitPanel(this.game, player);
+        new OrderPanel(game, screenWidth, panelWith, player);
     }
 
     public update()
     {
-        // TODO fix this!
-    }
-
-    private getHealthBarPositionX()
-    {
-        return this.screenWidth - 435;
-    }
-
-    private getHealthBarWidth(maxWidth: number)
-    {
-        const host = this.unitSelector.getSelectedUnit();
-        const healthRatio = host.health / host.maxHealth;
-        const healthWidth = maxWidth * healthRatio;
-
-        return healthWidth;
+        this.selectedUnitPanel.update();
+        this.recruitPanel.update();
     }
 }
