@@ -2,6 +2,7 @@
 import {MapGenerator} from "./MapGenerator";
 import {Tile} from "./Tile";
 import {TileRegistry} from "./TilesRegistry";
+import {Map} from "../Map";
 
 const tileSize = 20;
 const tileSpacing = 20;
@@ -21,7 +22,7 @@ export class CloudMapGenerator extends MapGenerator
         this.tileRegistry = new TileRegistry();
     }
 
-    generate(): Phaser.Tilemap
+    generate(): Map
     {
         const map = this.game.add.tilemap(null, tileSize, tileSize, this.screenWidth / tileSize, this.screenHeight / tileSize);
 
@@ -38,7 +39,7 @@ export class CloudMapGenerator extends MapGenerator
 
         this.draw(map, grounds);
 
-        return map;
+        return new Map(map);
     }
 
     /**

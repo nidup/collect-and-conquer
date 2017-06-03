@@ -1,4 +1,6 @@
 
+import {Map} from "../Map";
+
 export abstract class MapGenerator
 {
     public static LAYER_NAME: string = 'Tiles';
@@ -13,5 +15,5 @@ export abstract class MapGenerator
         this.game = game;
     }
 
-    abstract generate(): Phaser.Tilemap;
+    abstract generate(): Map;
 }

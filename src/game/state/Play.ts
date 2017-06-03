@@ -54,7 +54,8 @@ export default class Play extends Phaser.State
         const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight);
         //const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
         //const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
-        this.map = mapGenerator.generate();
+        const map = mapGenerator.generate();
+        this.map = map.getTilemap();
 
         // handle collisions
         const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);

@@ -1,5 +1,6 @@
 
 import {MapGenerator} from "./MapGenerator";
+import {Map} from "../Map";
 
 export class FileMapGenerator extends MapGenerator
 {
@@ -8,7 +9,7 @@ export class FileMapGenerator extends MapGenerator
         super(game, screenWidth, screenHeight);
     }
 
-    generate(): Phaser.Tilemap
+    generate(): Map
     {
         let tileSize = 20;
         let tileSpacing = 20;
@@ -29,6 +30,6 @@ export class FileMapGenerator extends MapGenerator
         map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing);
         map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing);
 
-        return map;
+        return new Map(map);
     }
 }
