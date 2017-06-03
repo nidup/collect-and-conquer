@@ -37,9 +37,12 @@ export class CloudMapGenerator extends MapGenerator
         let points = this.mixCloudMaps(cloudMaps);
         let grounds = this.getGrounds(points);
 
+
+        // TODO: why a so big map ground??
+
         this.draw(map, grounds);
 
-        return new Map(map);
+        return new Map(map, grounds);
     }
 
     /**

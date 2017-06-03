@@ -3,15 +3,17 @@ import {UnitSelector} from "./UnitSelector";
 import {Player} from "../game/player/Player";
 import {ControlPanel} from "./ControlPanel";
 import {OrderPanel} from "./OrderPanel";
+import {Minimap} from "./Minimap";
+import {Map} from "../ai/map/Map";
 
 export class MainPanel
 {
     private game: Phaser.Game;
     private unitSelector: UnitSelector;
     private health: Phaser.Graphics;
-    private screenWidth: number
+    private screenWidth: number;
 
-    constructor(game: Phaser.Game, screenWidth: number, panelWith: number, unitSelector: UnitSelector, player: Player)
+    constructor(game: Phaser.Game, screenWidth: number, panelWith: number, unitSelector: UnitSelector, player: Player, map: Map)
     {
         this.game = game;
         this.screenWidth = screenWidth;
@@ -29,6 +31,7 @@ export class MainPanel
 
         new ControlPanel(game, screenWidth, panelWith, unitSelector, player);
         new OrderPanel(game, screenWidth, panelWith, player);
+        new Minimap(game, panelWith, map);
     }
 
     public update()

@@ -43,7 +43,7 @@ export class RandomMapGenerator extends MapGenerator
         points = this.fixMissingTextures(points);
         this.draw(map, points);
 
-        return new Map(map);
+        return new Map(map, points);
     }
 
     /**

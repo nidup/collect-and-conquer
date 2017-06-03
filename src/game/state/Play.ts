@@ -33,7 +33,7 @@ export default class Play extends Phaser.State
     private map : Phaser.Tilemap;
     private layer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
-    private debug: boolean = true;
+    private debug: boolean = false;
     private enableTileCollision = true;
     private players: Player[];
     private mainPanel: MainPanel;
@@ -51,11 +51,14 @@ export default class Play extends Phaser.State
         const mapHeight = this.game.height;
         const tileSize = 20;
 
-        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight);
-        //const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
-        //const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
-        const map = mapGenerator.generate();
-        this.map = map.getTilemap();
+        //const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight); //TODO 132 to fix!!
+        //const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight); // TODO 53 to fix!!
+        const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
+        const generatedMap = mapGenerator.generate();
+        this.map = generatedMap.getTilemap();
+
+        console.log(generatedMap.getTilemap().layers[0].data);
+        console.log(generatedMap.getGrounds());
 
         // handle collisions
         const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
@@ -115,7 +118,7 @@ export default class Play extends Phaser.State
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
 
-        this.mainPanel = new MainPanel(this.game, this.game.width, panelWith, this.unitSelector, humanPlayer);
+        this.mainPanel = new MainPanel(this.game, this.game.width, panelWith, this.unitSelector, humanPlayer, generatedMap);
     }
 
     public update()
@@ -150,15 +153,6 @@ export default class Play extends Phaser.State
                 aliveVehicles.remove(vehicle);
                 vehicle.destroy();
             });
-
-        /*
-        if (game.input.mousePointer.isDown) {
-            aliveVehicles.all().map(function(vehicle: Vehicle) {
-                if (vehicle instanceof Builder) {
-                    (<Builder>vehicle).changePath(new Phaser.Point(game.input.x, game.input.y));
-                }
-            });
-        }*/
 
         if (this.enableTileCollision) {
             const layer = collisionLayer;

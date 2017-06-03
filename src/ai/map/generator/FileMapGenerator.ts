@@ -30,6 +30,22 @@ export class FileMapGenerator extends MapGenerator
         map.addTilesetImage('GrssCrtr', 'GrssCrtr', tileSize, tileSize, 0, tileSpacing);
         map.addTilesetImage('GrssMisc', 'GrssMisc', tileSize, tileSize, 0, tileSpacing);
 
-        return new Map(map);
+        const grounds = map.layers[0].data.reduce(
+            function(groundRows: Array<Array<number>>, tileRow: Phaser.Tile[]) {
+                groundRows.push(
+                    tileRow.reduce(
+                        function(groundRow: Array<number>, tile: Phaser.Tile) {
+                            groundRow.push(tile.index);
+                            return groundRow;
+                        },
+                        []
+                    )
+                );
+                return groundRows;
+            },
+            []
+        );
+
+        return new Map(map, grounds);
     }
 }
