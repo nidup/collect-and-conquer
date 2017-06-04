@@ -33,7 +33,7 @@ export class SharedMemory
     {
         const centerX = Math.ceil((position.x) / this.tileSize) - 1;
         const centerY = Math.ceil((position.y) / this.tileSize) - 1;
-        const radius = Math.ceil(Math.ceil(visibilityScope / this.tileSize) / 2);
+        const radius = Math.ceil(Math.ceil(visibilityScope / this.tileSize));
 
         const points = this.getCirclePoints(centerX, centerY, radius);
         const knownTiles = this.knownTiles;
