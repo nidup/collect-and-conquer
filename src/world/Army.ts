@@ -46,7 +46,7 @@ export class Army
     public recruitMiner(x: number, y: number): Miner
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
-        const vehicle = new Miner(this.group.game, x, y, this, this.radar, camera, 'Miner', 0, this.map);
+        const vehicle = new Miner(this.group, x, y, this, this.radar, camera, 'Miner', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -54,7 +54,7 @@ export class Army
     public recruitScout(x: number, y: number): Scout
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 240);
-        const vehicle = new Scout(this.group.game, x, y, this, this.radar, camera, 'Scout1', 0);
+        const vehicle = new Scout(this.group, x, y, this, this.radar, camera, 'Scout1', 0);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -62,7 +62,7 @@ export class Army
     public recruitTank(x: number, y: number): Tank
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 180);
-        const vehicle = new Tank(this.group.game, x, y, this, this.radar, camera, 'Tank5', 0, this.map);
+        const vehicle = new Tank(this.group, x, y, this, this.radar, camera, 'Tank5', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -70,7 +70,7 @@ export class Army
     public recruitBuilder(x: number, y: number): Builder
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
-        const vehicle = new Builder(this.group.game, x, y, this, this.radar, camera, 'Builder1', 0, this.map);
+        const vehicle = new Builder(this.group, x, y, this, this.radar, camera, 'Builder1', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }

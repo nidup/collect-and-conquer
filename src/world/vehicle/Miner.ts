@@ -19,16 +19,16 @@ export class Miner extends Vehicle
     private oilLoad: number;
     private oilCapacity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map)
+    constructor(group: Phaser.Group, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map)
     {
-        super(game, x, y, army, radar, camera, key, frame);
+        super(group.game, x, y, army, radar, camera, key, frame);
 
         this.maxHealth = 100;
         this.health = this.maxHealth;
         this.maxVelocity = 60;
 
         this.anchor.setTo(.5,.5);
-        game.physics.enable(this, Phaser.Physics.ARCADE);
+        group.game.physics.enable(this, Phaser.Physics.ARCADE);
 
         this.body.maxVelocity.set(this.maxVelocity, this.maxVelocity);
         this.body.allowGravity = false;
@@ -39,7 +39,7 @@ export class Miner extends Vehicle
         this.animations.add('right', [4, 34], 2, true);
         this.animations.play('right');
 
-        game.add.existing(this);
+        group.add(this);
 
         this.behavior = new SteeringComputer(this);
 

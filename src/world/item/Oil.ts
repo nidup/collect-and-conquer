@@ -5,14 +5,14 @@ export class Oil extends Item
 {
     private quantity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, key: string, frame: number, quantity: number)
+    constructor(group: Phaser.Group, x: number, y: number, key: string, frame: number, quantity: number)
     {
-        super(game, x, y, key, frame);
+        super(group.game, x, y, key, frame);
 
         this.quantity = quantity;
 
         this.anchor.setTo(.5,.5);
-        game.physics.enable(this, Phaser.Physics.ARCADE);
+        group.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.allowGravity = false;
         this.body.setCircle(5, 5, 5);
         this.inputEnabled = true;
@@ -20,7 +20,7 @@ export class Oil extends Item
         this.animations.add('idle', [33], 1, true);
         this.animations.play('idle');
 
-        game.add.existing(this);
+        group.add(this);
     }
 
     public getQuantity(): number

@@ -96,11 +96,11 @@ export default class Play extends Phaser.State
         this.vehicles = new VehicleRepository();
 
         const oilQuantity = 1000;
-        this.items.add(new Oil(this.game, oil1X, oil1Y, 'Icons', 0, oilQuantity));
-        this.items.add(new Oil(this.game, oil2X, oil2Y, 'Icons', 0, oilQuantity));
-        this.items.add(new Oil(this.game, oil3X, oil3Y, 'Icons', 0, oilQuantity));
-        this.items.add(new Oil(this.game, oil4X, oil4Y, 'Icons', 0, oilQuantity));
-        this.items.add(new Oil(this.game, oil5X, oil5Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil1X, oil1Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil2X, oil2Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil3X, oil3Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil4X, oil4Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil5X, oil5Y, 'Icons', 0, oilQuantity));
 
         this.players = new PlayerRepository();
 
