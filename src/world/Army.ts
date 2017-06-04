@@ -27,10 +27,10 @@ export class Army
     private items: ItemRepository;
     private radar: Radar;
     private map: Map;
-    private game: Phaser.Game;
+    private group: Phaser.Group;
     private sharedMemory: SharedMemory;
 
-    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, map: Map, game: Phaser.Game)
+    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, map: Map, group: Phaser.Group)
     {
         this.color = color;
         this.strategy = new Strategy();
@@ -38,7 +38,7 @@ export class Army
         this.buildings = buildings;
         this.items = items;
         this.map = map;
-        this.game = game;
+        this.group = group;
         this.sharedMemory = new SharedMemory(map);
         this.radar = new Radar(this.items, this.buildings, this.vehicles, this, this.sharedMemory);
     }
@@ -46,7 +46,7 @@ export class Army
     public recruitMiner(x: number, y: number): Miner
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
-        const vehicle = new Miner(this.game, x, y, this, this.radar, camera, 'Miner', 0, this.map);
+        const vehicle = new Miner(this.group.game, x, y, this, this.radar, camera, 'Miner', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -54,7 +54,7 @@ export class Army
     public recruitScout(x: number, y: number): Scout
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 240);
-        const vehicle = new Scout(this.game, x, y, this, this.radar, camera, 'Scout1', 0);
+        const vehicle = new Scout(this.group.game, x, y, this, this.radar, camera, 'Scout1', 0);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -62,7 +62,7 @@ export class Army
     public recruitTank(x: number, y: number): Tank
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 180);
-        const vehicle = new Tank(this.game, x, y, this, this.radar, camera, 'Tank5', 0, this.map);
+        const vehicle = new Tank(this.group.game, x, y, this, this.radar, camera, 'Tank5', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -70,14 +70,14 @@ export class Army
     public recruitBuilder(x: number, y: number): Builder
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
-        const vehicle = new Builder(this.game, x, y, this, this.radar, camera, 'Builder1', 0, this.map);
+        const vehicle = new Builder(this.group.game, x, y, this, this.radar, camera, 'Builder1', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
 
     public buildBase(x: number, y:number): Base
     {
-        const building = new Base(this.game, x, y, this, 'Base', 0);
+        const building = new Base(this.group, x, y, this, 'Base', 0);
         this.buildings.add(building);
         this.sharedMemory.registerEnvironment(building.getPosition(), 200);
         return building;
@@ -85,14 +85,14 @@ export class Army
 
     public buildGenerator(x: number, y:number): Generator
     {
-        const building = new Generator(this.game, x, y, this, 'Generator', 0);
+        const building = new Generator(this.group, x, y, this, 'Generator', 0);
         this.buildings.add(building);
         return building;
     }
 
     public buildMine(x: number, y:number, oil: Oil): Mine
     {
-        const building = new Mine(this.game, x, y, this, 'Mine', 0, oil.getQuantity())
+        const building = new Mine(this.group, x, y, this, 'Mine', 0, oil.getQuantity())
         this.buildings.add(building);
         return building;
     }

@@ -4,16 +4,16 @@ import {Army} from "../Army";
 
 export class Generator extends Building
 {
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number)
+    constructor(group: Phaser.Group, x: number, y: number, army: Army, key: string, frame: number)
     {
-        super(game, x, y, army, key, frame);
+        super(group, x, y, army, key, frame);
 
         this.maxHealth = 300;
         this.heal(this.maxHealth);
 
 
         this.anchor.setTo(.5,.5);
-        game.physics.enable(this, Phaser.Physics.ARCADE);
+        group.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.allowGravity = false;
         this.body.setCircle(28, -6, 6);
         this.inputEnabled = true;
@@ -23,7 +23,7 @@ export class Generator extends Building
 
         this.animations.play('generating');
 
-        game.add.existing(this);
+        group.add(this);
     }
 
     public getStatus()

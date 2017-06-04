@@ -8,9 +8,9 @@ export abstract class Building extends Phaser.Sprite
     protected army: Army;
     protected healthBar: HealthBar;
 
-    constructor (game: Phaser.Game, x: number, y: number, army: Army, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number)
+    constructor (group: Phaser.Group, x: number, y: number, army: Army, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number)
     {
-        super(game, x, y, key, frame);
+        super(group.game, x, y, key, frame);
         this.army = army;
         this.tint = army.getColor();
         this.maxHealth = 100;

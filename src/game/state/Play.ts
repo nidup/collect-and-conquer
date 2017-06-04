@@ -37,7 +37,15 @@ export default class Play extends Phaser.State
             this.game.time.advancedTiming = true
         }
         this.game.stage.backgroundColor = '#000000';
-        this.game.antialias = false;
+
+        const groundLayer = this.game.add.group();
+        groundLayer.name = 'Ground';
+        const unitLayer = this.game.add.group();
+        unitLayer.name = 'Unit';
+        const interfaceLayer = this.game.add.group();
+        interfaceLayer.name = 'Interface';
+        const fogOfWarLayer = this.game.add.group();
+        fogOfWarLayer.name = 'Fog';
 
         const panelWith = 240;
         const mapWidth = this.game.width - panelWith;
@@ -71,9 +79,9 @@ export default class Play extends Phaser.State
         emptyAreas.push(new EmptyArea(Math.round(oil4X/tileSize), Math.round(oil4Y/tileSize), oilAreaGap));
         emptyAreas.push(new EmptyArea(Math.round(oil5X/tileSize), Math.round(oil5Y/tileSize), oilAreaGap));
 
-        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight, tileSize, emptyAreas);
-        // const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight, tileSize);
-        // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight, tileSize);
+        const mapGenerator = new CloudMapGenerator(groundLayer, mapWidth, mapHeight, tileSize, emptyAreas);
+        // const mapGenerator = new RandomMapGenerator(groundLayer, mapWidth, mapHeight, tileSize);
+        // const mapGenerator = new FileMapGenerator(groundLayer, mapWidth, mapHeight, tileSize);
         const generatedMap = mapGenerator.generate();
         this.tiles = generatedMap.getTiles();
 
@@ -96,11 +104,11 @@ export default class Play extends Phaser.State
 
         this.players = new PlayerRepository();
 
-        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, this.game);
+        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, unitLayer);
         const humanPlayer = new Player(armyBlue, true);
         this.players.add(humanPlayer);
 
-        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, this.game)
+        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, unitLayer)
         const botPlayer = new Player(armyRed, false);
         this.players.add(botPlayer);
 
@@ -136,9 +144,16 @@ export default class Play extends Phaser.State
         const fogX = 0;
         const fogY = 0;
         this.bitmap = this.game.make.bitmapData(52, 40);
-        this.bitmap.addToWorld(fogX, fogY, 0, 0, generatedMap.getTileSize(), generatedMap.getTileSize());
+
+        const imageFogOFWar = this.game.add.image(fogX, fogY, this.bitmap, 0, fogOfWarLayer);
+        imageFogOFWar.anchor.set(0, 0);
+        imageFogOFWar.scale.set(generatedMap.getTileSize(), generatedMap.getTileSize());
+        fogOfWarLayer.add(imageFogOFWar);
+
         const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
         this.fogOfWar.apply(this.bitmap, knownTiles);
+
+        console.log(this.game.world.children);
     }
 
     public update()

@@ -9,7 +9,7 @@ export class Map
     private walkableIndexes: Array<number>;
     private collisionlayer: Phaser.TilemapLayer;
 
-    public constructor(tilemap: Phaser.Tilemap, grounds: Array<Array<number>>, tilesize: number)
+    public constructor(group: Phaser.Group, tilemap: Phaser.Tilemap, grounds: Array<Array<number>>, tilesize: number)
     {
         this.tilemap = tilemap;
         this.grounds = grounds;
@@ -17,7 +17,7 @@ export class Map
         this.tiles = tilemap.layers[0].data;
         this.walkableIndexes = this.prepareWalkableIndexes(this.getUnwalkableIndexes());
         this.configureCollisionLayer(this.tilemap, this.getUnwalkableIndexes());
-        this.collisionlayer = this.tilemap.createLayer(Map.LAYER_NAME);
+        this.collisionlayer = this.tilemap.createLayer(Map.LAYER_NAME, tilemap.layers[0].width, tilemap.layers[0].height, group);
     }
 
     private prepareWalkableIndexes(unwalkableIndexes: Array<number>): Array<number>
