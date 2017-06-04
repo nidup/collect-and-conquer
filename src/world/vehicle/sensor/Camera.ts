@@ -63,7 +63,7 @@ export class Camera
         return closestEnemies.length > 0 ? closestEnemies[0].vehicle : null;
     }
 
-    public closestVisibleOil(position: Phaser.Point): Oil|null
+    public visibleOils(position: Phaser.Point): Array<Oil>
     {
         class OilAndDistance {
             public oil: Oil;
@@ -77,7 +77,7 @@ export class Camera
             return new OilAndDistance(oil, position.distance(oil.getPosition()));
         };
         const visibilityScope = this.visibilityScope;
-        const closestOils = this.items.oils()
+        const visibleOils = this.items.oils()
             .reduce(function (oilsWithDistance, oil) {
                 oilsWithDistance.push(transfoAddDistance(oil));
                 return oilsWithDistance;
@@ -88,8 +88,11 @@ export class Camera
             .filter(function (oilAndDistance: OilAndDistance) {
                     return oilAndDistance.distance < visibilityScope && !oilAndDistance.oil.hasBeenCollected()
                 }
-            );
+            ).reduce(function (visibleOils, visibleOilAndDistance: OilAndDistance) {
+                visibleOils.push(visibleOilAndDistance.oil);
+                return visibleOils;
+            }, []);
 
-        return closestOils.length > 0 ? closestOils[0].oil : null;
+        return visibleOils;
     }
 }

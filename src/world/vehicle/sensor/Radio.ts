@@ -2,6 +2,7 @@
 import {Camera} from "./Camera";
 import {Radar} from "./Radar";
 import {SharedMemory} from "../knowledge/SharedMemory";
+import {Oil} from "../../item/Oil";
 
 export class Radio
 {
@@ -19,10 +20,10 @@ export class Radio
     public communicate(position: Phaser.Point)
     {
         this.sharedMemory.registerGrounds(position, this.camera.getVisibilityScope());
-        const visibleOil = this.camera.closestVisibleOil(position);
-        if (visibleOil) {
-            this.sharedMemory.registerOil(visibleOil);
-        }
-
+        const visibleOils = this.camera.visibleOils(position);
+        const sharedMemory = this.sharedMemory;
+        visibleOils.map(function(visibleOil: Oil) {
+            sharedMemory.registerOil(visibleOil);
+        });
     }
 }
