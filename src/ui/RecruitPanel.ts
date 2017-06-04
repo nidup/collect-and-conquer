@@ -19,7 +19,7 @@ export class RecruitPanel
     private tankButton: Phaser.Button;
     private textStyle: TextStyle;
 
-    constructor(game: Phaser.Game, player: Player)
+    constructor(group: Phaser.Group, player: Player)
     {
         let positionY = 367;
         const buttonHeight = 27;
@@ -29,35 +29,35 @@ export class RecruitPanel
         this.vehicleCosts = new VehicleCosts();
         this.textStyle = new TextStyle();
 
-        this.totalStock = this.addCostTextAndImage(game, positionY, base.getStock());
+        this.totalStock = this.addCostTextAndImage(group, positionY, base.getStock());
 
         positionY += 33;
         let callback = function() {
             base.buildMiner();
         };
-        this.minerButton = this.addRecruitButton(game, positionY, 'Recruit Miner', callback);
-        this.addCostTextAndImage(game, positionY, this.vehicleCosts.getCost(Miner));
+        this.minerButton = this.addRecruitButton(group, positionY, 'Recruit Miner', callback);
+        this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Miner));
 
         positionY += buttonHeight + verticalMargin;
         callback = function() {
             base.buildScout();
         };
-        this.scoutButton = this.addRecruitButton(game, positionY, 'Recruit Scout', callback);
-        this.addCostTextAndImage(game, positionY, this.vehicleCosts.getCost(Scout));
+        this.scoutButton = this.addRecruitButton(group, positionY, 'Recruit Scout', callback);
+        this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Scout));
 
         positionY += buttonHeight + verticalMargin;
         callback = function() {
             base.buildBuilder();
         };
-        this.builderButton = this.addRecruitButton(game, positionY, 'Recruit Builder', callback);
-        this.addCostTextAndImage(game, positionY, this.vehicleCosts.getCost(Builder));
+        this.builderButton = this.addRecruitButton(group, positionY, 'Recruit Builder', callback);
+        this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Builder));
 
         positionY += buttonHeight + verticalMargin;
         callback = function() {
             base.buildTank();
         };
-        this.tankButton = this.addRecruitButton(game, positionY, 'Recruit Tank', callback);
-        this.addCostTextAndImage(game, positionY, this.vehicleCosts.getCost(Tank));
+        this.tankButton = this.addRecruitButton(group, positionY, 'Recruit Tank', callback);
+        this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Tank));
     }
 
     public update()
@@ -86,25 +86,30 @@ export class RecruitPanel
         }
     }
 
-    private addRecruitButton(game: Phaser.Game, positionY: number, buttonText: string, callback :Function): Phaser.Button
+    private addRecruitButton(group: Phaser.Group, positionY: number, buttonText: string, callback :Function): Phaser.Button
     {
         const buttonWidth = 140;
         const buttonMargin = 7;
 
-        let buttonX = game.width - buttonWidth - buttonMargin;
+        let buttonX = group.game.width - buttonWidth - buttonMargin;
         let buttonY = positionY;
-        const button = game.add.button(
+        const button = group.game.add.button(
             buttonX,
             buttonY,
             'BuyButton',
             callback,
-            this, 4, 3, 4
+            this,
+            4,
+            3,
+            4,
+            3,
+            group
         );
 
         const textMargin = 3;
         const styleNormal = this.textStyle.getNormalStyle();
         const styleHover =  this.textStyle.getOverStyle();
-        const text = game.add.text(buttonX + textMargin, buttonY + textMargin, buttonText, styleNormal);
+        const text = group.game.add.text(buttonX + textMargin, buttonY + textMargin, buttonText, styleNormal, group);
         button.onInputOut.add(function () {
             text.setStyle(styleNormal);
             text.y = text.y - 1;
@@ -117,14 +122,14 @@ export class RecruitPanel
         return button;
     }
 
-    private addCostTextAndImage(game: Phaser.Game, positionY: number, cost: number): Phaser.Text
+    private addCostTextAndImage(group: Phaser.Group, positionY: number, cost: number): Phaser.Text
     {
-        const txtPositionX = game.width - 200;
+        const txtPositionX = group.game.width - 200;
         const txtPositionY = positionY + 3;
-        const text = game.add.text(txtPositionX, txtPositionY, cost.toString(), this.textStyle.getNormalStyle());
+        const text = group.game.add.text(txtPositionX, txtPositionY, cost.toString(), this.textStyle.getNormalStyle(), group);
         const oilPositionX = txtPositionX - 37;
         const oilPositionY = txtPositionY - 2;
-        game.add.image(oilPositionX, oilPositionY, 'Icons', 33);
+        group.game.add.image(oilPositionX, oilPositionY, 'Icons', 33, group);
 
         return text;
     }

@@ -7,7 +7,7 @@ import {TextStyle} from "./TextStyle";
 
 export class SelectedUnitPanel
 {
-    private game: Phaser.Game;
+    private group: Phaser.Group;
     private panelWidth: number;
     private unitSelector: UnitSelector;
     private unitStateText: Phaser.Text;
@@ -15,14 +15,13 @@ export class SelectedUnitPanel
     private textStyle: TextStyle;
     private health: Phaser.Graphics;
 
-    constructor(game: Phaser.Game, panelWidth: number, unitSelector: UnitSelector)
+    constructor(group: Phaser.Group, panelWidth: number, unitSelector: UnitSelector)
     {
-        this.game = game;
         this.panelWidth = panelWidth;
         this.textStyle = new TextStyle();
         this.unitSelector = unitSelector;
         let positionY = 190;
-        this.unitStateText = this.game.add.text(this.game.width - 150, positionY, '', this.textStyle.getNormalStyle());
+        this.unitStateText = group.game.add.text(group.game.width - 150, positionY, '', this.textStyle.getNormalStyle(), group);
         this.unitStateText.fixedToCamera = true;
 
         positionY += 61;
@@ -30,14 +29,15 @@ export class SelectedUnitPanel
         const rectY = 10;
         const rectWidth = 70;
         const rectHeight = 17;
-        this.health = this.game.add.graphics(this.getHealthBarPositionX(), positionY);
+        this.health = group.game.add.graphics(this.getHealthBarPositionX(group.game.width), positionY, group);
         this.health.beginFill(0x00FF00, 1);
         this.health.drawRect(rectX, rectY, this.getHealthBarWidth(rectWidth), rectHeight);
         this.health.endFill();
         this.health.z = 200;
 
         positionY += 7;
-        this.game.add.image(this.game.width - panelWidth, positionY, 'HealthJauge', 0);
+        group.game.add.image(group.game.width - panelWidth, positionY, 'HealthJauge', 0, group);
+        this.group = group;
     }
 
     public update ()
@@ -60,7 +60,7 @@ export class SelectedUnitPanel
     private copySelectedUnitImage(selectedUnit: Phaser.Sprite)
     {
         const oldImage = this.unitStateImage;
-        this.game.world.children = this.game.world.children.reduce(
+        this.group.game.world.children = this.group.game.world.children.reduce(
             function (children, object) {
                 if (object != oldImage ) {
                     children.push(object);
@@ -70,7 +70,7 @@ export class SelectedUnitPanel
             []
         );
 
-        let positionX = this.game.width - this.panelWidth;
+        let positionX = this.group.game.width - this.panelWidth;
         positionX += (selectedUnit instanceof Vehicle) ? 30 : 0;
         positionX += (selectedUnit instanceof Building) ? 20 : 0;
         positionX += (selectedUnit instanceof Item) ? 30 : 0;
@@ -80,7 +80,7 @@ export class SelectedUnitPanel
         positionY += (selectedUnit instanceof Building) ? 10 : 0;
         positionY += (selectedUnit instanceof Item) ? 35 : 0;
 
-        this.unitStateImage = this.game.add.sprite(positionX, positionY, selectedUnit.key, selectedUnit.frame);
+        this.unitStateImage = this.group.game.add.sprite(positionX, positionY, selectedUnit.key, selectedUnit.frame, this.group);
         this.unitStateImage.fixedToCamera = true;
         this.unitStateImage.animations = selectedUnit.animations;
         this.unitStateImage.tint = selectedUnit.tint;
@@ -90,9 +90,9 @@ export class SelectedUnitPanel
         // TODO: bug when select the mine during the building, infinite loop on building
     }
 
-    private getHealthBarPositionX()
+    private getHealthBarPositionX(gameWidth: number)
     {
-        return this.game.width - 435;
+        return gameWidth - 435;
     }
 
     private getHealthBarWidth(maxWidth: number) {

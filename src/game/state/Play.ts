@@ -138,7 +138,7 @@ export default class Play extends Phaser.State
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
 
-        this.mainPanel = new MainPanel(this.game, panelWith, this.unitSelector, this.players, generatedMap, this.items);
+        this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items);
 
         this.fogOfWar = new FogOfWar();
         const fogX = 0;
@@ -152,8 +152,6 @@ export default class Play extends Phaser.State
 
         const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
         this.fogOfWar.apply(this.bitmap, knownTiles);
-
-        console.log(this.game.world.children);
     }
 
     public update()

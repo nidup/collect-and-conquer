@@ -10,25 +10,23 @@ import {ItemRepository} from "../world/item/ItemRepository";
 
 export class MainPanel
 {
-    private game: Phaser.Game;
     private unitSelector: UnitSelector;
     private selectedUnitPanel: SelectedUnitPanel;
     private recruitPanel: RecruitPanel;
     private minimap: Minimap;
 
-    constructor(game: Phaser.Game, panelWith: number, unitSelector: UnitSelector, players: PlayerRepository, map: Map, items: ItemRepository)
+    constructor(group: Phaser.Group, panelWith: number, unitSelector: UnitSelector, players: PlayerRepository, map: Map, items: ItemRepository)
     {
-        this.game = game;
-        const screenWidth = this.game.width;
+        const screenWidth = group.game.width;
         this.unitSelector = unitSelector;
 
-        this.minimap = new Minimap(game, panelWith, map, players, items);
-        const background = game.add.sprite(screenWidth - panelWith, 0, 'CommandPanel', 0);
+        this.minimap = new Minimap(group.game, panelWith, map, players, items);
+        const background = group.game.add.sprite(screenWidth - panelWith, 0, 'CommandPanel', 0, group);
         background.z = 100;
 
-        this.selectedUnitPanel = new SelectedUnitPanel(game, panelWith, unitSelector);
-        this.recruitPanel = new RecruitPanel(this.game, players.human());
-        new OrderPanel(game, screenWidth, panelWith, players.human());
+        this.selectedUnitPanel = new SelectedUnitPanel(group, panelWith, unitSelector);
+        this.recruitPanel = new RecruitPanel(group, players.human());
+        new OrderPanel(group, screenWidth, panelWith, players.human());
     }
 
     public update()
