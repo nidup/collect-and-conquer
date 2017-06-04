@@ -55,7 +55,7 @@ export class Tank extends Vehicle
         this.brainDefend = new TankDefendBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
 
         this.brain = this.brainDefend;
-        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
+        this.brainText = new BrainText(group, this.x, this.y, '', {}, this, this.brain);
     }
 
     public update ()

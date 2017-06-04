@@ -34,7 +34,7 @@ export class Scout extends Vehicle
 
         this.behavior = new SteeringComputer(this);
         this.brain = new ScoutExploreBrain(this);
-        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
+        this.brainText = new BrainText(group, this.x, this.y, '', {}, this, this.brain);
     }
 
     public getSteeringComputer(): SteeringComputer

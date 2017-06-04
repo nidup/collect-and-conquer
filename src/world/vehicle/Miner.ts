@@ -47,7 +47,7 @@ export class Miner extends Vehicle
         this.oilCapacity = 10
 
         this.brain = new MinerCollectBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
-        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
+        this.brainText = new BrainText(group, this.x, this.y, '', {}, this, this.brain);
     }
 
     public buildMine(oil: Oil)
