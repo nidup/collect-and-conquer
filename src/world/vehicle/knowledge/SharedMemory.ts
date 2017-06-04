@@ -1,12 +1,14 @@
 
 import {Map} from "../../../ai/map/Map";
 import {Oil} from "../../item/Oil";
+import {Building} from "../../building/Building";
 
 export class SharedMemory
 {
     private knownTiles: Array<Array<boolean>>;
     private tileSize: number;
     private knownOils: Array<Oil>;
+    private knownEnemyBuildings: Array<Building>;
 
     public constructor(map: Map)
     {
@@ -27,6 +29,7 @@ export class SharedMemory
         );
         this.tileSize = map.getTileSize();
         this.knownOils = [];
+        this.knownEnemyBuildings = [];
     }
 
     public registerGrounds(position: Phaser.Point, visibilityScope: number)
@@ -75,6 +78,26 @@ export class SharedMemory
         );
 
         return this.knownOils;
+    }
+
+    public registerEnemyBuilding(building: Building)
+    {
+        let known = false;
+        this.knownEnemyBuildings.forEach(function(knownBuilding: Building) {
+            if (knownBuilding == building) {
+                known = true;
+            }
+        });
+        if (!known) {
+            this.knownEnemyBuildings.push(building);
+        }
+    }
+
+    public getKnownEnemyBuildings(): Array<Building>
+    {
+        // TODO: destroy?!
+
+        return this.knownEnemyBuildings;
     }
 
     private getCirclePoints(centerX: number, centerY: number, radius: number): Array<{x: number, y:number}>

@@ -5,6 +5,7 @@ import {BuildingRepository} from "../../building/BuildingRepository";
 import {VehicleRepository} from "../VehicleRepository";
 import {Oil} from "../../item/Oil";
 import {Vehicle} from "../Vehicle";
+import {Building} from "../../building/Building";
 
 export class Camera
 {
@@ -94,5 +95,42 @@ export class Camera
             }, []);
 
         return visibleOils;
+    }
+
+    public visibleEnemyBuildings(position: Phaser.Point): Array<Building>
+    {
+        class BuildingAndDistance {
+            public building: Building;
+            public distance: number;
+            constructor (building: Building, distance: number) {
+                this.building = building;
+                this.distance = distance;
+            }
+        }
+        const transfoAddDistance = function(building: Building) {
+            return new BuildingAndDistance(building, position.distance(building.getPosition()));
+        };
+        const visibilityScope = this.visibilityScope;
+        const myArmy = this.army;
+        const visibleBuildings = this.buildings.all()
+            .filter(function (building: Building) {
+                return building.getArmy() != myArmy;
+            })
+            .reduce(function (buildingsWithDistance, building) {
+                buildingsWithDistance.push(transfoAddDistance(building));
+                return buildingsWithDistance;
+            }, [])
+            .sort(function (building1: BuildingAndDistance, building2: BuildingAndDistance) {
+                return building1.distance > building2.distance ? 1 : -1;
+            })
+            .filter(function (buildingAndDistance: BuildingAndDistance) {
+                    return buildingAndDistance.distance < visibilityScope
+                }
+            ).reduce(function (visibleBuildings, visibleBuildingAndDistance: BuildingAndDistance) {
+                visibleBuildings.push(visibleBuildingAndDistance.building);
+                return visibleBuildings;
+            }, []);
+
+        return visibleBuildings;
     }
 }

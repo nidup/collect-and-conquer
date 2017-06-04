@@ -3,6 +3,7 @@ import {Camera} from "./Camera";
 import {Radar} from "./Radar";
 import {SharedMemory} from "../knowledge/SharedMemory";
 import {Oil} from "../../item/Oil";
+import {Building} from "../../building/Building";
 
 export class Radio
 {
@@ -24,6 +25,10 @@ export class Radio
         const sharedMemory = this.sharedMemory;
         visibleOils.map(function(visibleOil: Oil) {
             sharedMemory.registerOil(visibleOil);
+        });
+        const visibleEnemyBuildings = this.camera.visibleEnemyBuildings(position);
+        visibleEnemyBuildings.map(function(visibleEnemyBuilding: Building) {
+            sharedMemory.registerEnemyBuilding(visibleEnemyBuilding);
         });
     }
 }
