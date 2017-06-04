@@ -60,7 +60,7 @@ export class SelectedUnitPanel
     private copySelectedUnitImage(selectedUnit: Phaser.Sprite)
     {
         const oldImage = this.unitStateImage;
-        this.group.game.world.children = this.group.game.world.children.reduce(
+        this.group.children = this.group.children.reduce(
             function (children, object) {
                 if (object != oldImage ) {
                     children.push(object);
