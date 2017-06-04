@@ -8,7 +8,6 @@ import {PathFinder} from "../../../ai/path/PathFinder";
 
 /**
  * Defending FSM
- * - Wander Attack -> Pursuing + Attack
  * - Wander Defend Unit (no Mine) -> escorting Miner
  * - Wander Defend Mine -> patrol Mine to Base
  */
@@ -29,7 +28,7 @@ export class TankDefendBrain extends VehicleBrain
 
     private explore = () =>
     {
-        const visibleEnemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
+        const visibleEnemy = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         const closestMiner = this.host.getRadar().closestTeamate(this.host.getPosition().clone(), Miner);
         const closestMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
         const closestBase = this.host.getRadar().closestBase(this.host.getPosition());
@@ -50,7 +49,7 @@ export class TankDefendBrain extends VehicleBrain
 
     private escortingMiner = () =>
     {
-        const visibleEnemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
+        const visibleEnemy = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         const closestMiner = this.host.getRadar().closestTeamate(this.host.getPosition().clone(), Miner);
         const closestBase = this.host.getRadar().closestBase(this.host.getPosition());
         const closestMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
@@ -71,7 +70,7 @@ export class TankDefendBrain extends VehicleBrain
 
     private protectingMine = () =>
     {
-        const visibleEnemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
+        const visibleEnemy = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         const closestMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
         if (visibleEnemy) {
             this.path = null;
@@ -88,10 +87,10 @@ export class TankDefendBrain extends VehicleBrain
 
     private attackEnemy = () =>
     {
-        const enemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
+        const enemy = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         if (enemy !== null) {
             this.host.getSteeringComputer().pursuing(enemy);
-            this.host.attack(enemy);
+            this.host.attackVehicle(enemy);
         } else {
             this.fsm.popState();
             this.fsm.pushState(new State('explore', this.explore));

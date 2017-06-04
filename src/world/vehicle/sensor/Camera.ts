@@ -29,7 +29,7 @@ export class Camera
         return this.visibilityScope;
     }
 
-    public closestVisibleEnemy(position: Phaser.Point): Vehicle|null
+    public closestVisibleEnemyVehicle(position: Phaser.Point): Vehicle|null
     {
         class VehicleAndDistance {
             public vehicle: Vehicle;

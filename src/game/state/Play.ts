@@ -145,6 +145,8 @@ export default class Play extends Phaser.State
         armyRed.recruitScout(450, 800);
         armyRed.recruitScout(300, 600);
         armyRed.recruitTank(650, 760);
+        // armyRed.recruitTank(250, 260);
+        // armyRed.getStrategy().attack();
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);

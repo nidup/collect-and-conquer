@@ -17,7 +17,7 @@ export class ScoutExploreBrain extends VehicleBrain
 
     public wander = () =>
     {
-        const enemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
+        const enemy = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         if (enemy !== null) {
             this.fsm.pushState(new State('evading', this.evading));
 
@@ -30,7 +30,7 @@ export class ScoutExploreBrain extends VehicleBrain
 
     public evading = () =>
     {
-        const enemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
+        const enemy = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         if (enemy !== null) {
             // TODO: flee makes something more natural when pursuing!
             // TODO: sometimes both vehicle and enemy does not move anymore!

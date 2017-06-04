@@ -10,8 +10,10 @@ export class StateColors
         'escorting': '#eedb13',
         'protect mine': '#eedb13',
         'pursuing': '#ee8400',
+        'go to building': '#ee8400',
         'evading': '#ff4040',
-        'attack': '#ff4040'
+        'attack vehicle': '#ff4040',
+        'attack building': '#ff4040',
     };
 
     public getColor(state: string): string

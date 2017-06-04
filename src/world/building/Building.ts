@@ -23,6 +23,25 @@ export abstract class Building extends Phaser.Sprite
         this.healthBar.update();
     }
 
+    public isDestroyed() :boolean
+    {
+        return this.health <= 20;
+    }
+
+    public hit(damage: number)
+    {
+        this.damage(damage)
+        if (!this.isDestroyed()) {
+            const hitSprite = this.game.add.sprite(this.x, this.y, 'MediumExplosion');
+            hitSprite.animations.add('hit');
+            hitSprite.animations.play('hit', 20, false, true);
+        } else {
+            const dieSprite = this.game.add.sprite(this.x - this.width / 4, this.y - this.height / 4, 'BigExplosion');
+            dieSprite.animations.add('die');
+            dieSprite.animations.play('die', 20, false, true);
+        }
+    }
+
     destroy(destroyChildren?: boolean): void
     {
         this.healthBar.destroy();

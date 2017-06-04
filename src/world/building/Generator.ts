@@ -9,11 +9,11 @@ export class Generator extends Building
         super(group, x, y, army, key, frame);
 
         this.maxHealth = 300;
-        this.heal(this.maxHealth);
-
+        this.health = this.maxHealth;
 
         this.anchor.setTo(.5,.5);
         group.game.physics.enable(this, Phaser.Physics.ARCADE);
+        this.body.immovable = true;
         this.body.allowGravity = false;
         this.body.setCircle(28, -6, 6);
         this.inputEnabled = true;
