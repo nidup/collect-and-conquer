@@ -24,7 +24,7 @@ export default class Play extends Phaser.State
     private vehicles: VehicleRepository;
     private collisionLayer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
-    private debug: boolean = false;
+    private debug: boolean = true;
     private mainPanel: MainPanel;
     private players: PlayerRepository;
     private fogOfWar: FogOfWar;

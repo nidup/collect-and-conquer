@@ -30,25 +30,35 @@ export class SharedMemory
     {
         // TODO: draw a circle!
 
-        const scope = Math.ceil(visibilityScope / this.tileSize) + 1;
         const centerX = Math.ceil((position.x) / this.tileSize) - 1;
         const centerY = Math.ceil((position.y) / this.tileSize) - 1;
-        const startX = Math.ceil(centerX - scope / 2);
-        const endX = Math.ceil(centerX + scope / 2);
-        const startY = Math.ceil(centerY - scope / 2);
-        const endY = Math.ceil(centerY + scope / 2);
+        const radius = Math.ceil(Math.ceil(visibilityScope / this.tileSize) / 2);
 
-        for (let y = startY; y < endY; y++) {
-            for (let x = startX; x < endX; x++) {
-                if (x >= 0 && y >= 0 && y < this.knownTiles.length && x < this.knownTiles[y].length) {
-                    this.knownTiles[y][x] = true;
-                }
+        const points = this.getCirclePoints(centerX, centerY, radius);
+        const knownTiles = this.knownTiles;
+        points.map(function(point: {x: number, y:number}) {
+            if (point.x >= 0 && point.y >= 0 && point.y < knownTiles.length && point.x < knownTiles[point.y].length) {
+                knownTiles[point.y][point.x] = true;
             }
-        }
+        });
     }
 
     public getKnownTiles(): Array<Array<boolean>>
     {
         return this.knownTiles;
+    }
+
+    private getCirclePoints(centerX: number, centerY: number, radius: number): Array<{x: number, y:number}>
+    {
+        const points = [];
+        for (let i = -radius; i<=radius; i+=1) {
+            for (let j = -radius; j<=radius; j+=1) {
+                if (Math.round(Math.sqrt(i*i + j*j)) <= radius) {
+                    points.push({x: i + centerX, y: j + centerY});
+                }
+            }
+        }
+
+        return points;
     }
 }
