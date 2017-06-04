@@ -1,10 +1,9 @@
 
-import {MapAnalyser} from "../../ai/map/MapAnalyser";
 import {VehicleRepository} from "../../world/vehicle/VehicleRepository";
 import {BuildingRepository} from "../../world/building/BuildingRepository";
 import {MapGenerator} from "../../ai/map/generator/MapGenerator";
 import {RandomMapGenerator} from "../../ai/map/generator/RandomMapGenerator";
-import {CloudMapGenerator} from "../../ai/map/generator/CloudMapGenerator";
+import {CloudMapGenerator, EmptyArea} from "../../ai/map/generator/CloudMapGenerator";
 import {FileMapGenerator} from "../../ai/map/generator/FileMapGenerator";
 import {ItemRepository} from "../../world/item/ItemRepository";
 import {Item} from "../../world/item/Item";
@@ -16,18 +15,21 @@ import {Player} from "../player/Player";
 import {Army} from "../../world/Army";
 import {MainPanel} from "../../ui/MainPanel";
 import {PlayerRepository} from "../player/PlayerRepository";
+import {FogOfWar} from "../../ai/map/FogOfWar";
 
 export default class Play extends Phaser.State
 {
     private items: ItemRepository;
     private buildings: BuildingRepository;
     private vehicles: VehicleRepository;
-    private map : Phaser.Tilemap;
-    private layer : Phaser.TilemapLayer;
+    private collisionLayer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
     private debug: boolean = false;
-    private enableTileCollision = true;
     private mainPanel: MainPanel;
+    private players: PlayerRepository;
+    private fogOfWar: FogOfWar;
+    private tiles: Array<Array<Phaser.Tile>>;
+    private bitmap: Phaser.BitmapData;
 
     public create()
     {
@@ -35,53 +37,82 @@ export default class Play extends Phaser.State
             this.game.time.advancedTiming = true
         }
         this.game.stage.backgroundColor = '#000000';
-        this.game.antialias = false;
+
+        const groundLayer = this.game.add.group();
+        groundLayer.name = 'Ground';
+        const unitLayer = this.game.add.group();
+        unitLayer.name = 'Unit';
+        const interfaceLayer = this.game.add.group();
+        interfaceLayer.name = 'Interface';
+        const fogOfWarLayer = this.game.add.group();
+        fogOfWarLayer.name = 'Fog';
 
         const panelWith = 240;
         const mapWidth = this.game.width - panelWith;
         const mapHeight = this.game.height;
         const tileSize = 20;
 
-        const mapGenerator = new CloudMapGenerator(this.game, mapWidth, mapHeight); //TODO 132 to fix!!
-        // const mapGenerator = new RandomMapGenerator(this.game, mapWidth, mapHeight);
-        // const mapGenerator = new FileMapGenerator(this.game, mapWidth, mapHeight);
+        const baseAreaGap = 4;
+        const baseBlueX = 150;
+        const baseBlueY = 150;
+        const baseRedX = 850;
+        const baseRedY = 650;
+        const oilAreaGap = 2;
+        const oil1X = 450;
+        const oil1Y = 150;
+        const oil2X = 850;
+        const oil2Y = 150;
+        const oil3X = 550;
+        const oil3Y = 650;
+        const oil4X = 150;
+        const oil4Y = 650;
+        const oil5X = 500;
+        const oil5Y = 400;
+
+        const emptyAreas = [];
+        emptyAreas.push(new EmptyArea(Math.round(baseBlueX/tileSize), Math.round(baseBlueY/tileSize), baseAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(baseRedX/tileSize), Math.round(baseRedY/tileSize), baseAreaGap));
+
+        emptyAreas.push(new EmptyArea(Math.round(oil1X/tileSize), Math.round(oil1Y/tileSize), oilAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(oil2X/tileSize), Math.round(oil2Y/tileSize), oilAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(oil3X/tileSize), Math.round(oil3Y/tileSize), oilAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(oil4X/tileSize), Math.round(oil4Y/tileSize), oilAreaGap));
+        emptyAreas.push(new EmptyArea(Math.round(oil5X/tileSize), Math.round(oil5Y/tileSize), oilAreaGap));
+
+        const mapGenerator = new CloudMapGenerator(groundLayer, mapWidth, mapHeight, tileSize, emptyAreas);
+        // const mapGenerator = new RandomMapGenerator(groundLayer, mapWidth, mapHeight, tileSize);
+        // const mapGenerator = new FileMapGenerator(groundLayer, mapWidth, mapHeight, tileSize);
         const generatedMap = mapGenerator.generate();
-        this.map = generatedMap.getTilemap();
+        this.tiles = generatedMap.getTiles();
 
-        // handle collisions
-        const analyser = new MapAnalyser(this.map.layers[0].data, tileSize);
-        const mapAnalyse = analyser.analyse();
-        if (this.enableTileCollision) {
-            this.map.setCollision(mapAnalyse.getUnwalkableIndexes());
-        }
-
-        this.layer = this.map.createLayer(MapGenerator.LAYER_NAME);
+        this.collisionLayer = generatedMap.getCollisionLayer();
         if (this.debug) {
-            this.layer.debug = true;
+            this.collisionLayer.debug = true;
         }
-        this.layer.resizeWorld();
+        this.collisionLayer.resizeWorld();
 
         this.items = new ItemRepository();
         this.buildings = new BuildingRepository();
         this.vehicles = new VehicleRepository();
 
-        const players = new PlayerRepository();
+        const oilQuantity = 1000;
+        this.items.add(new Oil(unitLayer, oil1X, oil1Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil2X, oil2Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil3X, oil3Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil4X, oil4Y, 'Icons', 0, oilQuantity));
+        this.items.add(new Oil(unitLayer, oil5X, oil5Y, 'Icons', 0, oilQuantity));
 
-        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, mapAnalyse, this.game);
+        this.players = new PlayerRepository();
+
+        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, unitLayer);
         const humanPlayer = new Player(armyBlue, true);
-        players.add(humanPlayer);
+        this.players.add(humanPlayer);
 
-        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, mapAnalyse, this.game)
+        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, unitLayer)
         const botPlayer = new Player(armyRed, false);
-        players.add(botPlayer);
+        this.players.add(botPlayer);
 
-        this.items.add(new Oil(this.game, 450, 150, 'Icons', 0, 1000));
-        this.items.add(new Oil(this.game, 850, 150, 'Icons', 0, 1000));
-        this.items.add(new Oil(this.game, 550, 650, 'Icons', 0, 1000));
-        this.items.add(new Oil(this.game, 150, 650, 'Icons', 0, 1000));
-        this.items.add(new Oil(this.game, 500, 400, 'Icons', 0, 1000));
-
-        const base = armyBlue.buildBase(150, 150);
+        const base = armyBlue.buildBase(baseBlueX, baseBlueY);
         base.stock(400);
 
         /*
@@ -107,15 +138,30 @@ export default class Play extends Phaser.State
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
 
-        this.mainPanel = new MainPanel(this.game, panelWith, this.unitSelector, players, generatedMap, this.items);
+        this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items);
+
+        this.fogOfWar = new FogOfWar();
+        const fogX = 0;
+        const fogY = 0;
+        this.bitmap = this.game.make.bitmapData(52, 40);
+
+        const imageFogOFWar = this.game.add.image(fogX, fogY, this.bitmap, 0, fogOfWarLayer);
+        imageFogOFWar.anchor.set(0, 0);
+        imageFogOFWar.scale.set(generatedMap.getTileSize(), generatedMap.getTileSize());
+        fogOfWarLayer.add(imageFogOFWar);
+
+        const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
+        this.fogOfWar.apply(this.bitmap, knownTiles);
     }
 
     public update()
     {
         this.updateItems(this.items);
-        this.updateVehicles(this.vehicles, this.game, this.layer);
+        this.updateVehicles(this.vehicles, this.game, this.collisionLayer);
         this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
         this.mainPanel.update();
+        const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
+        this.fogOfWar.apply(this.bitmap, knownTiles);
     }
 
     private updateItems(items: ItemRepository)
@@ -143,12 +189,10 @@ export default class Play extends Phaser.State
                 vehicle.destroy();
             });
 
-        if (this.enableTileCollision) {
-            const layer = collisionLayer;
-            aliveVehicles.all().map(function(vehicle: Vehicle) {
-                game.physics.arcade.collide(vehicle, layer);
-            });
-        }
+        const layer = collisionLayer;
+        aliveVehicles.all().map(function(vehicle: Vehicle) {
+            game.physics.arcade.collide(vehicle, layer);
+        });
     }
 
     // TODO: move to panel

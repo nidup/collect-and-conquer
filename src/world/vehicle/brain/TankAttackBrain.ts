@@ -25,7 +25,7 @@ export class TankAttackBrain extends VehicleBrain
 
     private explore = () =>
     {
-        const visibleEnemy = this.host.getRadar().closestVisibleEnemy(this.host.getPosition().clone(), this.host.getVisibilityScope());
+        const visibleEnemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
         if (visibleEnemy) {
             this.fsm.popState();
             this.fsm.pushState(new State('attack', this.attackEnemy));
@@ -38,7 +38,7 @@ export class TankAttackBrain extends VehicleBrain
 
     private attackEnemy = () =>
     {
-        const enemy = this.host.getRadar().closestVisibleEnemy(this.host.getPosition().clone(), this.host.getVisibilityScope());
+        const enemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
         if (enemy !== null) {
             this.host.getSteeringComputer().pursuing(enemy);
             this.host.attack(enemy);

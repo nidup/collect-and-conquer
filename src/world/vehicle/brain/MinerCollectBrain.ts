@@ -25,7 +25,7 @@ export class MinerCollectBrain extends VehicleBrain
 
     public explore = () =>
     {
-        const oil = this.host.getRadar().closestVisibleOil(this.host.getPosition(), this.host.getVisibilityScope());
+        const oil = this.host.getCamera().closestVisibleOil(this.host.getPosition());
         const mine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
         const base = this.host.getRadar().closestBase(this.host.getPosition());
         const knowBaseAndMine = mine != null && base != null;
@@ -51,11 +51,18 @@ export class MinerCollectBrain extends VehicleBrain
 
     public gotoOil = () =>
     {
-        const oil = this.host.getRadar().closestVisibleOil(this.host.getPosition(), this.host.getVisibilityScope());
+        const exploitableMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
+        const oil = this.host.getCamera().closestVisibleOil(this.host.getPosition());
         const lookForOilPosition = !oil;
         const canGoToMinePlaceholder = this.path && this.host.getPosition().distance(this.path.lastNode()) > this.host.getBuildingScope();
         const canBuildMine = this.path && this.host.getPosition().distance(this.path.lastNode()) < this.host.getBuildingScope();
-        if (lookForOilPosition) {
+        if (exploitableMine) {
+            this.path = this.pathfinder.findPhaserPointPath(this.host.getPosition().clone(), exploitableMine.getPosition().clone());
+            if (this.path) {
+                this.fsm.popState();
+                this.fsm.pushState(new State('go to mine', this.gotoMine));
+            }
+        } else if (lookForOilPosition) {
             this.path = null;
             this.fsm.popState();
             this.fsm.pushState(new State('explore', this.explore));
@@ -75,7 +82,7 @@ export class MinerCollectBrain extends VehicleBrain
 
     public buildMine = () =>
     {
-        const oil = this.host.getRadar().closestVisibleOil(this.host.getPosition(), this.host.getVisibilityScope());
+        const oil = this.host.getCamera().closestVisibleOil(this.host.getPosition());
         if (oil) {
             this.host.buildMine(oil);
             this.fsm.popState();

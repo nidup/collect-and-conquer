@@ -1,7 +1,7 @@
 
 import {Vehicle} from "../Vehicle";
 import {StackFSM} from "../../../ai/fsm/StackFSM";
-import {StateColors} from "../StateColor";
+import {StateColors} from "./StateColor";
 import {VehicleBrain} from "../brain/VehicleBrain";
 
 export class BrainText extends Phaser.Text
@@ -10,14 +10,14 @@ export class BrainText extends Phaser.Text
     private brain: VehicleBrain;
     private stateColors: StateColors;
 
-    constructor(game: Phaser.Game, x: number, y: number, text: string, style, vehicle: Vehicle, brain: VehicleBrain)
+    constructor(group: Phaser.Group, x: number, y: number, text: string, style, vehicle: Vehicle, brain: VehicleBrain)
     {
-        super(game, x, y, text, style);
+        super(group.game, x, y, text, style);
         this.brain = brain;
         this.vehicle = vehicle;
         this.stateColors = new StateColors();
-        game.physics.enable(this, Phaser.Physics.ARCADE);
-        game.add.existing(this);
+        group.game.physics.enable(this, Phaser.Physics.ARCADE);
+        group.add(this);
     }
 
     public update ()

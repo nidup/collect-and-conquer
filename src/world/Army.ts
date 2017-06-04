@@ -3,7 +3,6 @@ import {VehicleRepository} from "./vehicle/VehicleRepository";
 import {Radar} from "./vehicle/sensor/Radar";
 import {BuildingRepository} from "./building/BuildingRepository";
 import {ItemRepository} from "./item/ItemRepository";
-import {MapAnalyse} from "../ai/map/MapAnalyse";
 import {Miner} from "./vehicle/Miner";
 import {Scout} from "./vehicle/Scout";
 import {Tank} from "./vehicle/Tank";
@@ -15,6 +14,9 @@ import {Oil} from "./item/Oil";
 import {Strategy} from "./Strategy";
 import {Building} from "./building/Building";
 import {Vehicle} from "./vehicle/Vehicle";
+import {Map} from "../ai/map/Map";
+import {Camera} from "./vehicle/sensor/Camera";
+import {SharedMemory} from "./vehicle/knowledge/SharedMemory";
 
 export class Army
 {
@@ -24,66 +26,73 @@ export class Army
     private buildings: BuildingRepository;
     private items: ItemRepository;
     private radar: Radar;
-    private mapAnalyse: MapAnalyse;
-    private game: Phaser.Game;
+    private map: Map;
+    private group: Phaser.Group;
+    private sharedMemory: SharedMemory;
 
-    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, mapAnalyse: MapAnalyse, game: Phaser.Game)
+    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, map: Map, group: Phaser.Group)
     {
         this.color = color;
         this.strategy = new Strategy();
         this.vehicles = vehicles;
         this.buildings = buildings;
         this.items = items;
-        this.mapAnalyse = mapAnalyse; // TODO: inject in radar?
-        this.game = game;
-        this.radar = new Radar(this.items, this.buildings, this.vehicles, this);
+        this.map = map;
+        this.group = group;
+        this.sharedMemory = new SharedMemory(map);
+        this.radar = new Radar(this.items, this.buildings, this.vehicles, this, this.sharedMemory);
     }
 
     public recruitMiner(x: number, y: number): Miner
     {
-        const vehicle = new Miner(this.game, x, y, this, this.radar, 'Miner', 0, this.mapAnalyse);
+        const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
+        const vehicle = new Miner(this.group, x, y, this, this.radar, camera, 'Miner', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
 
     public recruitScout(x: number, y: number): Scout
     {
-        const vehicle = new Scout(this.game, x, y, this, this.radar, 'Scout1', 0);
+        const camera = new Camera(this.items, this.buildings, this.vehicles, this, 240);
+        const vehicle = new Scout(this.group, x, y, this, this.radar, camera, 'Scout1', 0);
         this.vehicles.add(vehicle);
         return vehicle;
     }
 
     public recruitTank(x: number, y: number): Tank
     {
-        const vehicle = new Tank(this.game, x, y, this, this.radar, 'Tank5', 0, this.mapAnalyse);
+        const camera = new Camera(this.items, this.buildings, this.vehicles, this, 180);
+        const vehicle = new Tank(this.group, x, y, this, this.radar, camera, 'Tank5', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
 
     public recruitBuilder(x: number, y: number): Builder
     {
-        const vehicle = new Builder(this.game, x, y, this, this.radar, 'Builder1', 0, this.mapAnalyse);
+        const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
+        const vehicle = new Builder(this.group, x, y, this, this.radar, camera, 'Builder1', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }
 
     public buildBase(x: number, y:number): Base
     {
-        const building = new Base(this.game, x, y, this, 'Base', 0);
+        const building = new Base(this.group, x, y, this, 'Base', 0);
         this.buildings.add(building);
+        this.sharedMemory.registerEnvironment(building.getPosition(), 200);
         return building;
     }
 
     public buildGenerator(x: number, y:number): Generator
     {
-        const building = new Generator(this.game, x, y, this, 'Generator', 0);
+        const building = new Generator(this.group, x, y, this, 'Generator', 0);
         this.buildings.add(building);
         return building;
     }
 
     public buildMine(x: number, y:number, oil: Oil): Mine
     {
-        const building = new Mine(this.game, x, y, this, 'Mine', 0, oil.getQuantity())
+        const building = new Mine(this.group, x, y, this, 'Mine', 0, oil.getQuantity())
         this.buildings.add(building);
         return building;
     }
@@ -124,5 +133,10 @@ export class Army
                 return vehicle.getArmy() == myself;
             }
         );
+    }
+
+    public getSharedMemory(): SharedMemory
+    {
+        return this.sharedMemory;
     }
 }

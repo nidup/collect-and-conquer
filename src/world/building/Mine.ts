@@ -6,9 +6,9 @@ export class Mine extends Building
 {
     private remainingQuantity: number;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, key: string, frame: number, quantity: number)
+    constructor(group: Phaser.Group, x: number, y: number, army: Army, key: string, frame: number, quantity: number)
     {
-        super(game, x, y, army, key, frame);
+        super(group, x, y, army, key, frame);
 
         this.maxHealth = 200;
         this.health = this.maxHealth;
@@ -16,7 +16,7 @@ export class Mine extends Building
         this.remainingQuantity = quantity;
 
         this.anchor.setTo(.5,.5);
-        game.physics.enable(this, Phaser.Physics.ARCADE);
+        group.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.allowGravity = false;
         this.body.setCircle(28, -10, 6);
 
@@ -29,7 +29,7 @@ export class Mine extends Building
 
         this.animations.play('build');
 
-        game.add.existing(this);
+        group.add(this);
     }
 
     public update ()

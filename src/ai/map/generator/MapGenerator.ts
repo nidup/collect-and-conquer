@@ -3,16 +3,17 @@ import {Map} from "../Map";
 
 export abstract class MapGenerator
 {
-    public static LAYER_NAME: string = 'Tiles';
+    protected group: Phaser.Group;
     protected screenWidth: number;
     protected screenHeight: number;
-    protected game: Phaser.Game;
+    protected tilesize: number;
 
-    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number)
+    constructor(group: Phaser.Group, screenWidth: number, screenHeight: number, tilesize: number)
     {
+        this.group = group;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-        this.game = game;
+        this.tilesize = tilesize;
     }
 
     abstract generate(): Map;

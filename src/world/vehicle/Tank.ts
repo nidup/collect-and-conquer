@@ -2,13 +2,14 @@
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
 import {Vehicle} from "./Vehicle";
 import {Army} from "../Army";
+import {Camera} from "./sensor/Camera";
 import {Radar} from "./sensor/Radar";
 import {PathFinder} from "../../ai/path/PathFinder";
-import {MapAnalyse} from "../../ai/map/MapAnalyse";
 import {TankDefendBrain} from "./brain/TankDefendBrain";
 import Physics = Phaser.Physics;
 import {TankAttackBrain} from "./brain/TankAttackBrain";
 import {BrainText} from "./info/BrainText";
+import {Map} from "../../ai/map/Map";
 
 export class Tank extends Vehicle
 {
@@ -18,9 +19,9 @@ export class Tank extends Vehicle
     private brainAttack: TankAttackBrain;
     private brainDefend: TankDefendBrain;
 
-    constructor(game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key: string, frame: number, mapAnalyse: MapAnalyse)
+    constructor(group: Phaser.Group, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map)
     {
-        super(game, x, y, army, radar, key, frame);
+        super(group, x, y, army, radar, camera, key, frame);
 
         this.maxHealth = 150;
         this.health = this.maxHealth;
@@ -29,7 +30,7 @@ export class Tank extends Vehicle
         this.attackDamage = 8;
 
         this.anchor.setTo(.5, .5);
-        game.physics.enable(this, Phaser.Physics.ARCADE);
+        group.game.physics.enable(this, Phaser.Physics.ARCADE);
 
         this.body.maxVelocity.set(this.maxVelocity, this.maxVelocity);
         this.body.allowGravity = false;
@@ -40,21 +41,21 @@ export class Tank extends Vehicle
         this.animations.add('right', [5], 10, true);
         this.animations.play('right');
 
-        game.add.existing(this);
+        group.add(this);
 
         this.behavior = new SteeringComputer(this);
 
-        this.weapon = game.add.weapon(30, 'Bullet', 14);
+        this.weapon = group.game.add.weapon(30, 'Bullet', 14);
         this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
         this.weapon.bulletSpeed = 600;
         this.weapon.fireRate = 500;
         this.weapon.trackSprite(this, 0, 0, true);
 
         this.brainAttack = new TankAttackBrain(this);
-        this.brainDefend = new TankDefendBrain(this, new PathFinder(mapAnalyse));
+        this.brainDefend = new TankDefendBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
 
         this.brain = this.brainDefend;
-        this.brainText = new BrainText(this.game, this.x, this.y, '', {}, this, this.brain);
+        this.brainText = new BrainText(group, this.x, this.y, '', {}, this, this.brain);
     }
 
     public update ()
@@ -87,16 +88,6 @@ export class Tank extends Vehicle
             );
             this.weapon.fireAtSprite(enemy)
         }
-    }
-
-    public getVisibilityScope()
-    {
-        return this.visibilityScope;
-    }
-
-    public getRadar(): Radar
-    {
-        return this.radar;
     }
 
     public getSteeringComputer(): SteeringComputer

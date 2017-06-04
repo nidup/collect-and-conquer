@@ -29,7 +29,7 @@ export class TankDefendBrain extends VehicleBrain
 
     private explore = () =>
     {
-        const visibleEnemy = this.host.getRadar().closestVisibleEnemy(this.host.getPosition().clone(), this.host.getVisibilityScope());
+        const visibleEnemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
         const closestMiner = this.host.getRadar().closestTeamate(this.host.getPosition().clone(), Miner);
         const closestMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
         const closestBase = this.host.getRadar().closestBase(this.host.getPosition());
@@ -50,7 +50,7 @@ export class TankDefendBrain extends VehicleBrain
 
     private escortingMiner = () =>
     {
-        const visibleEnemy = this.host.getRadar().closestVisibleEnemy(this.host.getPosition().clone(), this.host.getVisibilityScope());
+        const visibleEnemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
         const closestMiner = this.host.getRadar().closestTeamate(this.host.getPosition().clone(), Miner);
         const closestBase = this.host.getRadar().closestBase(this.host.getPosition());
         const closestMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
@@ -71,7 +71,7 @@ export class TankDefendBrain extends VehicleBrain
 
     private protectingMine = () =>
     {
-        const visibleEnemy = this.host.getRadar().closestVisibleEnemy(this.host.getPosition().clone(), this.host.getVisibilityScope());
+        const visibleEnemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
         const closestMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
         if (visibleEnemy) {
             this.path = null;
@@ -88,7 +88,7 @@ export class TankDefendBrain extends VehicleBrain
 
     private attackEnemy = () =>
     {
-        const enemy = this.host.getRadar().closestVisibleEnemy(this.host.getPosition().clone(), this.host.getVisibilityScope());
+        const enemy = this.host.getCamera().closestVisibleEnemy(this.host.getPosition().clone());
         if (enemy !== null) {
             this.host.getSteeringComputer().pursuing(enemy);
             this.host.attack(enemy);

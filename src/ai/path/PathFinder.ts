@@ -4,18 +4,17 @@ import {TilePositionPath} from "./TilePositionPath";
 import * as EasyStar from "../../../node_modules/easystarjs"
 import {TilePosition} from "./TilePosition";
 import {PhaserPointPath} from "./PhaserPointPath";
-import {MapAnalyse} from "../map/MapAnalyse";
 
 export class PathFinder
 {
-    private mapAnalyse: MapAnalyse;
     private easystar;
+    private tiles: Array<Array<Phaser.Tile>>;
+    private tilesize: number;
 
-    constructor(mapAnalyse: MapAnalyse)
+    constructor(tiles: Array<Array<Phaser.Tile>>, walkableIndexes: Array<number>, tilesize: number)
     {
-        this.mapAnalyse = mapAnalyse;
-        const tiles = mapAnalyse.getTiles();
-        const acceptableTiles = mapAnalyse.getWalkableIndexes();
+        this.tiles = tiles;
+        this.tilesize = tilesize;
 
         // cf https://github.com/prettymuchbryce/easystarjs
         this.easystar = new EasyStar.js();
@@ -27,7 +26,7 @@ export class PathFinder
             }
         }
         this.easystar.setGrid(grid);
-        this.easystar.setAcceptableTiles(acceptableTiles);
+        this.easystar.setAcceptableTiles(walkableIndexes);
         this.easystar.enableSync();
         this.easystar.enableDiagonals();
     }
@@ -72,8 +71,8 @@ export class PathFinder
     private convertToTilePosition(point: Phaser.Point) :TilePosition
     {
         return new TilePosition(
-            Math.ceil(point.x / this.mapAnalyse.getTileSize()) - 1,
-            Math.ceil(point.y / this.mapAnalyse.getTileSize()) - 1
+            Math.ceil(point.x / this.tilesize) - 1,
+            Math.ceil(point.y / this.tilesize) - 1
         );
     }
 
@@ -81,8 +80,8 @@ export class PathFinder
     {
         // round to the center of the tile
         return new Phaser.Point(
-            position.getX() * this.mapAnalyse.getTileSize() + this.mapAnalyse.getTileSize() / 2,
-            position.getY() * this.mapAnalyse.getTileSize() + this.mapAnalyse.getTileSize() / 2,
+            position.getX() * this.tilesize + this.tilesize / 2,
+            position.getY() * this.tilesize + this.tilesize / 2,
         );
     }
 }

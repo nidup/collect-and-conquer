@@ -5,9 +5,9 @@ import {Tile} from "./Tile";
 
 export class FileMapGenerator extends MapGenerator
 {
-    constructor(game: Phaser.Game, screenWidth: number, screenHeight: number)
+    constructor(group: Phaser.Group, screenWidth: number, screenHeight: number, tilesize: number)
     {
-        super(game, screenWidth, screenHeight);
+        super(group, screenWidth, screenHeight, tilesize);
     }
 
     generate(): Map
@@ -15,7 +15,7 @@ export class FileMapGenerator extends MapGenerator
         let tileSize = 20;
         let tileSpacing = 20;
 
-        const map = this.game.add.tilemap('level1');
+        const map = this.group.game.add.tilemap('level1');
 
         map.addTilesetImage('GrasClif', 'GrasClif', tileSize, tileSize, 0, tileSpacing);
         map.addTilesetImage('Grass', 'Grass', tileSize, tileSize, 0, tileSpacing);
@@ -55,6 +55,6 @@ export class FileMapGenerator extends MapGenerator
             []
         );
 
-        return new Map(map, grounds);
+        return new Map(this.group, map, grounds, this.tilesize);
     }
 }

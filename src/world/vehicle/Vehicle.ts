@@ -1,35 +1,38 @@
 
 import {Boid} from "../../ai/steering/Boid";
 import {SteeringComputer} from "../../ai/steering/SteeringComputer";
-import {StackFSM} from "../../ai/fsm/StackFSM";
 import {BrainText} from "./info/BrainText";
 import {Army} from "../Army";
+import {Camera} from "./sensor/Camera";
 import {Radar} from "./sensor/Radar";
 import {HealthBar} from "../common/HealthBar";
 import {VehicleBrain} from "./brain/VehicleBrain";
+import {Radio} from "./sensor/Radio";
 
 export abstract class Vehicle extends Phaser.Sprite implements Boid
 {
     public body: Phaser.Physics.Arcade.Body;
     protected army: Army;
+    protected camera: Camera;
     protected radar: Radar;
+    protected radio: Radio;
     protected behavior: SteeringComputer;
     protected brain: VehicleBrain;
     protected brainText: BrainText;
     protected healthBar: HealthBar;
-    protected visibilityScope: number;
     protected maxVelocity: number;
 
-    constructor (game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number)
+    constructor (group: Phaser.Group, x: number, y: number, army: Army, radar: Radar, camera: Camera, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number)
     {
-        super(game, x, y, key, frame);
+        super(group.game, x, y, key, frame);
         this.army = army;
         this.radar = radar;
+        this.camera = camera;
+        this.radio = new Radio(camera, radar);
         this.tint = army.getColor();
         this.maxHealth = 100;
         this.health = 100;
-        this.healthBar = new HealthBar(this.game, this);
-        this.visibilityScope = 200;
+        this.healthBar = new HealthBar(group, this);
     }
 
     public update ()
@@ -39,6 +42,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.updateAngle();
         this.brainText.update();
         this.healthBar.update();
+        this.radio.communicate(this.getPosition());
     }
 
     public isAlive() :boolean
@@ -107,5 +111,15 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
 
     getMass(): number {
         return this.body.mass;
+    }
+
+    public getRadar(): Radar
+    {
+        return this.radar;
+    }
+
+    public getCamera(): Camera
+    {
+        return this.camera;
     }
 }
