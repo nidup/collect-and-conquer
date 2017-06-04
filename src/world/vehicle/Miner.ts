@@ -21,7 +21,7 @@ export class Miner extends Vehicle
 
     constructor(group: Phaser.Group, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map)
     {
-        super(group.game, x, y, army, radar, camera, key, frame);
+        super(group, x, y, army, radar, camera, key, frame);
 
         this.maxHealth = 100;
         this.health = this.maxHealth;

@@ -10,9 +10,9 @@ export class HealthBar
     private healthOkColor: number = 0x00FF00;
     private healthKoColor: number = 0xFF0000;
 
-    constructor(game: Phaser.Game, host: Phaser.Sprite)
+    constructor(group: Phaser.Group, host: Phaser.Sprite)
     {
-        this.game = game
+        this.game = group.game;
         this.host = host;
 
         const rectX = -this.host.width / 2;
@@ -20,12 +20,12 @@ export class HealthBar
         const rectWidth = this.host.width;
         const rectHeight = 4;
 
-        this.background = game.add.graphics(this.host.x, this.host.y);
+        this.background = group.game.add.graphics(this.host.x, this.host.y, group);
         this.background.beginFill(0x040404, 1);
         this.background.drawRect(rectX, rectY, rectWidth, rectHeight);
         this.game.physics.enable(this.background, Phaser.Physics.ARCADE);
 
-        this.foreground = game.add.graphics(this.host.x, this.host.y);
+        this.foreground = group.game.add.graphics(this.host.x, this.host.y, group);
         this.foreground.beginFill(this.healthOkColor, 1);
         this.foreground.drawRect(rectX, rectY, this.getHealthBarWidth(), rectHeight);
         this.game.physics.enable(this.foreground, Phaser.Physics.ARCADE);

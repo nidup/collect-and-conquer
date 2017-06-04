@@ -12,7 +12,7 @@ export class Scout extends Vehicle
 {
     constructor(group: Phaser.Group, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number)
     {
-        super(group.game, x, y, army, radar, camera, key, frame);
+        super(group, x, y, army, radar, camera, key, frame);
 
         this.maxHealth = 30;
         this.health = this.maxHealth;

@@ -15,7 +15,7 @@ export abstract class Building extends Phaser.Sprite
         this.tint = army.getColor();
         this.maxHealth = 100;
         this.health = 100;
-        this.healthBar = new HealthBar(this.game, this);
+        this.healthBar = new HealthBar(group, this);
     }
 
     public update ()

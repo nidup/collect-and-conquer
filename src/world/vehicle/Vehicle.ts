@@ -22,9 +22,9 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
     protected healthBar: HealthBar;
     protected maxVelocity: number;
 
-    constructor (game: Phaser.Game, x: number, y: number, army: Army, radar: Radar, camera: Camera, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number)
+    constructor (group: Phaser.Group, x: number, y: number, army: Army, radar: Radar, camera: Camera, key?: string | Phaser.RenderTexture | Phaser.BitmapData | PIXI.Texture, frame?: string | number)
     {
-        super(game, x, y, key, frame);
+        super(group.game, x, y, key, frame);
         this.army = army;
         this.radar = radar;
         this.camera = camera;
@@ -32,7 +32,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.tint = army.getColor();
         this.maxHealth = 100;
         this.health = 100;
-        this.healthBar = new HealthBar(this.game, this);
+        this.healthBar = new HealthBar(group, this);
     }
 
     public update ()
