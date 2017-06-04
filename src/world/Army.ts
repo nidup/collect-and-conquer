@@ -79,7 +79,7 @@ export class Army
     {
         const building = new Base(this.group, x, y, this, 'Base', 0);
         this.buildings.add(building);
-        this.sharedMemory.registerEnvironment(building.getPosition(), 200);
+        this.sharedMemory.registerGrounds(building.getPosition(), 200);
         return building;
     }
 

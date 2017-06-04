@@ -5,7 +5,6 @@ import {VehicleRepository} from "../VehicleRepository";
 import {Oil} from "../../item/Oil";
 import {Mine} from "../../building/Mine";
 import {Base} from "../../building/Base";
-import {Item} from "../../item/Item";
 import {Building} from "../../building/Building";
 import {Vehicle} from "../Vehicle";
 import {Army} from "../../Army";
@@ -26,11 +25,6 @@ export class Radar
         this.vehicles = vehicles;
         this.army = army;
         this.sharedMemory = sharedMemory;
-    }
-
-    public registerVisibleEnvironment(position: Phaser.Point, visibleScope: number): void
-    {
-        this.sharedMemory.registerEnvironment(position, visibleScope);
     }
 
     public closestExploitableMine(position: Phaser.Point): Mine|null
@@ -130,6 +124,35 @@ export class Radar
             });
 
         return closestTeamates.length > 0 ? closestTeamates[0].vehicle : null;
+    }
+
+    public closestKnownCollectableOil(position: Phaser.Point): Oil|null
+    {
+        class OilAndDistance {
+            public oil: Oil;
+            public distance: number;
+            constructor (oil: Oil, distance: number) {
+                this.oil = oil;
+                this.distance = distance;
+            }
+        }
+        const transfoAddDistance = function(oil: Oil) {
+            return new OilAndDistance(oil, position.distance(oil.getPosition()));
+        };
+        const closestOils = this.sharedMemory.getKnownOils()
+            .reduce(function (oilsWithDistance, oil) {
+                oilsWithDistance.push(transfoAddDistance(oil));
+                return oilsWithDistance;
+            }, [])
+            .sort(function (oil1: OilAndDistance, oil2: OilAndDistance) {
+                return oil1.distance > oil2.distance ? 1 : -1;
+            })
+            .filter(function (oilAndDistance: OilAndDistance) {
+                    return !oilAndDistance.oil.hasBeenCollected()
+                }
+            );
+
+        return closestOils.length > 0 ? closestOils[0].oil : null;
     }
 
     public closestObstacle(position: Phaser.Point, visibilityScope: number): Building

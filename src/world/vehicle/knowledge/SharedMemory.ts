@@ -1,10 +1,12 @@
 
 import {Map} from "../../../ai/map/Map";
+import {Oil} from "../../item/Oil";
 
 export class SharedMemory
 {
     private knownTiles: Array<Array<boolean>>;
     private tileSize: number;
+    private knownOils: Array<Oil>;
 
     public constructor(map: Map)
     {
@@ -24,12 +26,11 @@ export class SharedMemory
             []
         );
         this.tileSize = map.getTileSize();
+        this.knownOils = [];
     }
 
-    public registerEnvironment(position: Phaser.Point, visibilityScope: number)
+    public registerGrounds(position: Phaser.Point, visibilityScope: number)
     {
-        // TODO: draw a circle!
-
         const centerX = Math.ceil((position.x) / this.tileSize) - 1;
         const centerY = Math.ceil((position.y) / this.tileSize) - 1;
         const radius = Math.ceil(Math.ceil(visibilityScope / this.tileSize) / 2);
@@ -46,6 +47,34 @@ export class SharedMemory
     public getKnownTiles(): Array<Array<boolean>>
     {
         return this.knownTiles;
+    }
+
+    public registerOil(oil: Oil)
+    {
+        let known = false;
+        this.knownOils.forEach(function(knownOil: Oil) {
+            if (knownOil == oil) {
+                known = true;
+            }
+        });
+        if (!known) {
+            this.knownOils.push(oil);
+        }
+    }
+
+    public getKnownOils(): Array<Oil>
+    {
+        this.knownOils = this.knownOils.reduce(
+            function (stillExistingOils: Array<Oil>, oil: Oil) {
+                if (oil.body != null) {
+                    stillExistingOils.push(oil);
+                }
+                return stillExistingOils;
+            },
+            []
+        );
+
+        return this.knownOils;
     }
 
     private getCirclePoints(centerX: number, centerY: number, radius: number): Array<{x: number, y:number}>
