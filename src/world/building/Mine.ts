@@ -17,9 +17,9 @@ export class Mine extends Building
 
         this.anchor.setTo(.5,.5);
         group.game.physics.enable(this, Phaser.Physics.ARCADE);
+        this.body.immovable = true;
         this.body.allowGravity = false;
         this.body.setCircle(28, -10, 6);
-
         this.inputEnabled = true;
 
         this.animations.add('build', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16], 5, false);
@@ -39,7 +39,9 @@ export class Mine extends Building
             this.animations.play("extracting");
         }
 
-        if (this.remainingQuantity == 0) {
+        if (this.isDestroyed()) {
+            this.animations.play("destroyed");
+        } else if (this.remainingQuantity == 0) {
             this.animations.play("idle"); // TODO: unbuild and get back the miner
         }
     }

@@ -28,7 +28,7 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.army = army;
         this.radar = radar;
         this.camera = camera;
-        this.radio = new Radio(camera, radar);
+        this.radio = new Radio(camera, radar, army.getSharedMemory());
         this.tint = army.getColor();
         this.maxHealth = 100;
         this.health = 100;

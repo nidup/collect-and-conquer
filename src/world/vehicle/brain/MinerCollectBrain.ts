@@ -25,7 +25,7 @@ export class MinerCollectBrain extends VehicleBrain
 
     public explore = () =>
     {
-        const oil = this.host.getCamera().closestVisibleOil(this.host.getPosition());
+        const oil = this.host.getRadar().closestKnownCollectableOil(this.host.getPosition());
         const mine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
         const base = this.host.getRadar().closestBase(this.host.getPosition());
         const knowBaseAndMine = mine != null && base != null;
@@ -52,10 +52,11 @@ export class MinerCollectBrain extends VehicleBrain
     public gotoOil = () =>
     {
         const exploitableMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
-        const oil = this.host.getCamera().closestVisibleOil(this.host.getPosition());
+        const oil = this.host.getRadar().closestKnownCollectableOil(this.host.getPosition());
+        const distanceToOil = this.path && this.path.lastNode() ? this.host.getPosition().distance(this.path.lastNode()) : 10000;
         const lookForOilPosition = !oil;
-        const canGoToMinePlaceholder = this.path && this.host.getPosition().distance(this.path.lastNode()) > this.host.getBuildingScope();
-        const canBuildMine = this.path && this.host.getPosition().distance(this.path.lastNode()) < this.host.getBuildingScope();
+        const canGoToMinePlaceholder = distanceToOil > this.host.getBuildingScope();
+        const canBuildMine = distanceToOil < this.host.getBuildingScope();
         if (exploitableMine) {
             this.path = this.pathfinder.findPhaserPointPath(this.host.getPosition().clone(), exploitableMine.getPosition().clone());
             if (this.path) {
@@ -82,8 +83,10 @@ export class MinerCollectBrain extends VehicleBrain
 
     public buildMine = () =>
     {
-        const oil = this.host.getCamera().closestVisibleOil(this.host.getPosition());
-        if (oil) {
+        const oil = this.host.getRadar().closestKnownCollectableOil(this.host.getPosition());
+        const distanceToOil = oil ? this.host.getPosition().distance(oil.getPosition()) : 10000;
+        const canBuildMine = distanceToOil < this.host.getBuildingScope();
+        if (canBuildMine) {
             this.host.buildMine(oil);
             this.fsm.popState();
             this.fsm.pushState(new State('extracting', this.extracting));

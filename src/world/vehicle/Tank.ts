@@ -10,6 +10,7 @@ import Physics = Phaser.Physics;
 import {TankAttackBrain} from "./brain/TankAttackBrain";
 import {BrainText} from "./info/BrainText";
 import {Map} from "../../ai/map/Map";
+import {Building} from "../building/Building";
 
 export class Tank extends Vehicle
 {
@@ -45,13 +46,13 @@ export class Tank extends Vehicle
 
         this.behavior = new SteeringComputer(this);
 
-        this.weapon = group.game.add.weapon(30, 'Bullet', 14);
-        this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+        this.weapon = group.game.add.weapon(-1, 'Bullet', 14);
+        this.weapon.bulletKillType = Phaser.Weapon.KILL_NEVER;
         this.weapon.bulletSpeed = 600;
         this.weapon.fireRate = 500;
         this.weapon.trackSprite(this, 0, 0, true);
 
-        this.brainAttack = new TankAttackBrain(this);
+        this.brainAttack = new TankAttackBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
         this.brainDefend = new TankDefendBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
 
         this.brain = this.brainDefend;
@@ -70,11 +71,29 @@ export class Tank extends Vehicle
         super.update();
     }
 
-    public attack(enemy: Vehicle)
+    public attackVehicle(enemy: Vehicle)
     {
         const distance = this.getPosition().distance(enemy.getPosition());
         if (distance <= this.attackScope) {
+            const attackDamage = this.attackDamage;
+            const bullets = this.weapon.bullets;
 
+            this.game.physics.arcade.collide(
+                bullets,
+                enemy,
+                function (touchedEnemy, firedBullet) {
+                    touchedEnemy.hit(attackDamage);
+                    firedBullet.destroy();
+                }
+            );
+            this.weapon.fireAtSprite(enemy)
+        }
+    }
+
+    public attackBuilding(enemy: Building)
+    {
+        const distance = this.getPosition().distance(enemy.getPosition());
+        if (distance <= this.attackScope) {
             const attackDamage = this.attackDamage;
             const bullets = this.weapon.bullets;
 
@@ -98,5 +117,10 @@ export class Tank extends Vehicle
     public getBody(): Physics.Arcade.Body
     {
         return this.body;
+    }
+
+    public getAttackScope(): number
+    {
+        return this.attackScope;
     }
 }

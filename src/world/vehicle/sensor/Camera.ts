@@ -5,6 +5,7 @@ import {BuildingRepository} from "../../building/BuildingRepository";
 import {VehicleRepository} from "../VehicleRepository";
 import {Oil} from "../../item/Oil";
 import {Vehicle} from "../Vehicle";
+import {Building} from "../../building/Building";
 
 export class Camera
 {
@@ -28,7 +29,7 @@ export class Camera
         return this.visibilityScope;
     }
 
-    public closestVisibleEnemy(position: Phaser.Point): Vehicle|null
+    public closestVisibleEnemyVehicle(position: Phaser.Point): Vehicle|null
     {
         class VehicleAndDistance {
             public vehicle: Vehicle;
@@ -63,7 +64,7 @@ export class Camera
         return closestEnemies.length > 0 ? closestEnemies[0].vehicle : null;
     }
 
-    public closestVisibleOil(position: Phaser.Point): Oil|null
+    public visibleOils(position: Phaser.Point): Array<Oil>
     {
         class OilAndDistance {
             public oil: Oil;
@@ -77,7 +78,7 @@ export class Camera
             return new OilAndDistance(oil, position.distance(oil.getPosition()));
         };
         const visibilityScope = this.visibilityScope;
-        const closestOils = this.items.oils()
+        const visibleOils = this.items.oils()
             .reduce(function (oilsWithDistance, oil) {
                 oilsWithDistance.push(transfoAddDistance(oil));
                 return oilsWithDistance;
@@ -88,8 +89,48 @@ export class Camera
             .filter(function (oilAndDistance: OilAndDistance) {
                     return oilAndDistance.distance < visibilityScope && !oilAndDistance.oil.hasBeenCollected()
                 }
-            );
+            ).reduce(function (visibleOils, visibleOilAndDistance: OilAndDistance) {
+                visibleOils.push(visibleOilAndDistance.oil);
+                return visibleOils;
+            }, []);
 
-        return closestOils.length > 0 ? closestOils[0].oil : null;
+        return visibleOils;
+    }
+
+    public visibleEnemyBuildings(position: Phaser.Point): Array<Building>
+    {
+        class BuildingAndDistance {
+            public building: Building;
+            public distance: number;
+            constructor (building: Building, distance: number) {
+                this.building = building;
+                this.distance = distance;
+            }
+        }
+        const transfoAddDistance = function(building: Building) {
+            return new BuildingAndDistance(building, position.distance(building.getPosition()));
+        };
+        const visibilityScope = this.visibilityScope;
+        const myArmy = this.army;
+        const visibleBuildings = this.buildings.all()
+            .filter(function (building: Building) {
+                return building.getArmy() != myArmy;
+            })
+            .reduce(function (buildingsWithDistance, building) {
+                buildingsWithDistance.push(transfoAddDistance(building));
+                return buildingsWithDistance;
+            }, [])
+            .sort(function (building1: BuildingAndDistance, building2: BuildingAndDistance) {
+                return building1.distance > building2.distance ? 1 : -1;
+            })
+            .filter(function (buildingAndDistance: BuildingAndDistance) {
+                    return buildingAndDistance.distance < visibilityScope
+                }
+            ).reduce(function (visibleBuildings, visibleBuildingAndDistance: BuildingAndDistance) {
+                visibleBuildings.push(visibleBuildingAndDistance.building);
+                return visibleBuildings;
+            }, []);
+
+        return visibleBuildings;
     }
 }

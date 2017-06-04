@@ -24,10 +24,12 @@ export default class Play extends Phaser.State
     private vehicles: VehicleRepository;
     private collisionLayer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
-    private debug: boolean = false;
+    private debug: boolean = true;
     private mainPanel: MainPanel;
     private players: PlayerRepository;
     private fogOfWar: FogOfWar;
+    private enableFog: boolean = true;
+    private enableRandMap: boolean = false;
     private tiles: Array<Array<Phaser.Tile>>;
     private bitmap: Phaser.BitmapData;
 
@@ -79,7 +81,16 @@ export default class Play extends Phaser.State
         emptyAreas.push(new EmptyArea(Math.round(oil4X/tileSize), Math.round(oil4Y/tileSize), oilAreaGap));
         emptyAreas.push(new EmptyArea(Math.round(oil5X/tileSize), Math.round(oil5Y/tileSize), oilAreaGap));
 
-        const mapGenerator = new CloudMapGenerator(groundLayer, mapWidth, mapHeight, tileSize, emptyAreas);
+
+        if (!this.enableRandMap) {
+            this.game.rnd.state('!rnd,1,0.7121938972268254,0.2891752696596086,0.2457362802233547');
+            // this.game.rnd.state('!rnd,1,0.9783369363285601,0.5553183087613434,0.5118793193250895');
+            // this.game.rnd.state('!rnd,1,0.369288211222738,0.9462695836555213,0.9028305942192674');
+            // cool for collision debug this.game.rnd.state('!rnd,1,0.7287226526532322,0.30570402508601546,0.26226503564976156')
+        }
+
+        console.log(this.game.rnd.state());
+        const mapGenerator = new CloudMapGenerator(groundLayer, mapWidth, mapHeight, tileSize, emptyAreas, this.game.rnd);
         // const mapGenerator = new RandomMapGenerator(groundLayer, mapWidth, mapHeight, tileSize);
         // const mapGenerator = new FileMapGenerator(groundLayer, mapWidth, mapHeight, tileSize);
         const generatedMap = mapGenerator.generate();
@@ -134,6 +145,8 @@ export default class Play extends Phaser.State
         armyRed.recruitScout(450, 800);
         armyRed.recruitScout(300, 600);
         armyRed.recruitTank(650, 760);
+        // armyRed.recruitTank(250, 260);
+        // armyRed.getStrategy().attack();
 
         this.unitSelector = new UnitSelector();
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
@@ -150,8 +163,10 @@ export default class Play extends Phaser.State
         imageFogOFWar.scale.set(generatedMap.getTileSize(), generatedMap.getTileSize());
         fogOfWarLayer.add(imageFogOFWar);
 
-        const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
-        this.fogOfWar.apply(this.bitmap, knownTiles);
+        if (this.enableFog) {
+            const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
+            this.fogOfWar.apply(this.bitmap, knownTiles);
+        }
     }
 
     public update()
@@ -160,8 +175,10 @@ export default class Play extends Phaser.State
         this.updateVehicles(this.vehicles, this.game, this.collisionLayer);
         this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
         this.mainPanel.update();
-        const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
-        this.fogOfWar.apply(this.bitmap, knownTiles);
+        if (this.enableFog) {
+            const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
+            this.fogOfWar.apply(this.bitmap, knownTiles);
+        }
     }
 
     private updateItems(items: ItemRepository)

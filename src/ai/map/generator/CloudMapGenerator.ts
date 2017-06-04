@@ -15,13 +15,15 @@ export class CloudMapGenerator extends MapGenerator
 {
     private tileRegistry: TileRegistry;
     private emptyAreas: EmptyArea[];
+    private randomGenerator: Phaser.RandomDataGenerator;
 
-    constructor(group: Phaser.Group, screenWidth: number, screenHeight: number, tilesize: number, emptyAreas: EmptyArea[])
+    constructor(group: Phaser.Group, screenWidth: number, screenHeight: number, tilesize: number, emptyAreas: EmptyArea[], randomGenerator: Phaser.RandomDataGenerator)
     {
         super(group, screenWidth, screenHeight, tilesize);
 
         this.tileRegistry = new TileRegistry();
         this.emptyAreas = emptyAreas;
+        this.randomGenerator = randomGenerator;
     }
 
     generate(): Map
@@ -126,7 +128,7 @@ export class CloudMapGenerator extends MapGenerator
 
         for (let y = 0; y < mapHeight; y += blockSize) {
             for (let x = 0; x < mapWidth; x += blockSize) {
-                let random = Math.round(Math.random());
+                let random = Math.round(this.randomGenerator.between(0, 1));
                 for (let yi = 0; yi < blockSize; yi++) {
                     for (let xi = 0; xi < blockSize; xi++) {
                         if (undefined === squaresMap[y + yi]) {

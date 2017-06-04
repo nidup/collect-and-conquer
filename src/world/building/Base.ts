@@ -16,12 +16,13 @@ export class Base extends Building
     {
         super(group, x, y, army, key, frame);
 
-        this.maxHealth = 10000;
+        this.maxHealth = 300;
         this.heal(this.maxHealth);
         this.vehicleCosts = new VehicleCosts();
 
         this.anchor.setTo(.5,.5);
         group.game.physics.enable(this, Phaser.Physics.ARCADE);
+        this.body.immovable = true;
         this.body.allowGravity = false;
         this.body.setCircle(28, -6, 6);
         this.inputEnabled = true;
@@ -32,6 +33,14 @@ export class Base extends Building
         this.animations.play('idle');
 
         group.add(this);
+    }
+
+    public update ()
+    {
+        super.update();
+        if (this.isDestroyed()) {
+            this.animations.play("destroyed");
+        }
     }
 
     public buildMiner()
