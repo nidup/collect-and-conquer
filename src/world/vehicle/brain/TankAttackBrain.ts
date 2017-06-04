@@ -87,6 +87,8 @@ export class TankAttackBrain extends VehicleBrain
             this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
         } else if (notDestroyed && canAttack) {
             //this.host.getSteeringComputer().avoidCollision(this.host.getRadar());
+
+            // TODO!!
             this.host.getSteeringComputer().reset();
             this.host.getBody().velocity = new Phaser.Point(0, 0);
             this.host.attackBuilding(building);
