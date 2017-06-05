@@ -19,15 +19,17 @@ export class Minimap
     private players: PlayerRepository;
     private items: ItemRepository;
 
-    public constructor(game: Phaser.Game, panelWidth: number, map: Map, players: PlayerRepository, items: ItemRepository)
+    public constructor(group: Phaser.Group, panelWidth: number, map: Map, players: PlayerRepository, items: ItemRepository)
     {
         this.map = map;
         this.players = players;
         this.items = items;
         const marginX = 10;
         const marginY = 8;
-        this.bitmap = game.make.bitmapData(52, 40);
-        this.bitmap.addToWorld(game.width - panelWidth + marginX, marginY, 0, 0, 4.24, 4.24);
+        this.bitmap = group.game.make.bitmapData(52, 40);
+        const image = group.game.add.image(group.game.width - panelWidth + marginX, marginY, this.bitmap, 0, group);
+        image.anchor.set(0, 0);
+        image.scale.set(4.24, 4.24);
     }
 
     public update()

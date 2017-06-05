@@ -20,7 +20,7 @@ export class MainPanel
         const screenWidth = group.game.width;
         this.unitSelector = unitSelector;
 
-        this.minimap = new Minimap(group.game, panelWith, map, players, items);
+        this.minimap = new Minimap(group, panelWith, map, players, items);
         const background = group.game.add.sprite(screenWidth - panelWith, 0, 'CommandPanel', 0, group);
         background.z = 100;
 
