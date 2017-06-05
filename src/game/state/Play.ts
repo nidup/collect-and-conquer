@@ -150,7 +150,7 @@ export default class Play extends Phaser.State
         // armyRed.recruitTank(250, 260);
         // armyRed.getStrategy().attack();
 
-        this.unitSelector = new UnitSelector();
+        this.unitSelector = new UnitSelector(humanPlayer);
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
 
         this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items);
