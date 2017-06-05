@@ -7,6 +7,7 @@ import {Map} from "../ai/map/Map";
 import {RecruitPanel} from "./RecruitPanel";
 import {PlayerRepository} from "../game/player/PlayerRepository";
 import {ItemRepository} from "../world/item/ItemRepository";
+import {MenuPanel} from "./MenuPanel";
 
 export class MainPanel
 {
@@ -27,6 +28,7 @@ export class MainPanel
         this.selectedUnitPanel = new SelectedUnitPanel(group, panelWith, unitSelector);
         this.recruitPanel = new RecruitPanel(group, players.human());
         new OrderPanel(group, screenWidth, panelWith, players.human());
+        new MenuPanel(group, panelWith);
     }
 
     public update()
