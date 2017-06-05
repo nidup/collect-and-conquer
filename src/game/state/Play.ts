@@ -84,6 +84,8 @@ export default class Play extends Phaser.State
 
         if (!this.enableRandMap) {
             this.game.rnd.state('!rnd,1,0.7121938972268254,0.2891752696596086,0.2457362802233547');
+
+            // nice map !rnd,1,0.5805144435726106,0.15749581600539386,0.11405682656913996
             // this.game.rnd.state('!rnd,1,0.9783369363285601,0.5553183087613434,0.5118793193250895');
             // this.game.rnd.state('!rnd,1,0.369288211222738,0.9462695836555213,0.9028305942192674');
             // cool for collision debug this.game.rnd.state('!rnd,1,0.7287226526532322,0.30570402508601546,0.26226503564976156')
