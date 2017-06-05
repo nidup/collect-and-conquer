@@ -49,7 +49,10 @@ export class TankAttackBrain extends VehicleBrain
     {
         const enemy = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         if (enemy !== null) {
-            this.host.getSteeringComputer().pursuing(enemy);
+            const distance = this.host.getPosition().distance(enemy.getPosition());
+            if (distance > (this.host.getAttackScope() / 2)) {
+                this.host.getSteeringComputer().pursuing(enemy);
+            }
             this.host.attackVehicle(enemy);
         } else {
             this.fsm.popState();
@@ -86,9 +89,7 @@ export class TankAttackBrain extends VehicleBrain
             this.path = null;
             this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
         } else if (notDestroyed && canAttack) {
-            //this.host.getSteeringComputer().avoidCollision(this.host.getRadar());
-
-            // TODO!!
+            // TODO: should be implemented as a proper behavior
             this.host.getSteeringComputer().reset();
             this.host.getBody().velocity = new Phaser.Point(0, 0);
             this.host.attackBuilding(building);

@@ -11,6 +11,7 @@ import {PathPatrollingBehavior} from "./behavior/PathPatrollingBehavior";
 import {CollisionReactionBehavior} from "./behavior/CollisionReactionBehavior";
 import {CollisionAvoidanceBehavior} from "./behavior/CollisionAvoidanceBehavior";
 import {Radar} from "../../world/vehicle/sensor/Radar";
+import {Vehicle} from "../../world/vehicle/Vehicle";
 
 /**
  * Inspired by following posts
@@ -111,8 +112,23 @@ export class SteeringComputer
         this.host.getVelocity().normalize();
         // we set the magnitude to boid speed
         this.host.getVelocity().setMagnitude(this.host.getMaxVelocity().x);
+
         // TODO: fix the slow down for seek behavior but break velocity for the rest
         //this.host.getVelocity().setMagnitude(this.steering.getMagnitude());
+
+        // turn the vehicle to the velocity, don't change the angle if the velocity is null (the vehicle is attacking)
+        const vehicle = (<Vehicle>this.host);
+        if (vehicle.getVelocity().x != 0 && vehicle.getVelocity().y != 0) {
+            vehicle.angle = 180 + Phaser.Math.radToDeg(
+                    Phaser.Point.angle(
+                        vehicle.getPosition(),
+                        new Phaser.Point(
+                            vehicle.getPosition().x + vehicle.getVelocity().x,
+                            vehicle.getPosition().y + vehicle.getVelocity().y
+                        )
+                    )
+                );
+        }
     }
 
     public reset() :void {
