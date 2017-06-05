@@ -1,57 +1,42 @@
 
 import {Vehicle} from "../vehicle/Vehicle";
+import {HealthBarDrawer} from "./HealthBarDrawer";
 
 export class HealthBar
 {
     private game: Phaser.Game;
     private host: Phaser.Sprite;
-    private background: Phaser.Graphics;
-    private foreground: Phaser.Graphics;
-    private healthOkColor: number = 0x00FF00;
-    private healthKoColor: number = 0xFF0000;
+    private bitmap: Phaser.BitmapData;
+    private bar: Phaser.Sprite;
+    private drawer: HealthBarDrawer;
 
     constructor(group: Phaser.Group, host: Phaser.Sprite)
     {
         this.game = group.game;
         this.host = host;
 
-        const rectX = -this.host.width / 2;
-        const rectY = this.host.height / 2 + 10;
-        const rectWidth = this.host.width;
-        const rectHeight = 4;
+        const marginX = this.host.width / 2;
+        const marginY = this.host.height / 2 + 10;
+        this.bitmap = group.game.make.bitmapData(this.host.width, 4);
+        this.bar = group.game.add.sprite(this.host.x - marginX, this.host.y + marginY, this.bitmap, 0, group);
+        this.bar.anchor.set(0, 0);
+        this.game.physics.enable(this.bar, Phaser.Physics.ARCADE);
 
-        this.background = group.game.add.graphics(this.host.x, this.host.y, group);
-        this.background.beginFill(0x040404, 1);
-        this.background.drawRect(rectX, rectY, rectWidth, rectHeight);
-        this.game.physics.enable(this.background, Phaser.Physics.ARCADE);
-
-        this.foreground = group.game.add.graphics(this.host.x, this.host.y, group);
-        this.foreground.beginFill(this.healthOkColor, 1);
-        this.foreground.drawRect(rectX, rectY, this.getHealthBarWidth(), rectHeight);
-        this.game.physics.enable(this.foreground, Phaser.Physics.ARCADE);
+        this.drawer = new HealthBarDrawer();
     }
 
     public update()
     {
-        this.foreground.width = this.getHealthBarWidth();
+        this.drawer.draw(this.host, this.bitmap, this.host.width);
 
         if (this.host instanceof Vehicle) {
-            this.game.physics.arcade.moveToObject(this.background, this.host, this.host.body.speed);
-            this.game.physics.arcade.moveToObject(this.foreground, this.host, this.host.body.speed);
+            this.game.physics.arcade.moveToObject(this.bar, this.host, this.host.body.speed);
         }
     }
 
     public destroy()
     {
-        this.background.destroy();
-        this.foreground.destroy();
-    }
-
-    private getHealthBarWidth()
-    {
-        const healthRatio = this.host.health / this.host.maxHealth;
-        const healthWidth = this.host.width * healthRatio;
-
-        return healthWidth;
+        this.bar.destroy();
+        this.bitmap.destroy();
     }
 }
