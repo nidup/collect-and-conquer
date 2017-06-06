@@ -3,6 +3,7 @@ import {MapGenerator} from "./MapGenerator";
 import {Tile} from "./Tile";
 import {TileRegistry} from "./TilesRegistry";
 import {Map} from "../Map";
+import {MissingTextureFixer} from "./MissingTextureFixer";
 
 const tileSize = 20;
 const tileSpacing = 20;
@@ -40,6 +41,7 @@ export class CloudMapGenerator extends MapGenerator
         let cloudMaps = this.generateCloudMaps(mapWidth, mapHeight);
         let points = this.mixCloudMaps(cloudMaps);
         let grounds = this.getGrounds(points);
+        grounds = MissingTextureFixer.fix(grounds, this.tileRegistry);
 
         this.draw(map, grounds);
 
