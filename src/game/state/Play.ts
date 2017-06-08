@@ -170,6 +170,9 @@ export default class Play extends Phaser.State
             const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
             this.fogOfWar.apply(this.bitmap, knownTiles);
         }
+
+        // const music = this.game.add.audio('music');
+        // music.play();
     }
 
     public update()

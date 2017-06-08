@@ -3,6 +3,7 @@ export default class Preload extends Phaser.State {
 
     public preload ()
     {
+        this.loadAudio()
         this.loadTilemap();
         this.loadTileImages();
         this.loadGameImages();
@@ -12,6 +13,12 @@ export default class Preload extends Phaser.State {
     public create ()
     {
         this.game.state.start('Play'); // TODO: shortcuting "Menu" state :)
+    }
+
+    private loadAudio()
+    {
+        //  Firefox doesn't support mp3 files, so use ogg ? @see https://www.phaser.io/examples/v2/audio/pause-and-resume
+        // this.game.load.audio('music', ['assets/audio/bodenstaendig_2000_in_rock_4bit.mp3', 'assets/audio/bodenstaendig_2000_in_rock_4bit.ogg']);
     }
 
     private loadTilemap()
@@ -67,7 +74,6 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('Button', 'assets/interface/Button.png', 94, 27);
         this.load.spritesheet('BuyButton', 'assets/interface/BuyButton.png', 140, 27);
         this.load.spritesheet('OrderButton', 'assets/interface/OrderButton.png', 110, 27);
-        this.load.image('UnitBackground', 'assets/interface/UnitSelectionBackground.png');
         this.load.image('HealthJauge', 'assets/interface/HealthJauge.png');
     }
 }
