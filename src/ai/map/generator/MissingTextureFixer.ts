@@ -6,41 +6,32 @@ export class MissingTextureFixer {
 
     static fix(grounds: Array<Array<number>>, tileRegistry: TileRegistry): Array<Array<number>> {
         let result = grounds;
-        let found = true;
+        let foundMissingTexture = true;
         let remainingTries = 10;
 
-        while (remainingTries > 0 && found) {
-            found = false;
+        while (remainingTries > 0 && foundMissingTexture) {
+            foundMissingTexture = false;
             let missingTexturePosition = MissingTextureFixer.getNextMissingTexturePosition(result, tileRegistry);
             if (null !== missingTexturePosition) {
-                console.log('Missing texture at ' + missingTexturePosition.x + ',' + missingTexturePosition.y);
-                found = true;
-                let current = [];
-                const gap = 2;
-                let topY = Math.max(0, missingTexturePosition.y - gap);
-                let bottomY = Math.min(result.length, missingTexturePosition.y + gap);
-                let leftX = Math.max(0, missingTexturePosition.x - gap);
-                let rightX = Math.min(result[0].length, missingTexturePosition.x + gap);
+                foundMissingTexture = true;
+                let foundReplacement = false;
+                let gap = 2;
+                while (!foundReplacement && gap < 4) {
+                    console.log('Missing texture at ' + missingTexturePosition.x + ',' + missingTexturePosition.y + ' - looking with gap ' + gap);
+                    let current = this.createTemplate(missingTexturePosition, gap, result);
 
-                for (let y = topY; y <= bottomY; y++) {
-                    current[y] = [];
-                    for (let x = leftX; x <= rightX; x++) {
-                        if (y === topY || y === bottomY || x === leftX || x === rightX) {
-                            current[y][x] = result[y][x];
-                        } else {
-                            current[y][x] = null;
-                        }
-                    }
-                }
-
-                let availableSquares = this.getAvailableSquares(current, tileRegistry);
-                if (availableSquares.length) {
-                    let availableSquare = availableSquares[Math.floor(Math.random() * availableSquares.length)];
-                    availableSquare.forEach(function (lines, y) {
-                        lines.forEach(function (cell, x) {
-                            result[y][x] = cell;
+                    let availableSquares = this.getAvailableSquares(current, tileRegistry);
+                    if (availableSquares.length) {
+                        foundReplacement = true;
+                        let availableSquare = availableSquares[Math.floor(Math.random() * availableSquares.length)];
+                        availableSquare.forEach(function (lines, y) {
+                            lines.forEach(function (cell, x) {
+                                result[y][x] = cell;
+                            });
                         });
-                    });
+                    }
+
+                    gap++;
                 }
             }
             remainingTries--;
@@ -153,5 +144,30 @@ export class MissingTextureFixer {
         });
 
         return valid;
+    }
+
+    private static createTemplate(
+        missingTexturePosition: Phaser.Point,
+        gap: number,
+        result: Array<Array<number>>
+    ): Array<Array<number>> {
+        let current = [];
+        let topY = Math.max(0, missingTexturePosition.y - gap);
+        let bottomY = Math.min(result.length, missingTexturePosition.y + gap);
+        let leftX = Math.max(0, missingTexturePosition.x - gap);
+        let rightX = Math.min(result[0].length, missingTexturePosition.x + gap);
+
+        for (let y = topY; y <= bottomY; y++) {
+            current[y] = [];
+            for (let x = leftX; x <= rightX; x++) {
+                if (y === topY || y === bottomY || x === leftX || x === rightX) {
+                    current[y][x] = result[y][x];
+                } else {
+                    current[y][x] = null;
+                }
+            }
+        }
+
+        return current;
     }
 }
