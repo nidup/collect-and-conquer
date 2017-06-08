@@ -4,6 +4,7 @@ import {Vehicle} from "../world/vehicle/Vehicle";
 import {Building} from "../world/building/Building";
 import {Item} from "../world/item/Item";
 import {TextStyle} from "./TextStyle";
+import {HealthBarDrawer} from "../world/common/HealthBarDrawer";
 
 export class SelectedUnitPanel
 {
@@ -13,7 +14,8 @@ export class SelectedUnitPanel
     private unitStateText: Phaser.Text;
     private unitStateImage: Phaser.Sprite;
     private textStyle: TextStyle;
-    private health: Phaser.Graphics;
+    private bitmap: Phaser.BitmapData;
+    private drawer: HealthBarDrawer;
 
     constructor(group: Phaser.Group, panelWidth: number, unitSelector: UnitSelector)
     {
@@ -24,19 +26,18 @@ export class SelectedUnitPanel
         this.unitStateText = group.game.add.text(group.game.width - 150, positionY, '', this.textStyle.getNormalStyle(), group);
         this.unitStateText.fixedToCamera = true;
 
-        positionY += 61;
-        const rectX = 200;
-        const rectY = 10;
+        positionY += 67;
         const rectWidth = 70;
         const rectHeight = 17;
-        this.health = group.game.add.graphics(this.getHealthBarPositionX(group.game.width), positionY, group);
-        this.health.beginFill(0x00FF00, 1);
-        this.health.drawRect(rectX, rectY, this.getHealthBarWidth(rectWidth), rectHeight);
-        this.health.endFill();
-        this.health.z = 200;
+        const posX = group.game.width - panelWidth + 5;
 
-        positionY += 7;
+        this.bitmap = group.game.make.bitmapData(rectWidth, rectHeight);
+        const bar = group.game.add.sprite(posX, positionY, this.bitmap, 0, group);
+        bar.anchor.set(0, 0);
+
+        this.drawer = new HealthBarDrawer();
         group.game.add.image(group.game.width - panelWidth, positionY, 'HealthJauge', 0, group);
+
         this.group = group;
     }
 
@@ -44,6 +45,7 @@ export class SelectedUnitPanel
     {
         const selectedUnit = this.unitSelector.getSelectedUnit();
         if (selectedUnit) {
+            this.drawer.draw(selectedUnit, this.bitmap, this.bitmap.width);
             this.displayUnitStatus(selectedUnit);
             this.copySelectedUnitImage(selectedUnit);
         }
@@ -88,18 +90,5 @@ export class SelectedUnitPanel
             this.unitStateImage.animations.play(selectedUnit.animations.currentAnim.name);
         }
         // TODO: bug when select the mine during the building, infinite loop on building
-    }
-
-    private getHealthBarPositionX(gameWidth: number)
-    {
-        return gameWidth - 435;
-    }
-
-    private getHealthBarWidth(maxWidth: number) {
-        const host = this.unitSelector.getSelectedUnit();
-        const healthRatio = host.health / host.maxHealth;
-        const healthWidth = maxWidth * healthRatio;
-
-        return healthWidth;
     }
 }

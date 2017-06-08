@@ -39,7 +39,6 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
     {
         this.brain.think();
         this.behavior.compute();
-        this.updateAngle();
         this.brainText.update();
         this.healthBar.update();
         this.radio.communicate(this.getPosition());
@@ -79,19 +78,6 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         this.brainText.destroy();
         this.healthBar.destroy();
         super.destroy(destroyChildren);
-    }
-
-    updateAngle()
-    {
-        this.angle = 180 + Phaser.Math.radToDeg(
-            Phaser.Point.angle(
-                this.getPosition(),
-                new Phaser.Point(
-                    this.getPosition().x + this.getVelocity().x,
-                    this.getPosition().y + this.getVelocity().y
-                )
-            )
-        );
     }
 
     getVelocity(): Phaser.Point

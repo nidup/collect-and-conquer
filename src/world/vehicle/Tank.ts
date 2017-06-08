@@ -47,7 +47,7 @@ export class Tank extends Vehicle
         this.behavior = new SteeringComputer(this);
 
         this.weapon = group.game.add.weapon(-1, 'Bullet', 14);
-        this.weapon.bulletKillType = Phaser.Weapon.KILL_NEVER;
+        this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
         this.weapon.bulletSpeed = 600;
         this.weapon.fireRate = 500;
         this.weapon.trackSprite(this, 0, 0, true);

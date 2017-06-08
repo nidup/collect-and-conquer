@@ -34,7 +34,7 @@ export class TankDefendBrain extends VehicleBrain
         const closestBase = this.host.getRadar().closestBase(this.host.getPosition());
         if (visibleEnemy) {
             this.fsm.popState();
-            this.fsm.pushState(new State('attack', this.attackEnemy));
+            this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
         } else if (closestMine) {
             this.path = this.pathfinder.findPhaserPointPath(closestMine.getPosition().clone(), closestBase.getPosition().clone());
             this.fsm.pushState(new State('protect mine', this.protectingMine));
@@ -55,7 +55,7 @@ export class TankDefendBrain extends VehicleBrain
         const closestMine = this.host.getRadar().closestExploitableMine(this.host.getPosition());
         if (visibleEnemy) {
             this.fsm.popState();
-            this.fsm.pushState(new State('attack', this.attackEnemy));
+            this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
         } else if (closestMine) {
             this.path = this.pathfinder.findPhaserPointPath(closestMine.getPosition().clone(), closestBase.getPosition().clone());
             this.fsm.popState();
@@ -75,7 +75,7 @@ export class TankDefendBrain extends VehicleBrain
         if (visibleEnemy) {
             this.path = null;
             this.fsm.popState();
-            this.fsm.pushState(new State('attack', this.attackEnemy));
+            this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
         } else if (closestMine && this.path) {
             this.host.getSteeringComputer().pathPatrolling(this.path);
         } else {
@@ -85,11 +85,14 @@ export class TankDefendBrain extends VehicleBrain
         }
     }
 
-    private attackEnemy = () =>
+    private attackVehicle = () =>
     {
         const enemy = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         if (enemy !== null) {
-            this.host.getSteeringComputer().pursuing(enemy);
+            const distance = this.host.getPosition().distance(enemy.getPosition());
+            if (distance > (this.host.getAttackScope() / 2)) {
+                this.host.getSteeringComputer().pursuing(enemy);
+            }
             this.host.attackVehicle(enemy);
         } else {
             this.fsm.popState();
