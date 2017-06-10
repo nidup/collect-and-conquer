@@ -143,6 +143,11 @@ export default class Play extends Phaser.State
         armyBlue.recruitBuilder(330, 370);
         armyBlue.recruitTank(300, 260);
         */
+        /*
+        armyBlue.recruitTank(300, 260);
+        armyBlue.recruitTank(350, 260);
+        armyBlue.recruitTank(370, 260);
+        */
 
         armyRed.buildBase(850, 650);
         armyRed.recruitMiner(850, 500);
@@ -153,8 +158,8 @@ export default class Play extends Phaser.State
         armyRed.recruitScout(300, 600);
         armyRed.recruitTank(650, 760);
 
-        armyRed.recruitTank(250, 260);
-        armyRed.getStrategy().attack();
+        // armyRed.recruitTank(250, 260);
+        // armyRed.getStrategy().attack();
 
         this.unitSelector = new UnitSelector(humanPlayer);
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
@@ -194,6 +199,12 @@ export default class Play extends Phaser.State
     {
         if (this.players.human().isDefeated()) {
             this.dialogSystem.displayDefeatDialog();
+        }
+        const notDefeatedBots = this.players.bots().filter(function(player: Player) {
+            return player.isDefeated() == false;
+        });
+        if (notDefeatedBots.length == 0) {
+            this.dialogSystem.displayVictoryDialog();
         }
     }
 

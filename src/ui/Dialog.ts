@@ -1,15 +1,15 @@
 
 import {TextStyle} from "./TextStyle";
 import {ButtonBuilder} from "./ButtonBuilder";
-export class DefeatDialog
+
+export class Dialog
 {
     private background: Phaser.Sprite;
     private text: Phaser.Text;
     private button: Phaser.Button;
 
-    public constructor(group: Phaser.Group)
+    public constructor(group: Phaser.Group, content: string)
     {
-        const text = "Defeat!\n\nAll your buildings\nhave been destroyed";
         const game = group.game;
         const dialogWidth = 312;
         const dialogHeight = 195;
@@ -19,7 +19,7 @@ export class DefeatDialog
         this.background = group.game.add.sprite(dialogX, dialogY, 'Dialog', 0, group);
         const textMarginX = 35;
         const textMarginY = 35;
-        this.text = group.game.add.text(dialogX + textMarginX, dialogY + textMarginY, text, textStyle.getNormalStyle(22), group);
+        this.text = group.game.add.text(dialogX + textMarginX, dialogY + textMarginY, content, textStyle.getNormalStyle(22), group);
 
         const buttonBuilder = new ButtonBuilder();
         const myself = this;

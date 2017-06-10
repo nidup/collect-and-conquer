@@ -22,6 +22,11 @@ export class PlayerRepository
 
     public human(): Player
     {
-        return this.all().filter(function(player: Player) { return player.isHuman; })[0];
+        return this.all().filter(function(player: Player) { return player.isHuman(); })[0];
+    }
+
+    public bots(): Player[]
+    {
+        return this.all().filter(function(player: Player) { return player.isHuman() == false; });
     }
 }
