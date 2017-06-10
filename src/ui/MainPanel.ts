@@ -29,7 +29,7 @@ export class MainPanel
         let positionY = 190;
         this.selectedUnitPanel = new SelectedUnitPanel(group, panelWith, unitSelector, positionY);
 
-        positionY += 108;
+        positionY += 110;
         this.recruitPanel = new RecruitPanel(group, players.human(), positionY);
 
         positionY += 267;
