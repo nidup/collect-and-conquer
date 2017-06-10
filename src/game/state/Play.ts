@@ -16,6 +16,7 @@ import {Army} from "../../world/Army";
 import {MainPanel} from "../../ui/MainPanel";
 import {PlayerRepository} from "../player/PlayerRepository";
 import {FogOfWar} from "../../ai/map/FogOfWar";
+import {JukeBox} from "../../world/audio/JukeBox";
 
 export default class Play extends Phaser.State
 {
@@ -148,13 +149,13 @@ export default class Play extends Phaser.State
         armyRed.recruitScout(300, 600);
         armyRed.recruitTank(650, 760);
 
-        //armyRed.recruitTank(250, 260);
-        //armyRed.getStrategy().attack();
+        armyRed.recruitTank(250, 260);
+        armyRed.getStrategy().attack();
 
         this.unitSelector = new UnitSelector(humanPlayer);
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
-
-        this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items);
+        const jukebox = new JukeBox(this.game);
+        this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items, jukebox);
 
         this.fogOfWar = new FogOfWar();
         const fogX = 0;
@@ -170,9 +171,6 @@ export default class Play extends Phaser.State
             const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
             this.fogOfWar.apply(this.bitmap, knownTiles);
         }
-
-        // const music = this.game.add.audio('music');
-        // music.play();
     }
 
     public update()

@@ -18,7 +18,9 @@ export default class Preload extends Phaser.State {
     private loadAudio()
     {
         //  Firefox doesn't support mp3 files, so use ogg ? @see https://www.phaser.io/examples/v2/audio/pause-and-resume
-        // this.game.load.audio('music', ['assets/audio/bodenstaendig_2000_in_rock_4bit.mp3', 'assets/audio/bodenstaendig_2000_in_rock_4bit.ogg']);
+        this.game.load.audio('music', ['assets/audio/music/bodenstaendig_2000_in_rock_4bit.mp3', 'assets/audio/music/bodenstaendig_2000_in_rock_4bit.ogg']);
+        this.game.load.audio('explosion', 'assets/audio/sounds/explosion.mp3');
+        this.game.load.audio('blaster', 'assets/audio/sounds/blaster.mp3');
     }
 
     private loadTilemap()

@@ -86,7 +86,8 @@ export class Tank extends Vehicle
                     firedBullet.destroy();
                 }
             );
-            this.weapon.fireAtSprite(enemy)
+            this.weapon.fireAtSprite(enemy);
+
         }
     }
 
@@ -105,7 +106,7 @@ export class Tank extends Vehicle
                     firedBullet.destroy();
                 }
             );
-            this.weapon.fireAtSprite(enemy)
+            this.weapon.fireAtSprite(enemy);
         }
     }
 
