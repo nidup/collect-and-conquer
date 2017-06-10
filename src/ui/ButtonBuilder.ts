@@ -22,7 +22,7 @@ export class ButtonBuilder
 
         const textStyle = new TextStyle();
         const textMarginY = 3;
-        const textMarginX = 10;
+        const textMarginX = 15;
         const styleNormal = textStyle.getNormalStyle();
         const styleHover =  textStyle.getOverStyle();
         const text = group.game.add.text(buttonX + textMarginX, buttonY + textMarginY, buttonText, styleNormal, group);
