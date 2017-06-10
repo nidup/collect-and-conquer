@@ -118,11 +118,13 @@ export default class Play extends Phaser.State
 
         this.players = new PlayerRepository();
 
-        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, unitLayer);
+        const jukebox = new JukeBox(this.game);
+
+        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, unitLayer, jukebox);
         const humanPlayer = new Player(armyBlue, true);
         this.players.add(humanPlayer);
 
-        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, unitLayer)
+        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, unitLayer, jukebox);
         const botPlayer = new Player(armyRed, false);
         this.players.add(botPlayer);
 
@@ -154,7 +156,6 @@ export default class Play extends Phaser.State
 
         this.unitSelector = new UnitSelector(humanPlayer);
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
-        const jukebox = new JukeBox(this.game);
         this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items, jukebox);
 
         this.fogOfWar = new FogOfWar();

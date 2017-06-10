@@ -35,14 +35,14 @@ export class JukeBox
     public playBlaster()
     {
         if (this.soundOn) {
-            this.blaster.play();
+            this.blaster.play('', 0, 0.3, false, false);
         }
     }
 
     public playExplosion()
     {
         if (this.soundOn) {
-            this.explosion.play('', 0, 0.3);
+            this.explosion.play('', 0, 0.7, false, false);
         }
     }
 }

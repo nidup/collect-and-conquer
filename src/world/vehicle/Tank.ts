@@ -11,6 +11,7 @@ import {TankAttackBrain} from "./brain/TankAttackBrain";
 import {BrainText} from "./info/BrainText";
 import {Map} from "../../ai/map/Map";
 import {Building} from "../building/Building";
+import {JukeBox} from "../audio/JukeBox";
 
 export class Tank extends Vehicle
 {
@@ -19,8 +20,9 @@ export class Tank extends Vehicle
     protected weapon: Phaser.Weapon;
     private brainAttack: TankAttackBrain;
     private brainDefend: TankDefendBrain;
+    private jukebox: JukeBox;
 
-    constructor(group: Phaser.Group, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map)
+    constructor(group: Phaser.Group, x: number, y: number, army: Army, radar: Radar, camera: Camera, key: string, frame: number, map: Map, jukebox: JukeBox)
     {
         super(group, x, y, army, radar, camera, key, frame);
 
@@ -57,6 +59,8 @@ export class Tank extends Vehicle
 
         this.brain = this.brainDefend;
         this.brainText = new BrainText(group, this.x, this.y, '', {}, this, this.brain);
+
+        this.jukebox = jukebox;
     }
 
     public update ()
@@ -73,40 +77,37 @@ export class Tank extends Vehicle
 
     public attackVehicle(enemy: Vehicle)
     {
-        const distance = this.getPosition().distance(enemy.getPosition());
-        if (distance <= this.attackScope) {
-            const attackDamage = this.attackDamage;
-            const bullets = this.weapon.bullets;
-
-            this.game.physics.arcade.collide(
-                bullets,
-                enemy,
-                function (touchedEnemy, firedBullet) {
-                    touchedEnemy.hit(attackDamage);
-                    firedBullet.destroy();
-                }
-            );
-            this.weapon.fireAtSprite(enemy);
-
+        this.attackSprite(enemy);
+        if (enemy.isAlive() == false) {
+            this.jukebox.playExplosion();
         }
     }
 
     public attackBuilding(enemy: Building)
     {
-        const distance = this.getPosition().distance(enemy.getPosition());
+        this.attackSprite(enemy);
+        if (enemy.isDestroyed()) {
+            this.jukebox.playExplosion();
+        }
+    }
+
+    private attackSprite(sprite: Phaser.Sprite)
+    {
+        const distance = this.getPosition().distance(sprite.position);
         if (distance <= this.attackScope) {
             const attackDamage = this.attackDamage;
             const bullets = this.weapon.bullets;
 
             this.game.physics.arcade.collide(
                 bullets,
-                enemy,
+                sprite,
                 function (touchedEnemy, firedBullet) {
                     touchedEnemy.hit(attackDamage);
                     firedBullet.destroy();
                 }
             );
-            this.weapon.fireAtSprite(enemy);
+            this.weapon.fireAtSprite(sprite);
+            this.jukebox.playBlaster();
         }
     }
 

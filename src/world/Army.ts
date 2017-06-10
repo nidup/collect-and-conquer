@@ -17,6 +17,7 @@ import {Vehicle} from "./vehicle/Vehicle";
 import {Map} from "../ai/map/Map";
 import {Camera} from "./vehicle/sensor/Camera";
 import {SharedMemory} from "./vehicle/knowledge/SharedMemory";
+import {JukeBox} from "./audio/JukeBox";
 
 export class Army
 {
@@ -29,8 +30,9 @@ export class Army
     private map: Map;
     private group: Phaser.Group;
     private sharedMemory: SharedMemory;
+    private jukebox: JukeBox;
 
-    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, map: Map, group: Phaser.Group)
+    constructor(color: number, vehicles: VehicleRepository, buildings: BuildingRepository, items: ItemRepository, map: Map, group: Phaser.Group, jukebox: JukeBox)
     {
         this.color = color;
         this.strategy = new Strategy();
@@ -41,6 +43,7 @@ export class Army
         this.group = group;
         this.sharedMemory = new SharedMemory(map);
         this.radar = new Radar(this.items, this.buildings, this.vehicles, this, this.sharedMemory);
+        this.jukebox = jukebox;
     }
 
     public recruitMiner(x: number, y: number): Miner
@@ -62,7 +65,7 @@ export class Army
     public recruitTank(x: number, y: number): Tank
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 180);
-        const vehicle = new Tank(this.group, x, y, this, this.radar, camera, 'Tank5', 0, this.map);
+        const vehicle = new Tank(this.group, x, y, this, this.radar, camera, 'Tank5', 0, this.map, this.jukebox);
         this.vehicles.add(vehicle);
         return vehicle;
     }
@@ -92,7 +95,7 @@ export class Army
 
     public buildMine(x: number, y:number, oil: Oil): Mine
     {
-        const building = new Mine(this.group, x, y, this, 'Mine', 0, oil.getQuantity())
+        const building = new Mine(this.group, x, y, this, 'Mine', 0, oil.getQuantity());
         this.buildings.add(building);
         return building;
     }
