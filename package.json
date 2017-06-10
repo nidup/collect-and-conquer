@@ -1,5 +1,5 @@
 {
-  "name": "nidup-phaserjs-ai-sandbox",
+  "name": "nidup-collect-and-conquer",
   "version": "1.0.0",
   "description": "AI sandbox using phaserjs + typescript + web pack server",
   "main": "index.html",
@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nidup/phaserjs-ai-sandbox"
+    "url": "https://github.com/nidup/collect-and-conquer"
   },
   "author": "Nicolas <nicolas@akeneo.com>",
   "license": "MIT",
-  "homepage": "https://github.com/nidup/phaserjs-ai-sandbox",
+  "homepage": "https://github.com/nidup/collect-and-conquer",
   "devDependencies": {
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2",
