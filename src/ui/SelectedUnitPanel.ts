@@ -21,12 +21,11 @@ export class SelectedUnitPanel
     private drawer: HealthBarDrawer;
     private extraStateText: Phaser.Text;
 
-    constructor(group: Phaser.Group, panelWidth: number, unitSelector: UnitSelector)
+    constructor(group: Phaser.Group, panelWidth: number, unitSelector: UnitSelector, positionY: number)
     {
         this.panelWidth = panelWidth;
         this.textStyle = new TextStyle();
         this.unitSelector = unitSelector;
-        let positionY = 190;
         this.unitStateText = group.game.add.text(group.game.width - 150, positionY, '', this.textStyle.getNormalStyle(), group);
         this.unitStateText.fixedToCamera = true;
 

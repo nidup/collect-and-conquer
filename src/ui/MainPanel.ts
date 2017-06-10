@@ -26,10 +26,17 @@ export class MainPanel
         const background = group.game.add.sprite(screenWidth - panelWith, 0, 'CommandPanel', 0, group);
         background.z = 100;
 
-        this.selectedUnitPanel = new SelectedUnitPanel(group, panelWith, unitSelector);
-        this.recruitPanel = new RecruitPanel(group, players.human());
-        new OrderPanel(group, screenWidth, panelWith, players.human());
-        new MenuPanel(group, panelWith, jukebox);
+        let positionY = 190;
+        this.selectedUnitPanel = new SelectedUnitPanel(group, panelWith, unitSelector, positionY);
+
+        positionY += 177;
+        this.recruitPanel = new RecruitPanel(group, players.human(), positionY);
+
+        positionY += 198;
+        new OrderPanel(group, screenWidth, panelWith, players.human(), positionY);
+
+        positionY += 125;
+        new MenuPanel(group, panelWith, jukebox, positionY);
     }
 
     public update()

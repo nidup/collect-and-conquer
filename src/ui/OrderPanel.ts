@@ -8,11 +8,10 @@ export class OrderPanel
     private screenWidth: number;
     private textStyle: TextStyle;
 
-    constructor(group: Phaser.Group, screenWidth: number, panelWith: number, player: Player)
+    constructor(group: Phaser.Group, screenWidth: number, panelWith: number, player: Player, positionY: number)
     {
         this.screenWidth = screenWidth;
         this.textStyle = new TextStyle();
-        let positionY = 565;
 
         group.game.add.text(screenWidth - 210, positionY, 'Strategies', this.textStyle.getNormalStyle(), group);
 

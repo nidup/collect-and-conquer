@@ -19,9 +19,8 @@ export class RecruitPanel
     private tankButton: Phaser.Button;
     private textStyle: TextStyle;
 
-    constructor(group: Phaser.Group, player: Player)
+    constructor(group: Phaser.Group, player: Player, positionY: number)
     {
-        let positionY = 367;
         const buttonHeight = 27;
         const verticalMargin = 5;
         const base = player.getArmy().getBase();

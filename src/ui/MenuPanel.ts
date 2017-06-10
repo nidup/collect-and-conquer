@@ -7,11 +7,10 @@ export class MenuPanel
 {
     private soundButton: Phaser.Button;
 
-    constructor(group: Phaser.Group, panelWith: number, jukebox: JukeBox)
+    constructor(group: Phaser.Group, panelWith: number, jukebox: JukeBox, positionY: number)
     {
         const screenWidth = group.game.width;
         const textStyle = new TextStyle();
-        let positionY = 650;
 
         group.game.add.text(screenWidth - 210, positionY, 'Settings', textStyle.getNormalStyle(), group);
 
