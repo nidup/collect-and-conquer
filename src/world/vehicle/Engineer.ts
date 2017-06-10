@@ -6,11 +6,11 @@ import {BrainText} from "./info/BrainText";
 import {Camera} from "./sensor/Camera";
 import {Radar} from "./sensor/Radar";
 import {Army} from "../Army";
-import {BuilderDefendBrain} from "./brain/BuilderDefendBrain";
+import {EngineerDefendBrain} from "./brain/EngineerDefendBrain";
 import Physics = Phaser.Physics;
 import {Map} from "../../ai/map/Map";
 
-export class Builder extends Vehicle
+export class Engineer extends Vehicle
 {
     public body: Phaser.Physics.Arcade.Body;
 
@@ -38,7 +38,7 @@ export class Builder extends Vehicle
 
         this.behavior = new SteeringComputer(this);
 
-        this.brain = new BuilderDefendBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
+        this.brain = new EngineerDefendBrain(this, new PathFinder(map.getTiles(), map.getWalkableIndexes(), map.getTileSize()));
         this.brainText = new BrainText(group, this.x, this.y, '', {}, this, this.brain);
     }
 

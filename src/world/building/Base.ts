@@ -4,7 +4,7 @@ import {Army} from "../Army";
 import {VehicleCosts} from "../vehicle/VehicleCosts";
 import {Miner} from "../vehicle/Miner";
 import {Scout} from "../vehicle/Scout";
-import {Builder} from "../vehicle/Builder";
+import {Engineer} from "../vehicle/Engineer";
 import {Tank} from "../vehicle/Tank";
 
 export class Base extends Building
@@ -81,14 +81,14 @@ export class Base extends Building
     {
         const baseRecruitX = this.getBuildVehicleX();
         const baseRecruitY = this.getBuildVehicleY();
-        const cost = this.vehicleCosts.getCost(Builder)
+        const cost = this.vehicleCosts.getCost(Engineer)
         if (this.getStock() >= cost) {
             this.unstock(cost);
             this.animations.play('build');
             const army = this.army;
             const animations = this.animations;
             this.game.time.events.add(this.getBuildTime(), function() {
-                army.recruitBuilder(baseRecruitX, baseRecruitY);
+                army.recruitEngineer(baseRecruitX, baseRecruitY);
                 animations.play('idle');
             }, this);
         }

@@ -1,6 +1,6 @@
 
 import {Miner} from "./Miner";
-import {Builder} from "./Builder";
+import {Engineer} from "./Engineer";
 import {Scout} from "./Scout";
 import {Tank} from "./Tank";
 
@@ -10,7 +10,7 @@ export class VehicleCosts
     {
         if (vehicle == Miner) {
             return 100;
-        } else if (vehicle == Builder) {
+        } else if (vehicle == Engineer) {
             return 80;
         } else if (vehicle == Scout) {
             return 60;

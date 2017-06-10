@@ -140,7 +140,7 @@ export default class Play extends Phaser.State
         armyBlue.recruitMiner(100, 600);
         armyBlue.recruitScout(250, 200);
         armyBlue.recruitScout(50, 400);
-        armyBlue.recruitBuilder(330, 370);
+        armyBlue.recruitEngineer(330, 370);
         armyBlue.recruitTank(300, 260);
         */
         /*

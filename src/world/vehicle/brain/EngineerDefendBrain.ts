@@ -1,20 +1,20 @@
 
 import {VehicleBrain} from "./VehicleBrain";
-import {Builder} from "../Builder";
+import {Engineer} from "../Engineer";
 import {PathFinder} from "../../../ai/path/PathFinder";
 import {PhaserPointPath} from "../../../ai/path/PhaserPointPath";
 import {State} from "../../../ai/fsm/State";
 
-export class BuilderDefendBrain extends VehicleBrain
+export class EngineerDefendBrain extends VehicleBrain
 {
-    private host: Builder;
+    private host: Engineer;
     private pathfinder: PathFinder;
     private path: PhaserPointPath;
 
-    public constructor(builder: Builder, pathfinder: PathFinder)
+    public constructor(engineer: Engineer, pathfinder: PathFinder)
     {
         super();
-        this.host = builder;
+        this.host = engineer;
         this.pathfinder = pathfinder;
 
         this.fsm.pushState(new State('path following', this.pathFollowing));
@@ -28,11 +28,11 @@ export class BuilderDefendBrain extends VehicleBrain
         } else {
             this.path = null;
             this.fsm.popState();
-            this.fsm.pushState(new State('wander', this.wander));
+            this.fsm.pushState(new State('explore', this.explore));
         }
     }
 
-    public wander = () =>
+    public explore = () =>
     {
         if (this.path == null) {
             this.host.getSteeringComputer().wander();
