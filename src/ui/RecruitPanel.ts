@@ -30,6 +30,9 @@ export class RecruitPanel
 
         this.totalStock = this.addCostTextAndImage(group, positionY, base.getStock());
 
+        positionY += 69;
+        group.game.add.text(group.game.width - 210, positionY, 'Recruitment', this.textStyle.getNormalStyle(), group);
+
         positionY += 33;
         let callback = function() {
             base.buildMiner();
