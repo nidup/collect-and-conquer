@@ -34,7 +34,7 @@ export class TankAttackBrain extends VehicleBrain
         if (visibleEnemyVehicle) {
             this.fsm.popState();
             this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
-        } else if (knownEnemyBuilding) {
+        } else if (knownEnemyBuilding && knownEnemyBuilding.getPosition()) {
             this.fsm.popState();
             this.path = this.pathfinder.findPhaserPointPath(this.host.getPosition().clone(), knownEnemyBuilding.getPosition().clone());
             this.fsm.pushState(new State('go to building', this.gotoBuilding));
