@@ -1,12 +1,12 @@
 
 import {TextStyle} from "./TextStyle";
-import {ButtonBuilder} from "./ButtonBuilder";
+import {ButtonAndText, ButtonBuilder} from "./ButtonBuilder";
 
 abstract class Dialog
 {
     private background: Phaser.Sprite;
     private text: Phaser.Text;
-    protected button: Phaser.Button;
+    protected button: ButtonAndText;
     protected dialogX: number;
     protected dialogY: number;
 
@@ -28,7 +28,8 @@ abstract class Dialog
     {
         this.background.destroy();
         this.text.destroy();
-        this.button.destroy();
+        this.button.getButton().destroy();
+        this.button.getText().destroy();
     }
 }
 

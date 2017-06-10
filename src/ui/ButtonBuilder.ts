@@ -1,9 +1,31 @@
 
 import {TextStyle} from "./TextStyle";
 
+export class ButtonAndText
+{
+    private button: Phaser.Button;
+    private text: Phaser.Text;
+
+    public constructor(button: Phaser.Button, text: Phaser.Text)
+    {
+        this.button = button;
+        this.text = text;
+    }
+
+    public getButton(): Phaser.Button
+    {
+        return this.button;
+    }
+
+    public getText(): Phaser.Text
+    {
+        return this.text;
+    }
+}
+
 export class ButtonBuilder
 {
-    public addButton(group: Phaser.Group, positionX: number, positionY: number, buttonFrame : number, buttonText: string, callback :Function): Phaser.Button
+    public addButton(group: Phaser.Group, positionX: number, positionY: number, buttonFrame : number, buttonText: string, callback :Function): ButtonAndText
     {
         let buttonX = positionX;
         let buttonY = positionY;
@@ -35,6 +57,6 @@ export class ButtonBuilder
             text.y = text.y + 1;
         });
 
-        return button;
+        return new ButtonAndText(button, text);
     }
 }

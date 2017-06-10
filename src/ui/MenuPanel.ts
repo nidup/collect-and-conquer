@@ -28,7 +28,7 @@ export class MenuPanel
         let callback = function() {
             jukebox.switchSound();
         };
-        this.soundButton = buttonBuilder.addButton(group, positionX, positionY, frame, 'Sound', callback);
+        this.soundButton = buttonBuilder.addButton(group, positionX, positionY, frame, 'Sound', callback).getButton();
 
         positionX += buttonWidth + buttonMargin;
         callback = function() {
