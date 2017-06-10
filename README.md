@@ -1,6 +1,6 @@
-# NoNameYet / AI Sandbox
+# Collect & Conquer: Blue Alert
 
-Mini RTS game developed with Typescript + Phaser JS for the Akeneo Game Jam #4.
+Mini RTS game developed for the Akeneo Game Jam #4.
 
 Playing with steering behaviors, stacked FSM, A* path finding and procedural map generation.
 
@@ -8,11 +8,11 @@ Playing with steering behaviors, stacked FSM, A* path finding and procedural map
 
 # Demo
 
-You can access to the demo [here](https://nidup.github.io/phaserjs-ai-sandbox/)
+You can access to the demo [here](https://nidup.github.io/collect-and-conquer/)
 
 # Screenshots
 
-TODO
+![Image of GameJam](doc/attack.png)
 
 # Getting Started to Dev
 
