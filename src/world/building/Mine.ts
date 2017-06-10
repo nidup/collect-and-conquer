@@ -46,17 +46,22 @@ export class Mine extends Building
         }
     }
 
-    public isExtracting()
+    public isExtracting(): boolean
     {
         return this.animations.currentAnim.name == "extracting";
     }
 
-    public getStatus()
+    public getStatus(): string
     {
-        return this.animations.currentAnim.name + ' (oil: ' + this.remainingQuantity +') ';
+        return this.animations.currentAnim.name;
     }
 
-    public collect(quantity: number)
+    public getRemainingQuantity(): number
+    {
+        return this.remainingQuantity;
+    }
+
+    public collect(quantity: number): number
     {
         let collected = quantity;
         if (this.remainingQuantity < quantity) {

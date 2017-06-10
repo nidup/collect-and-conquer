@@ -8,6 +8,7 @@ import {RecruitPanel} from "./RecruitPanel";
 import {PlayerRepository} from "../game/player/PlayerRepository";
 import {ItemRepository} from "../world/item/ItemRepository";
 import {MenuPanel} from "./MenuPanel";
+import {JukeBox} from "../world/audio/JukeBox";
 
 export class MainPanel
 {
@@ -16,7 +17,7 @@ export class MainPanel
     private recruitPanel: RecruitPanel;
     private minimap: Minimap;
 
-    constructor(group: Phaser.Group, panelWith: number, unitSelector: UnitSelector, players: PlayerRepository, map: Map, items: ItemRepository)
+    constructor(group: Phaser.Group, panelWith: number, unitSelector: UnitSelector, players: PlayerRepository, map: Map, items: ItemRepository, jukebox: JukeBox)
     {
         const screenWidth = group.game.width;
         this.unitSelector = unitSelector;
@@ -25,10 +26,17 @@ export class MainPanel
         const background = group.game.add.sprite(screenWidth - panelWith, 0, 'CommandPanel', 0, group);
         background.z = 100;
 
-        this.selectedUnitPanel = new SelectedUnitPanel(group, panelWith, unitSelector);
-        this.recruitPanel = new RecruitPanel(group, players.human());
-        new OrderPanel(group, screenWidth, panelWith, players.human());
-        new MenuPanel(group, panelWith);
+        let positionY = 190;
+        this.selectedUnitPanel = new SelectedUnitPanel(group, panelWith, unitSelector, positionY);
+
+        positionY += 110;
+        this.recruitPanel = new RecruitPanel(group, players.human(), positionY);
+
+        positionY += 267;
+        new OrderPanel(group, screenWidth, panelWith, players.human(), positionY);
+
+        positionY += 125;
+        new MenuPanel(group, panelWith, jukebox, positionY);
     }
 
     public update()

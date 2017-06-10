@@ -5,6 +5,9 @@ import {Building} from "../world/building/Building";
 import {Item} from "../world/item/Item";
 import {TextStyle} from "./TextStyle";
 import {HealthBarDrawer} from "../world/common/HealthBarDrawer";
+import {Base} from "../world/building/Base";
+import {Mine} from "../world/building/Mine";
+import {Miner} from "../world/vehicle/Miner";
 
 export class SelectedUnitPanel
 {
@@ -16,17 +19,21 @@ export class SelectedUnitPanel
     private textStyle: TextStyle;
     private bitmap: Phaser.BitmapData;
     private drawer: HealthBarDrawer;
+    private extraStateText: Phaser.Text;
 
-    constructor(group: Phaser.Group, panelWidth: number, unitSelector: UnitSelector)
+    constructor(group: Phaser.Group, panelWidth: number, unitSelector: UnitSelector, positionY: number)
     {
         this.panelWidth = panelWidth;
         this.textStyle = new TextStyle();
         this.unitSelector = unitSelector;
-        let positionY = 190;
         this.unitStateText = group.game.add.text(group.game.width - 150, positionY, '', this.textStyle.getNormalStyle(), group);
         this.unitStateText.fixedToCamera = true;
 
-        positionY += 67;
+        positionY += 25;
+        this.extraStateText = group.game.add.text(group.game.width - 150, positionY, '', this.textStyle.getNormalStyle(), group);
+        this.extraStateText.fixedToCamera = true;
+
+        positionY += 42;
         const rectWidth = 70;
         const rectHeight = 17;
         const posX = group.game.width - panelWidth + 5;
@@ -56,6 +63,16 @@ export class SelectedUnitPanel
         if (selectedUnit instanceof Building || selectedUnit instanceof Vehicle || selectedUnit instanceof Item) {
             this.unitStateText.setText(selectedUnit.getStatus());
             this.unitStateText.setStyle(this.textStyle.getNormalStyle());
+
+            if (selectedUnit instanceof Base) {
+                this.extraStateText.setText('store: ' + selectedUnit.getStock() + ' oils');
+            } else if (selectedUnit instanceof Mine) {
+                this.extraStateText.setText('contains: ' + selectedUnit.getRemainingQuantity() + ' oils');
+            } else if (selectedUnit instanceof Miner) {
+                this.extraStateText.setText('loads: ' + selectedUnit.getOilLoad() + ' oils');
+            } else {
+                this.extraStateText.setText('');
+            }
         }
     }
 

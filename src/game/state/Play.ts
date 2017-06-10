@@ -16,6 +16,8 @@ import {Army} from "../../world/Army";
 import {MainPanel} from "../../ui/MainPanel";
 import {PlayerRepository} from "../player/PlayerRepository";
 import {FogOfWar} from "../../ai/map/FogOfWar";
+import {JukeBox} from "../../world/audio/JukeBox";
+import {DialogSystem} from "../../ui/DialogSystem";
 
 export default class Play extends Phaser.State
 {
@@ -32,6 +34,7 @@ export default class Play extends Phaser.State
     private enableRandMap: boolean = true;
     private tiles: Array<Array<Phaser.Tile>>;
     private bitmap: Phaser.BitmapData;
+    private dialogSystem: DialogSystem;
 
     public create()
     {
@@ -44,10 +47,10 @@ export default class Play extends Phaser.State
         groundLayer.name = 'Ground';
         const unitLayer = this.game.add.group();
         unitLayer.name = 'Unit';
-        const interfaceLayer = this.game.add.group();
-        interfaceLayer.name = 'Interface';
         const fogOfWarLayer = this.game.add.group();
         fogOfWarLayer.name = 'Fog';
+        const interfaceLayer = this.game.add.group();
+        interfaceLayer.name = 'Interface';
 
         const panelWith = 240;
         const mapWidth = this.game.width - panelWith;
@@ -117,11 +120,13 @@ export default class Play extends Phaser.State
 
         this.players = new PlayerRepository();
 
-        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, unitLayer);
+        const jukebox = new JukeBox(this.game);
+
+        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, unitLayer, jukebox);
         const humanPlayer = new Player(armyBlue, true);
         this.players.add(humanPlayer);
 
-        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, unitLayer)
+        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, unitLayer, jukebox);
         const botPlayer = new Player(armyRed, false);
         this.players.add(botPlayer);
 
@@ -138,6 +143,11 @@ export default class Play extends Phaser.State
         armyBlue.recruitBuilder(330, 370);
         armyBlue.recruitTank(300, 260);
         */
+        /*
+        armyBlue.recruitTank(300, 260);
+        armyBlue.recruitTank(350, 260);
+        armyBlue.recruitTank(370, 260);
+        */
 
         armyRed.buildBase(850, 650);
         armyRed.recruitMiner(850, 500);
@@ -148,13 +158,13 @@ export default class Play extends Phaser.State
         armyRed.recruitScout(300, 600);
         armyRed.recruitTank(650, 760);
 
-        //armyRed.recruitTank(250, 260);
-        //armyRed.getStrategy().attack();
+        // armyRed.recruitTank(250, 260);
+        // armyRed.getStrategy().attack();
 
         this.unitSelector = new UnitSelector(humanPlayer);
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
-
-        this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items);
+        this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items, jukebox);
+        this.dialogSystem = new DialogSystem(interfaceLayer);
 
         this.fogOfWar = new FogOfWar();
         const fogX = 0;
@@ -171,12 +181,12 @@ export default class Play extends Phaser.State
             this.fogOfWar.apply(this.bitmap, knownTiles);
         }
 
-        // const music = this.game.add.audio('music');
-        // music.play();
+        this.dialogSystem.displayNewGameDialog();
     }
 
     public update()
     {
+        this.updateGame();
         this.updateItems(this.items);
         this.updateVehicles(this.vehicles, this.game, this.collisionLayer);
         this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
@@ -184,6 +194,19 @@ export default class Play extends Phaser.State
         if (this.enableFog) {
             const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
             this.fogOfWar.apply(this.bitmap, knownTiles);
+        }
+    }
+
+    private updateGame()
+    {
+        if (this.players.human().isDefeated()) {
+            this.dialogSystem.displayDefeatDialog();
+        }
+        const notDefeatedBots = this.players.bots().filter(function(player: Player) {
+            return player.isDefeated() == false;
+        });
+        if (notDefeatedBots.length == 0) {
+            this.dialogSystem.displayVictoryDialog();
         }
     }
 

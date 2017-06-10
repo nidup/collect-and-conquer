@@ -1,5 +1,6 @@
 
 import {Army} from "../../world/Army";
+import {Building} from "../../world/building/Building";
 
 export class Player
 {
@@ -25,5 +26,14 @@ export class Player
     public isHuman(): boolean
     {
         return this.human;
+    }
+
+    public isDefeated(): boolean
+    {
+        const notdestroyedBuildings = this.getArmy().getBuildings().filter(function (building: Building) {
+           return building.isDestroyed() == false;
+        });
+
+        return notdestroyedBuildings.length == 0;
     }
 }

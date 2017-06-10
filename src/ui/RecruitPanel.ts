@@ -19,9 +19,8 @@ export class RecruitPanel
     private tankButton: Phaser.Button;
     private textStyle: TextStyle;
 
-    constructor(group: Phaser.Group, player: Player)
+    constructor(group: Phaser.Group, player: Player, positionY: number)
     {
-        let positionY = 367;
         const buttonHeight = 27;
         const verticalMargin = 5;
         const base = player.getArmy().getBase();
@@ -30,33 +29,37 @@ export class RecruitPanel
         this.textStyle = new TextStyle();
 
         this.totalStock = this.addCostTextAndImage(group, positionY, base.getStock());
+        group.game.add.text(group.game.width - 125, positionY+2, 'Total', this.textStyle.getNormalStyle(), group);
 
-        positionY += 33;
+        positionY += 74;
+        group.game.add.text(group.game.width - 210, positionY, 'Recruitment', this.textStyle.getNormalStyle(), group);
+
+        positionY += 28;
         let callback = function() {
             base.buildMiner();
         };
-        this.minerButton = this.addRecruitButton(group, positionY, 'Recruit Miner', callback);
+        this.minerButton = this.addRecruitButton(group, positionY, 'Miner', callback);
         this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Miner));
 
         positionY += buttonHeight + verticalMargin;
         callback = function() {
             base.buildScout();
         };
-        this.scoutButton = this.addRecruitButton(group, positionY, 'Recruit Scout', callback);
+        this.scoutButton = this.addRecruitButton(group, positionY, 'Scout', callback);
         this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Scout));
 
         positionY += buttonHeight + verticalMargin;
         callback = function() {
             base.buildBuilder();
         };
-        this.builderButton = this.addRecruitButton(group, positionY, 'Recruit Builder', callback);
+        this.builderButton = this.addRecruitButton(group, positionY, 'Builder', callback);
         this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Builder));
 
         positionY += buttonHeight + verticalMargin;
         callback = function() {
             base.buildTank();
         };
-        this.tankButton = this.addRecruitButton(group, positionY, 'Recruit Tank', callback);
+        this.tankButton = this.addRecruitButton(group, positionY, 'Tank', callback);
         this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Tank));
     }
 
@@ -106,10 +109,11 @@ export class RecruitPanel
             group
         );
 
-        const textMargin = 3;
+        const textMarginX = 15;
+        const textMarginY = 3;
         const styleNormal = this.textStyle.getNormalStyle();
         const styleHover =  this.textStyle.getOverStyle();
-        const text = group.game.add.text(buttonX + textMargin, buttonY + textMargin, buttonText, styleNormal, group);
+        const text = group.game.add.text(buttonX + textMarginX, buttonY + textMarginY, buttonText, styleNormal, group);
         button.onInputOut.add(function () {
             text.setStyle(styleNormal);
             text.y = text.y - 1;

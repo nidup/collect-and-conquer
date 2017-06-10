@@ -18,7 +18,9 @@ export default class Preload extends Phaser.State {
     private loadAudio()
     {
         //  Firefox doesn't support mp3 files, so use ogg ? @see https://www.phaser.io/examples/v2/audio/pause-and-resume
-        // this.game.load.audio('music', ['assets/audio/bodenstaendig_2000_in_rock_4bit.mp3', 'assets/audio/bodenstaendig_2000_in_rock_4bit.ogg']);
+        this.game.load.audio('music', ['assets/audio/music/bodenstaendig_2000_in_rock_4bit.mp3', 'assets/audio/music/bodenstaendig_2000_in_rock_4bit.ogg']);
+        this.game.load.audio('explosion', 'assets/audio/sounds/explosion.mp3');
+        this.game.load.audio('blaster', 'assets/audio/sounds/blaster.mp3');
     }
 
     private loadTilemap()
@@ -69,11 +71,11 @@ export default class Preload extends Phaser.State {
     private loadUIImages()
     {
         this.load.bitmapFont('carrier-command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml');
-
         this.load.image('CommandPanel', 'assets/interface/CommandPanel.png');
         this.load.spritesheet('Button', 'assets/interface/Button.png', 94, 27);
         this.load.spritesheet('BuyButton', 'assets/interface/BuyButton.png', 140, 27);
         this.load.spritesheet('OrderButton', 'assets/interface/OrderButton.png', 110, 27);
         this.load.image('HealthJauge', 'assets/interface/HealthJauge.png');
+        this.load.image('Dialog', 'assets/interface/Dialog.png');
     }
 }

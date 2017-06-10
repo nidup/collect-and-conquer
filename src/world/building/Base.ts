@@ -113,7 +113,7 @@ export class Base extends Building
 
     public getStatus()
     {
-        return this.animations.currentAnim.name+ ' (oil: ' + this.stockedQuantity +')';
+        return this.animations.currentAnim.name;
     }
 
     public stock(quantity: number)

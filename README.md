@@ -131,6 +131,11 @@ Dockerfile  LICENSE  README.md	assets	bin  doc  index.html  lib  package.json  s
 
  - http://lunar.lostgarden.com/game_HardVacuum.htm
 
+## Sounds
+
+ - https://phaser.io/examples/v2/audio/pause-and-resume
+ - https://phaser.io/examples/v2/audio/sound-complete
+
 # Thanks
 
  - @grena for dat game jam org! :tada:
