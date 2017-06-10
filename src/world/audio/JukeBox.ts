@@ -1,8 +1,8 @@
 
 export class JukeBox
 {
-    private musicOn: boolean;
-    private soundOn: boolean;
+    private musicOn: boolean = true;
+    private soundOn: boolean = true;
     private music: Phaser.Sound;
     private explosion: Phaser.Sound;
     private blaster: Phaser.Sound;
@@ -10,9 +10,7 @@ export class JukeBox
     public constructor(game: Phaser.Game)
     {
         this.music = game.add.audio('music');
-        this.musicOn = true;
         this.music.play('', 0, 1, true);
-        this.soundOn = true;
         this.explosion = game.add.audio('explosion');
         this.blaster = game.add.audio('blaster');
     }
