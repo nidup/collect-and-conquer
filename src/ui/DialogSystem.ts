@@ -1,5 +1,5 @@
 
-import {Dialog} from "./Dialog";
+import {DefeatDialog, NewGameDialog, VictoryDialog} from "./Dialog";
 
 export class DialogSystem
 {
@@ -13,12 +13,18 @@ export class DialogSystem
     public displayDefeatDialog()
     {
         this.group.game.paused = true;
-        new Dialog(this.group, "Defeat!\n\nAll your buildings\nhave been destroyed");
+        new DefeatDialog(this.group);
     }
 
     public displayVictoryDialog()
     {
         this.group.game.paused = true;
-        new Dialog(this.group, "Victory!\n\nYou destroyed all your\nenemy's buildings!");
+        new VictoryDialog(this.group);
+    }
+
+    public displayNewGameDialog()
+    {
+        this.group.game.paused = true;
+        new NewGameDialog(this.group);
     }
 }

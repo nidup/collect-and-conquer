@@ -180,6 +180,8 @@ export default class Play extends Phaser.State
             const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
             this.fogOfWar.apply(this.bitmap, knownTiles);
         }
+
+        this.dialogSystem.displayNewGameDialog();
     }
 
     public update()
