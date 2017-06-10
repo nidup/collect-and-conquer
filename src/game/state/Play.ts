@@ -17,6 +17,7 @@ import {MainPanel} from "../../ui/MainPanel";
 import {PlayerRepository} from "../player/PlayerRepository";
 import {FogOfWar} from "../../ai/map/FogOfWar";
 import {JukeBox} from "../../world/audio/JukeBox";
+import {DialogSystem} from "../../ui/DialogSystem";
 
 export default class Play extends Phaser.State
 {
@@ -33,6 +34,7 @@ export default class Play extends Phaser.State
     private enableRandMap: boolean = true;
     private tiles: Array<Array<Phaser.Tile>>;
     private bitmap: Phaser.BitmapData;
+    private dialogSystem: DialogSystem;
 
     public create()
     {
@@ -45,10 +47,10 @@ export default class Play extends Phaser.State
         groundLayer.name = 'Ground';
         const unitLayer = this.game.add.group();
         unitLayer.name = 'Unit';
-        const interfaceLayer = this.game.add.group();
-        interfaceLayer.name = 'Interface';
         const fogOfWarLayer = this.game.add.group();
         fogOfWarLayer.name = 'Fog';
+        const interfaceLayer = this.game.add.group();
+        interfaceLayer.name = 'Interface';
 
         const panelWith = 240;
         const mapWidth = this.game.width - panelWith;
@@ -157,6 +159,7 @@ export default class Play extends Phaser.State
         this.unitSelector = new UnitSelector(humanPlayer);
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
         this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items, jukebox);
+        this.dialogSystem = new DialogSystem(interfaceLayer);
 
         this.fogOfWar = new FogOfWar();
         const fogX = 0;
@@ -176,6 +179,7 @@ export default class Play extends Phaser.State
 
     public update()
     {
+        this.updateGame();
         this.updateItems(this.items);
         this.updateVehicles(this.vehicles, this.game, this.collisionLayer);
         this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
@@ -183,6 +187,13 @@ export default class Play extends Phaser.State
         if (this.enableFog) {
             const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
             this.fogOfWar.apply(this.bitmap, knownTiles);
+        }
+    }
+
+    private updateGame()
+    {
+        if (this.players.human().isDefeated()) {
+            this.dialogSystem.displayDefeatDialog();
         }
     }
 

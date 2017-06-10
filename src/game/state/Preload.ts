@@ -76,5 +76,6 @@ export default class Preload extends Phaser.State {
         this.load.spritesheet('BuyButton', 'assets/interface/BuyButton.png', 140, 27);
         this.load.spritesheet('OrderButton', 'assets/interface/OrderButton.png', 110, 27);
         this.load.image('HealthJauge', 'assets/interface/HealthJauge.png');
+        this.load.image('Dialog', 'assets/interface/Dialog.png');
     }
 }
