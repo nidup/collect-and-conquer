@@ -1,10 +1,17 @@
 
 export class TextStyle
 {
+    public getColorStyle(color)
+    {
+        const styleNormal = { font: "14px Share Tech Mono", fill: color, boundsAlignH: "center", boundsAlignV: "top" };
+
+        return styleNormal;
+    }
+
     public getNormalStyle()
     {
         const colorNormal = '#8cd6ff';
-        const styleNormal = { font: "14px Arial", fill: colorNormal, align: "center" };
+        const styleNormal = { font: "16px Share Tech Mono", fill: colorNormal, align: "center" };
 
         return styleNormal;
     }
@@ -12,7 +19,7 @@ export class TextStyle
     public getOverStyle()
     {
         const colorOver = '#5a7086';
-        const styleOver =  { font: "14px Arial", fill: colorOver, align: "center" };
+        const styleOver = { font: "16px Share Tech Mono", fill: colorOver, align: "center" };
 
         return styleOver;
     }

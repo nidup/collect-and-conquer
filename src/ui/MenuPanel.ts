@@ -13,7 +13,7 @@ export class MenuPanel
         const textStyle = new TextStyle();
         let positionY = 650;
 
-        group.game.add.text(screenWidth - 210, positionY, 'Menu', textStyle.getNormalStyle(), group);
+        group.game.add.text(screenWidth - 210, positionY, 'Settings', textStyle.getNormalStyle(), group);
 
         const buttonBuilder = new ButtonBuilder();
 

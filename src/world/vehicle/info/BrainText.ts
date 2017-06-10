@@ -3,6 +3,7 @@ import {Vehicle} from "../Vehicle";
 import {StackFSM} from "../../../ai/fsm/StackFSM";
 import {StateColors} from "./StateColor";
 import {VehicleBrain} from "../brain/VehicleBrain";
+import {TextStyle} from "../../../ui/TextStyle";
 
 export class BrainText extends Phaser.Text
 {
@@ -24,8 +25,8 @@ export class BrainText extends Phaser.Text
     {
         this.setText(this.brain.getStateName());
         let color = this.stateColors.getColor(this.brain.getStateName());
-        const style = {font: "13px Arial", fill: color, boundsAlignH: "center", boundsAlignV: "top"};
-        this.setStyle(style);
+        const textStyle = new TextStyle();
+        this.setStyle(textStyle.getColorStyle(color));
         this.game.physics.arcade.moveToObject(this, this.vehicle, this.vehicle.body.speed);
     }
 
