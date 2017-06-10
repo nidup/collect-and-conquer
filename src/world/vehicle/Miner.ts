@@ -71,6 +71,11 @@ export class Miner extends Vehicle
         this.oilLoad = 0;
     }
 
+    public getOilLoad(): number
+    {
+        return this.oilLoad;
+    }
+
     public getBuildingScope(): number
     {
         return this.buildingScope;

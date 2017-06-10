@@ -71,7 +71,6 @@ export default class Preload extends Phaser.State {
     private loadUIImages()
     {
         this.load.bitmapFont('carrier-command', 'assets/fonts/carrier_command.png', 'assets/fonts/carrier_command.xml');
-
         this.load.image('CommandPanel', 'assets/interface/CommandPanel.png');
         this.load.spritesheet('Button', 'assets/interface/Button.png', 94, 27);
         this.load.spritesheet('BuyButton', 'assets/interface/BuyButton.png', 140, 27);
