@@ -35,6 +35,7 @@ export default class Play extends Phaser.State
     private tiles: Array<Array<Phaser.Tile>>;
     private bitmap: Phaser.BitmapData;
     private dialogSystem: DialogSystem;
+    private jukebox: JukeBox;
 
     public create()
     {
@@ -120,13 +121,13 @@ export default class Play extends Phaser.State
 
         this.players = new PlayerRepository();
 
-        const jukebox = new JukeBox(this.game);
+        this.jukebox = new JukeBox(this.game);
 
-        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, unitLayer, jukebox);
+        const armyBlue = new Army(0x1e85ff, this.vehicles, this.buildings, this.items, generatedMap, unitLayer, this.jukebox);
         const humanPlayer = new Player(armyBlue, true);
         this.players.add(humanPlayer);
 
-        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, unitLayer, jukebox);
+        const armyRed = new Army(0xff2b3c, this.vehicles, this.buildings, this.items, generatedMap, unitLayer, this.jukebox);
         const botPlayer = new Player(armyRed, false);
         this.players.add(botPlayer);
 
@@ -163,7 +164,7 @@ export default class Play extends Phaser.State
 
         this.unitSelector = new UnitSelector(humanPlayer);
         this.unitSelector.selectUnit(this.buildings.bases()[0]);
-        this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items, jukebox);
+        this.mainPanel = new MainPanel(interfaceLayer, panelWith, this.unitSelector, this.players, generatedMap, this.items, this.jukebox);
         this.dialogSystem = new DialogSystem(interfaceLayer);
 
         this.fogOfWar = new FogOfWar();
@@ -273,5 +274,10 @@ export default class Play extends Phaser.State
                 "#00ff00"
             );
         }
+    }
+
+    public shutdown ()
+    {
+        this.jukebox.destroy();
     }
 }

@@ -43,4 +43,11 @@ export class JukeBox
             this.explosion.play('', 0, 0.7, false, false);
         }
     }
+
+    public destroy()
+    {
+        this.music.destroy();
+        this.explosion.destroy();
+        this.blaster.destroy();
+    }
 }
