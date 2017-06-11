@@ -29,6 +29,50 @@ export class Camera
         return this.visibilityScope;
     }
 
+    public closestVisibleHurtedFriendVehicle(myself: Vehicle): Vehicle|null
+    {
+        const position = myself.getPosition();
+        class VehicleAndDistance {
+            public vehicle: Vehicle;
+            public distance: number;
+            constructor (vehicle: Vehicle, distance: number) {
+                this.vehicle = vehicle;
+                this.distance = distance;
+            }
+        }
+        const transfoAddDistance = function(vehicle: Vehicle) {
+            return new VehicleAndDistance(vehicle, position.distance(vehicle.getPosition()));
+        };
+        const myArmy = this.army;
+        const visibilityScope = this.visibilityScope;
+        const closestFriends = this.vehicles.all()
+            .filter(function (vehicle: Vehicle) {
+                    return vehicle.getArmy() == myArmy;
+                }
+            )
+            .filter(function (vehicle: Vehicle) {
+                    return vehicle != myself;
+                }
+            )
+            .filter(function (vehicle: Vehicle) {
+                    return vehicle.isHurted();
+                }
+            )
+            .reduce(function (vehiclesWithDistance, vehicle) {
+                vehiclesWithDistance.push(transfoAddDistance(vehicle));
+                return vehiclesWithDistance;
+            }, [])
+            .sort(function (vehicle1: VehicleAndDistance, vehicle2: VehicleAndDistance) {
+                return vehicle1.distance > vehicle2.distance ? 1 : -1;
+            })
+            .filter(function (vehicleAndDistance: VehicleAndDistance) {
+                    return vehicleAndDistance.distance < visibilityScope
+                }
+            );
+
+        return closestFriends.length > 0 ? closestFriends[0].vehicle : null;
+    }
+
     public closestVisibleEnemyVehicle(position: Phaser.Point): Vehicle|null
     {
         class VehicleAndDistance {

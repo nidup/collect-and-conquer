@@ -86,7 +86,6 @@ export class TankAttackBrain extends VehicleBrain
         const visibleEnemyVehicle = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         if (visibleEnemyVehicle) {
             this.fsm.popState();
-            this.path = null;
             this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
         } else if (notDestroyed && canAttack) {
             // TODO: should be implemented as a proper behavior
