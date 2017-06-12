@@ -34,7 +34,7 @@ export class TankAttackBrain extends VehicleBrain
         if (visibleEnemyVehicle) {
             this.fsm.popState();
             this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
-        } else if (knownEnemyBuilding) {
+        } else if (knownEnemyBuilding && knownEnemyBuilding.getPosition()) {
             this.fsm.popState();
             this.path = this.pathfinder.findPhaserPointPath(this.host.getPosition().clone(), knownEnemyBuilding.getPosition().clone());
             this.fsm.pushState(new State('go to building', this.gotoBuilding));
@@ -86,7 +86,6 @@ export class TankAttackBrain extends VehicleBrain
         const visibleEnemyVehicle = this.host.getCamera().closestVisibleEnemyVehicle(this.host.getPosition().clone());
         if (visibleEnemyVehicle) {
             this.fsm.popState();
-            this.path = null;
             this.fsm.pushState(new State('attack vehicle', this.attackVehicle));
         } else if (notDestroyed && canAttack) {
             // TODO: should be implemented as a proper behavior

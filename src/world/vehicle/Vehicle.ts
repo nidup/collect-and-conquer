@@ -49,6 +49,11 @@ export abstract class Vehicle extends Phaser.Sprite implements Boid
         return this.health > 0;
     }
 
+    public isHurted() :boolean
+    {
+        return this.health < this.maxHealth;
+    }
+
     public hit(damage: number)
     {
         this.damage(damage)

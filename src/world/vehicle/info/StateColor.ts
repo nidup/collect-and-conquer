@@ -6,6 +6,8 @@ export class StateColors
         'go to mine': '#00cd00',
         'go to base': '#00cd00',
         'go to oil': '#00cd00',
+        'repair building': '#00cd00',
+        'repair vehicle': '#00cd00',
         'patrolling': '#eedb13',
         'escorting': '#eedb13',
         'protect mine': '#eedb13',

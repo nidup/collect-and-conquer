@@ -6,7 +6,7 @@ import {ItemRepository} from "./item/ItemRepository";
 import {Miner} from "./vehicle/Miner";
 import {Scout} from "./vehicle/Scout";
 import {Tank} from "./vehicle/Tank";
-import {Builder} from "./vehicle/Builder";
+import {Engineer} from "./vehicle/Engineer";
 import {Base} from "./building/Base";
 import {Generator} from "./building/Generator";
 import {Mine} from "./building/Mine";
@@ -70,10 +70,10 @@ export class Army
         return vehicle;
     }
 
-    public recruitBuilder(x: number, y: number): Builder
+    public recruitEngineer(x: number, y: number): Engineer
     {
         const camera = new Camera(this.items, this.buildings, this.vehicles, this, 140);
-        const vehicle = new Builder(this.group, x, y, this, this.radar, camera, 'Builder1', 0, this.map);
+        const vehicle = new Engineer(this.group, x, y, this, this.radar, camera, 'Builder1', 0, this.map);
         this.vehicles.add(vehicle);
         return vehicle;
     }

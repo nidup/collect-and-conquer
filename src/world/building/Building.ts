@@ -42,6 +42,11 @@ export abstract class Building extends Phaser.Sprite
         }
     }
 
+    public isDamaged() :boolean
+    {
+        return this.health < this.maxHealth;
+    }
+
     destroy(destroyChildren?: boolean): void
     {
         this.healthBar.destroy();

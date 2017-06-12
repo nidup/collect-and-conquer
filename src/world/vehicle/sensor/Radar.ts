@@ -184,6 +184,35 @@ export class Radar
         return closestBuildings.length > 0 ? closestBuildings[0].building : null;
     }
 
+    public closestKnownRepairableFriendBuilding(position: Phaser.Point): Building|null
+    {
+        class BuildingAndDistance {
+            public building: Building;
+            public distance: number;
+            constructor (building: Building, distance: number) {
+                this.building = building;
+                this.distance = distance;
+            }
+        }
+        const transfoAddDistance = function(building: Building) {
+            return new BuildingAndDistance(building, position.distance(building.getPosition()));
+        };
+        const closestBuildings = this.army.getBuildings()
+            .reduce(function (buildingsWithDistance, building) {
+                buildingsWithDistance.push(transfoAddDistance(building));
+                return buildingsWithDistance;
+            }, [])
+            .sort(function (building1: BuildingAndDistance, building2: BuildingAndDistance) {
+                return building1.distance > building2.distance ? 1 : -1;
+            })
+            .filter(function (buildingAndDistance: BuildingAndDistance) {
+                    return buildingAndDistance.building.isDamaged()
+                }
+            );
+
+        return closestBuildings.length > 0 ? closestBuildings[0].building : null;
+    }
+
     public closestObstacle(position: Phaser.Point, visibilityScope: number): Building
     {
         class BuildingAndDistance {

@@ -4,7 +4,7 @@ import {Base} from "../world/building/Base";
 import {VehicleCosts} from "../world/vehicle/VehicleCosts";
 import {Scout} from "../world/vehicle/Scout";
 import {Miner} from "../world/vehicle/Miner";
-import {Builder} from "../world/vehicle/Builder";
+import {Engineer} from "../world/vehicle/Engineer";
 import {Tank} from "../world/vehicle/Tank";
 import {TextStyle} from "./TextStyle";
 
@@ -52,8 +52,8 @@ export class RecruitPanel
         callback = function() {
             base.buildBuilder();
         };
-        this.builderButton = this.addRecruitButton(group, positionY, 'Builder', callback);
-        this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Builder));
+        this.builderButton = this.addRecruitButton(group, positionY, 'Engineer', callback);
+        this.addCostTextAndImage(group, positionY, this.vehicleCosts.getCost(Engineer));
 
         positionY += buttonHeight + verticalMargin;
         callback = function() {
@@ -77,7 +77,7 @@ export class RecruitPanel
         } else {
             this.disableButton(this.scoutButton);
         }
-        if (this.base.getStock() >= this.vehicleCosts.getCost(Builder)) {
+        if (this.base.getStock() >= this.vehicleCosts.getCost(Engineer)) {
             this.enableButton(this.builderButton);
         } else {
             this.disableButton(this.builderButton);
