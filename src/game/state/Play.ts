@@ -26,7 +26,7 @@ export default class Play extends Phaser.State
     private vehicles: VehicleRepository;
     private collisionLayer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
-    private debug: boolean = false;
+    private debug: boolean = true;
     private mainPanel: MainPanel;
     private players: PlayerRepository;
     private fogOfWar: FogOfWar;
@@ -36,6 +36,7 @@ export default class Play extends Phaser.State
     private bitmap: Phaser.BitmapData;
     private dialogSystem: DialogSystem;
     private jukebox: JukeBox;
+    private tick: number;
 
     public create()
     {
@@ -132,7 +133,7 @@ export default class Play extends Phaser.State
         this.players.add(botPlayer);
 
         const base = armyBlue.buildBase(baseBlueX, baseBlueY);
-        base.stock(400);
+        base.stock(4000);
 
         /*
         armyBlue.recruitMiner(70, 100);
@@ -187,14 +188,23 @@ export default class Play extends Phaser.State
 
     public update()
     {
-        this.updateGame();
-        this.updateItems(this.items);
-        this.updateVehicles(this.vehicles, this.game, this.collisionLayer);
-        this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
-        this.mainPanel.update();
-        if (this.enableFog) {
-            const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
-            this.fogOfWar.apply(this.bitmap, knownTiles);
+        const tickGap = 500;
+        if (this.tick == null) {
+            this.tick = this.game.time.time + tickGap;
+        }
+
+        if (this.tick < this.game.time.time) {
+            this.tick = this.game.time.time + tickGap;
+
+            this.updateGame();
+            this.updateItems(this.items);
+            this.updateVehicles(this.vehicles, this.game, this.collisionLayer);
+            this.updateUnitSelector(this.unitSelector, this.vehicles, this.buildings, this.items);
+            this.mainPanel.update();
+            if (this.enableFog) {
+                const knownTiles = this.players.human().getArmy().getSharedMemory().getKnownTiles();
+                this.fogOfWar.apply(this.bitmap, knownTiles);
+            }
         }
     }
 
