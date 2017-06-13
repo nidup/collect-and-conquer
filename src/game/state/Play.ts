@@ -26,7 +26,7 @@ export default class Play extends Phaser.State
     private vehicles: VehicleRepository;
     private collisionLayer : Phaser.TilemapLayer;
     private unitSelector: UnitSelector;
-    private debug: boolean = true;
+    private debug: boolean = false;
     private mainPanel: MainPanel;
     private players: PlayerRepository;
     private fogOfWar: FogOfWar;
@@ -133,7 +133,7 @@ export default class Play extends Phaser.State
         this.players.add(botPlayer);
 
         const base = armyBlue.buildBase(baseBlueX, baseBlueY);
-        base.stock(4000);
+        base.stock(400);
 
         /*
         armyBlue.recruitMiner(70, 100);
