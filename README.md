@@ -8,7 +8,7 @@ Playing with steering behaviors, stacked FSM, A* path finding and procedural map
 
 # Demo
 
-You can access to the demo [here](https://nidup.github.io/collect-and-conquer/)
+You can [play to the demo here](https://nidup.itch.io/collect-and-conquer)
 
 # Screenshots
 
